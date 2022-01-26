@@ -5,10 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CreateWorldScreenMixin",
-    "DebugHudMixin",
-    "LevelLoadingScreenMixin",
+    "InGameHudMixin",
+    "LoadingScreenRendererMixin",
     "SettingsScreenMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
