@@ -1,6 +1,6 @@
 package me.voidxwalker.autoreset.mixin;
 
-import me.voidxwalker.autoreset.Main;
+import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.Pingable;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.LoadingScreenRenderer;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,8 +28,8 @@ public abstract class TitleScreenMixin extends Screen {
         if(!((Pingable)(new LoadingScreenRenderer(MinecraftClient.getInstance()))).ping()){
             throw new IllegalStateException();
         }
-        if (Main.isRunning&&Main.loopPrevent2) {
-            Main.loopPrevent2=false;
+        if (Atum.isRunning&& Atum.loopPrevent2) {
+            Atum.loopPrevent2=false;
             client.openScreen(new CreateWorldScreen(this));
         } else {
             this.buttons.add(new ButtonWidget(69,this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
@@ -52,13 +51,13 @@ public abstract class TitleScreenMixin extends Screen {
             if (hasShiftDown()) {
                 client.openScreen(new AutoResetOptionScreen(this));
             } else {
-                Main.isRunning = true;
+                Atum.isRunning = true;
                 this.client.openScreen(this);
             }
         }
     }
     private void getDifficulty() {
-        if(Main.isHardcore) {
+        if(Atum.isHardcore) {
             difficulty = "Hardcore: ON";
         }
         else {

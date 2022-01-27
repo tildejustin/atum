@@ -1,6 +1,6 @@
 package me.voidxwalker.autoreset.mixin;
 
-import me.voidxwalker.autoreset.Main;
+import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.Pingable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -11,9 +11,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.List;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin extends DrawableHelper implements Pingable {
@@ -24,7 +21,7 @@ public class InGameHudMixin extends DrawableHelper implements Pingable {
             at = {@At("TAIL")}
     )
     private void getRightText(float bl, boolean i, int j, int par4, CallbackInfo ci) {
-        this.drawWithShadow(this.client.textRenderer, "Resetting "+(Main.seed==null||Main.seed.isEmpty()?" a random seed":(" the seed: \""+Main.seed+"\"")), 2, 140, 14737632);
+        this.drawWithShadow(this.client.textRenderer, "Resetting "+(Atum.seed==null|| Atum.seed.isEmpty()?" a random seed":(" the seed: \""+ Atum.seed+"\"")), 2, 140, 14737632);
     }
     @Override
     public boolean ping() {
