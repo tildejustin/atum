@@ -1,11 +1,11 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
-import net.minecraft.class_1157;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.level.LevelGeneratorType;
 import net.minecraft.world.level.LevelInfo;
 import org.apache.logging.log4j.Level;
@@ -62,7 +62,7 @@ public abstract class CreateWorldScreenMixin extends Screen{
         this.creatingLevel = true;
         long l = (new Random()).nextLong();
         String string = Atum.seed;
-        if (!MathHelper.method_2340(string)) {
+        if (!MathHelper.isEmpty(string)) {
             try {
                 long var5 = Long.parseLong(string);
                 if (var5 != 0L) {
@@ -73,7 +73,7 @@ public abstract class CreateWorldScreenMixin extends Screen{
             }
         }
 
-        class_1157 var8 = class_1157.method_3765(this.gamemodeName);
+        GameMode var8 = GameMode.setGameModeWithString(this.gamemodeName);
         LevelInfo var6 = new LevelInfo(l, var8, this.structures, this.hardcore, LevelGeneratorType.TYPES[this.generatorType]);
         var6.setGeneratorOptions(this.generatorOptions);
         if (this.bonusChest && !this.hardcore) {
