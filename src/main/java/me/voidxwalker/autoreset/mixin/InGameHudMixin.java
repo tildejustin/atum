@@ -21,7 +21,10 @@ public class InGameHudMixin extends DrawableHelper implements Pingable {
             at = {@At("TAIL")}
     )
     private void getRightText(float bl, boolean i, int j, int par4, CallbackInfo ci) {
-        this.drawWithShadow(this.client.textRenderer, "Resetting "+(Atum.seed==null|| Atum.seed.isEmpty()?" a random seed":(" the seed: \""+ Atum.seed+"\"")), 2, 140, 14737632);
+        if(Atum.isRunning&&client.options.debugEnabled){
+            this.drawWithShadow(this.client.textRenderer, "Resetting"+(Atum.seed==null|| Atum.seed.isEmpty()?" a random seed":(" the seed: \""+ Atum.seed+"\"")), 2, 114, 14737632);
+        }
+
     }
     @Override
     public boolean ping() {

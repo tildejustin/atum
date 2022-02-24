@@ -1,14 +1,11 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.autoreset.Pingable;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.LoadingScreenRenderer;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,9 +22,6 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
-        if(!((Pingable)(new LoadingScreenRenderer(MinecraftClient.getInstance()))).ping()){
-            throw new IllegalStateException();
-        }
         if (Atum.isRunning&& Atum.loopPrevent2) {
             Atum.loopPrevent2=false;
             client.openScreen(new CreateWorldScreen(this));

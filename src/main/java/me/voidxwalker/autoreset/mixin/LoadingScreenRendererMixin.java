@@ -15,16 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LoadingScreenRendererMixin implements Pingable {
     @Shadow private MinecraftClient field_1029;
 
-
-    @Shadow private Window field_7695;
-
     @Inject(method = "progressStagePercentage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;method_956(Ljava/lang/String;III)I", shift = At.Shift.AFTER))
     public void modifyString(int percentage, CallbackInfo ci){
         if(Atum.isRunning&& Atum.seed!=null&&!Atum.seed.isEmpty()){
-            int j = field_7695.getWidth();
-            int k = field_7695.getHeight();
-            String string = Atum.seed;
-            this.field_1029.textRenderer.draw(string, ((j - this.field_1029.textRenderer.getStringWidth(string)) / 2), (k / 2 - 4 -40), 16777215);
+            Window window = new Window(this.field_1029, field_1029.width, field_1029.height);
+            int j = window.getWidth();
+            int k = window.getHeight();
+            String string =Atum.seed;
+            this.field_1029.textRenderer.method_956(string, ((j - this.field_1029.textRenderer.getStringWidth(string)) / 2), (k / 2 - 4 -40), 16777215);
         }
 
     }

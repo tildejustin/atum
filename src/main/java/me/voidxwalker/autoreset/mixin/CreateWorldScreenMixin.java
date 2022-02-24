@@ -4,10 +4,10 @@ import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.LevelGeneratorType;
 import net.minecraft.world.level.LevelInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,8 +41,6 @@ public abstract class CreateWorldScreenMixin extends Screen{
 
     @Shadow private String saveDirectoryName;
 
-    @Shadow private TextFieldWidget seedField;
-
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.isRunning) {
@@ -58,34 +56,31 @@ public abstract class CreateWorldScreenMixin extends Screen{
         if (this.creatingLevel) {
             return;
         }
-
         this.creatingLevel = true;
         long l = (new Random()).nextLong();
         String string = Atum.seed;
-        if (!MathHelper.isEmpty(string)) {
+        if (!StringUtils.isEmpty(string)) {
             try {
-                long var5 = Long.parseLong(string);
-                if (var5 != 0L) {
-                    l = var5;
+                long m = Long.parseLong(string);
+                if (m != 0L) {
+                    l = m;
                 }
             } catch (NumberFormatException var7) {
                 l = (long)string.hashCode();
             }
         }
 
-        GameMode var8 = GameMode.setGameModeWithString(this.gamemodeName);
-        LevelInfo var6 = new LevelInfo(l, var8, this.structures, this.hardcore, LevelGeneratorType.TYPES[this.generatorType]);
-        var6.setGeneratorOptions(this.generatorOptions);
+        GameMode gameMode = GameMode.setGameModeWithId(0);
+        LevelInfo levelInfo = new LevelInfo(l, gameMode, this.structures, this.hardcore, LevelGeneratorType.TYPES[this.generatorType]);
+        levelInfo.setGeneratorOptions(this.generatorOptions);
         if (this.bonusChest && !this.hardcore) {
-            var6.setBonusChest();
+            levelInfo.setBonusChest();
         }
 
         if (this.tweakedCheats && !this.hardcore) {
-            var6.enableCommands();
+            levelInfo.enableCommands();
         }
-
-        this.client.startGame((Atum.seed==null|| Atum.seed.isEmpty()?"Random":"Set")+"Speedrun #" + Atum.getNextAttempt(), (Atum.seed==null|| Atum.seed.isEmpty()?"Random":"Set")+"Speedrun #" + Atum.getNextAttempt(), var6);
-
+        this.client.startGame(levelNameField.getText(), levelNameField.getText(), levelInfo);
 
         Atum.log(Level.INFO,(Atum.seed==null|| Atum.seed.isEmpty()?"Resetting a random seed":"Resetting the set seed"+"\""+l+"\""));
 

@@ -12,9 +12,8 @@ public class AutoResetOptionScreen extends Screen{
     private final Screen parent;
     private TextFieldWidget seedField;
     private String seed;
-    private boolean isHardcore;
-
     private String difficulty;
+    private boolean isHardcore;
     protected String title = "Autoreset Options";
     public AutoResetOptionScreen(@Nullable Screen parent) {
         super();
@@ -22,7 +21,7 @@ public class AutoResetOptionScreen extends Screen{
     }
 
     public void init() {
-        this.isHardcore=Atum.isHardcore;
+        this.isHardcore= Atum.isHardcore;
         setDifficulty();
         seed= Atum.seed;
         this.seedField = new TextFieldWidget(client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20) ;
