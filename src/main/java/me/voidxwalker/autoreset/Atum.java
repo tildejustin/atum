@@ -4,7 +4,6 @@ import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.client.render.LoadingScreenRenderer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -104,10 +103,12 @@ public class Atum implements ModInitializer {
     }
     @Override
     public void onInitialize() {
-
-       /* if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
+        if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
             throw new IllegalStateException();
-        }*/
+        }
+        if(!((Pingable)(new LoadingScreenRenderer(MinecraftClient.getInstance()))).ping()){
+            throw new IllegalStateException();
+        }
         log(Level.INFO, "Initializing");
         File difficultyFile = new File("arhardcore.txt");
         if (!difficultyFile.exists()) {

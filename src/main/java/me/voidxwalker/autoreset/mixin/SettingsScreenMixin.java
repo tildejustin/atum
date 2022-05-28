@@ -6,7 +6,6 @@ import net.minecraft.client.gui.screen.SettingsScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.realms.RealmsBridge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,7 +32,7 @@ public abstract class SettingsScreenMixin extends Screen {
             boolean bl2 = this.client.isConnectedToRealms();
             button.active = false;
             this.client.world.disconnect();
-            this.client.connect((ClientWorld)null);
+            this.client.connect(null);
             if (bl) {
                 this.client.openScreen(new TitleScreen());
             } else if (bl2) {
