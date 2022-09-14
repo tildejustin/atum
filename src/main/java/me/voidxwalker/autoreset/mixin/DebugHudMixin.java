@@ -2,36 +2,31 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.Pingable;
-import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.world.level.LevelGeneratorType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.hud.InGameHud;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+@Mixin(InGameHud.class)
+public class DebugHudMixin extends DrawableHelper implements Pingable {
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-@Mixin(DebugHud.class)
-public class DebugHudMixin implements Pingable {
     @Inject(
-            method = {"getRightText"},
-            at = {@At("RETURN")},
-            cancellable = true
+            method = {"method_979"},
+            at = {@At("TAIL")}
     )
-    private void atum_getRightText(CallbackInfoReturnable<List<String>> info) {
-        if(Atum.isRunning){
-            List<String> returnValue = info.getReturnValue();
-            returnValue.add("Resetting "+(Atum.seed==null|| Atum.seed.isEmpty()?"a random seed":("the seed: \""+ Atum.seed+"\"")));
-            if(Atum.generatorType!=0){
-                returnValue.add("GenType:" + LevelGeneratorType.TYPES[ Atum.generatorType].getTranslationKey());
-            }
-            if(!Atum.structures){
-                returnValue.add("NoStructures");
-            }
-            if(Atum.bonusChest){
-                returnValue.add("BonusChest");
-            }
+    private void getRightText(float bl, boolean i, int j, int par4, CallbackInfo ci) {
+        if(Atum.isRunning&&client.options.debugEnabled){
+            this.drawWithShadow(this.client.textRenderer, "Resetting"+(Atum.seed==null|| Atum.seed.isEmpty()?" a random seed":(" the seed: \""+ Atum.seed+"\"")), 2, 114, 14737632);
         }
+
     }
     @Override
     public boolean ping() {

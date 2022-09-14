@@ -1,6 +1,5 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
-import com.google.common.collect.HashBiMap;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -10,14 +9,10 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.realms.RealmsBridge;
 import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,24 +22,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
-    @Shadow @Nullable public ClientWorld world;
-
     @Shadow @Nullable public Screen currentScreen;
 
-    @Shadow public abstract void openScreen(@Nullable Screen screen);
+    @Shadow public int width;
 
-    @Shadow public abstract boolean isInSingleplayer();
-
-    @Shadow public abstract boolean isConnectedToRealms();
-
-
-
-    @Shadow public abstract void connect(@Nullable ClientWorld world);
-
-
-    @Shadow public abstract boolean isIntegratedServerRunning();
-
-    @Shadow public abstract void connect(@Nullable ClientWorld world, String loadingMessage);
+    @Shadow public int height;
 
     @Inject(method = "startGame",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
     public void atum_trackPostWorldGen(CallbackInfo ci){
@@ -59,7 +41,7 @@ public abstract class MinecraftClientMixin {
         if(Atum.hotkeyPressed){
             if(Atum.hotkeyState==Atum.HotkeyState.INSIDE_WORLD){
                 Screen s = new GameMenuScreen();
-                Window window = new Window((MinecraftClient) (Object)this);
+                Window window = new Window((MinecraftClient) (Object)this,this.width,this.height);
                 int i = window.getWidth();
                 int j = window.getHeight();
                 s.init( (MinecraftClient) (Object)this, i, j);
@@ -78,14 +60,10 @@ public abstract class MinecraftClientMixin {
                 Atum.isRunning = true;
                 if(b==null){
                     boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
-                    boolean bl2 = MinecraftClient.getInstance().isConnectedToRealms();
                     MinecraftClient.getInstance().world.disconnect();
                     MinecraftClient.getInstance().connect((ClientWorld)null);
                     if (bl) {
                         MinecraftClient.getInstance().openScreen(new TitleScreen());
-                    } else if (bl2) {
-                        RealmsBridge realmsBridge = new RealmsBridge();
-                        realmsBridge.switchToRealms(new TitleScreen());
                     } else {
                         MinecraftClient.getInstance().openScreen(new MultiplayerScreen(new TitleScreen()));
                     }

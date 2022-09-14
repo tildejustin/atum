@@ -30,7 +30,7 @@ public class AutoResetOptionScreen extends Screen{
     public void init() {
 
         this.isHardcore=Atum.difficulty==-1;
-        this.seedField = new TextFieldWidget(350,this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20) {};
+        this.seedField = new TextFieldWidget(this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20) {};
         this.seedField.setText(Atum.seed==null?"":Atum.seed);
         this.seedField.setFocused(true);
         this.seed=Atum.seed;

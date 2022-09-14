@@ -1,17 +1,12 @@
 package me.voidxwalker.autoreset;
 
-import me.voidxwalker.autoreset.mixin.LoadingScreenRendererMixin;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Language;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +48,7 @@ public class Atum implements ModInitializer {
         if(!((Pingable)(new ProgressScreen())).ping()){
             throw new IllegalStateException();
         }
-        if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
+        if(!((Pingable)(new InGameHud(MinecraftClient.getInstance()))).ping()){
             throw new IllegalStateException();
         }
         log(Level.INFO, "Initializing");
