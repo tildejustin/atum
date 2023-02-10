@@ -46,14 +46,16 @@ public abstract class MinecraftClientMixin {
 
     @Shadow public abstract void connect(@Nullable ClientWorld world, String loadingMessage);
 
-    @Inject(method = "startGame",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
+    @Inject(method = "startIntegratedServer",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
     public void atum_trackPostWorldGen(CallbackInfo ci){
         Atum.hotkeyState= Atum.HotkeyState.POST_WORLDGEN;
     }
-    @Inject(method = "startGame",at = @At(value = "HEAD"))
+
+    @Inject(method = "startIntegratedServer",at = @At(value = "HEAD"))
     public void atum_trackPreWorldGen( CallbackInfo ci){
         Atum.hotkeyState= Atum.HotkeyState.PRE_WORLDGEN;
     }
+
     @Inject(method = "tick",at = @At("HEAD"),cancellable = true)
     public void atum_tick(CallbackInfo ci){
         if(Atum.hotkeyPressed){
@@ -66,7 +68,7 @@ public abstract class MinecraftClientMixin {
                 ButtonWidget b=null;
                 for (ButtonWidget e: ((ScreenAccessor)(s)).getButtons()  ) {
                     if(e != null){
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asString())){
+                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asFormattedString())){
                             if(b==null){
                                 b =(ButtonWidget)e;
                             }
@@ -104,14 +106,14 @@ public abstract class MinecraftClientMixin {
             }
         }
     }
-    @Inject(method = "startGame",at=@At(value = "INVOKE",shift = At.Shift.AFTER,target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"),cancellable = true)
+    @Inject(method = "startIntegratedServer",at=@At(value = "INVOKE",shift = At.Shift.AFTER,target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"),cancellable = true)
     public void atum_tickDuringWorldGen( CallbackInfo ci){
         if(Atum.hotkeyPressed&&Atum.hotkeyState==Atum.HotkeyState.WORLD_GEN){
             if(currentScreen instanceof ProgressScreen){
                 ButtonWidget b=null;
                 if(!((ScreenAccessor)(currentScreen)).getButtons().isEmpty()){
                     for (ButtonWidget e: ((ScreenAccessor)(currentScreen)).getButtons() ) {
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.returnToMenu").asString())){
+                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.returnToMenu").asFormattedString())){
                             if(b==null){
                                 b =(ButtonWidget)e;
                             }
