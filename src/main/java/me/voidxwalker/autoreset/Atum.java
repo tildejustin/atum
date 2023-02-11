@@ -50,9 +50,6 @@ public class Atum implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        if(!((Pingable)(new ProgressScreen())).ping()){
-            throw new IllegalStateException();
-        }
         if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
             throw new IllegalStateException();
         }
