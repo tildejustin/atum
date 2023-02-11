@@ -1,6 +1,7 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
 import com.google.common.collect.HashBiMap;
+import me.voidxwalker.anchiale.Anchiale;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.Pingable;
 import net.minecraft.client.MinecraftClient;
@@ -67,41 +68,29 @@ public abstract class MinecraftClientMixin {
         }
         if(Atum.hotkeyPressed){
             if(Atum.hotkeyState==Atum.HotkeyState.INSIDE_WORLD || Atum.hotkeyState == Atum.HotkeyState.POST_WORLDGEN){
-                Screen s = new GameMenuScreen();
-                Window window = new Window((MinecraftClient) (Object)this);
-                int i = window.getWidth();
-                int j = window.getHeight();
-                s.init( (MinecraftClient) (Object)this, i, j);
-                ButtonWidget b=null;
-                for (ButtonWidget e: ((ScreenAccessor)(s)).getButtons()  ) {
-                    if(e != null){
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asFormattedString())){
-                            if(b==null){
-                                b =(ButtonWidget)e;
-                            }
-                        }
-                    }
+                if (Atum.HAS_ANCHIALE) {
+                    Anchiale.fastReset = true;
                 }
                 KeyBinding.setKeyPressed( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
                 Atum.isRunning = true;
-                if(b==null){
-                    boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
-                    boolean bl2 = MinecraftClient.getInstance().isConnectedToRealms();
-                    MinecraftClient.getInstance().world.disconnect();
-                    MinecraftClient.getInstance().connect((ClientWorld)null);
-                    if (bl) {
-                        MinecraftClient.getInstance().openScreen(new TitleScreen());
-                    } else if (bl2) {
-                        RealmsBridge realmsBridge = new RealmsBridge();
-                        realmsBridge.switchToRealms(new TitleScreen());
-                    } else {
-                        MinecraftClient.getInstance().openScreen(new MultiplayerScreen(new TitleScreen()));
-                    }
-                    ci.cancel();
+                Atum.loopPrevent2=true;
+                boolean bl = this.isIntegratedServerRunning();
+                boolean bl2 = this.isConnectedToRealms();
+                if (this.world != null) {
+                    this.world.disconnect();
                 }
-                else {
-                    b.mouseReleased(0,0);
+                this.connect(null);
+                if (bl) {
+                    this.openScreen(new TitleScreen());
+                } else if (bl2) {
+                    RealmsBridge realmsBridge = new RealmsBridge();
+                    realmsBridge.switchToRealms(new TitleScreen());
+                } else {
+                    this.openScreen(new MultiplayerScreen(new TitleScreen()));
+                }
+                if (Atum.HAS_ANCHIALE) {
+                    Anchiale.fastReset = true;
                 }
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){

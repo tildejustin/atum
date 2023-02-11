@@ -2,7 +2,7 @@ package me.voidxwalker.autoreset;
 
 import me.voidxwalker.autoreset.mixin.LoadingScreenRendererMixin;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.screen.ProgressScreen;
@@ -15,6 +15,7 @@ import net.minecraft.util.Language;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import me.voidxwalker.anchiale.Anchiale;
 
 import java.io.*;
 import java.util.*;
@@ -38,6 +39,8 @@ public class Atum implements ModInitializer {
     public static HotkeyState hotkeyState;
     public static boolean hotkeyPressed;
     public static boolean hotkeyHeld=false;
+
+    public static boolean HAS_ANCHIALE = FabricLoader.getInstance().isModLoaded("anchiale");
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
