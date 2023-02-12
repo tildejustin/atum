@@ -6,6 +6,7 @@
   "mixins": [
     "CreateWorldScreenMixin",
     "DebugHudMixin",
+    "DownloadingTerrainScreenMixin",
     "LoadingScreenRendererMixin",
     "TitleScreenMixin",
     "SettingsScreenMixin",
@@ -15,7 +16,7 @@
     "hotkey.ClientPlayerNetworkHandlerMixin",
     "hotkey.GameOptionsMixin",
     "hotkey.MinecraftServerMixin",
-    "ServerPlayerEntityMixin",
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
