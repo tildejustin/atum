@@ -52,15 +52,9 @@ public class Atum implements ModInitializer {
             throw new IllegalStateException();
         }
         log(Level.INFO, "Initializing");
-        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset","Create New World").asFormattedString(),
-                64,
-                getTranslation("key.categories.atum","Atum").asFormattedString()
-        ));
         new File("config").mkdir();
         new File("config/atum").mkdir();
         configFile = new File("config/atum/atum.properties");
-
         if(!configFile.exists()){
             try {
                 configFile.createNewFile();
