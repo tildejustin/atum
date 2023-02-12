@@ -3,7 +3,7 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 import com.google.common.collect.HashBiMap;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

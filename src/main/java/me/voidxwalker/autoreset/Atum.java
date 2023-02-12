@@ -4,7 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.ProgressScreen;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
@@ -53,9 +53,9 @@ public class Atum implements ModInitializer {
         }
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset","Create New World").getString(),
+                getTranslation("key.atum.reset","Create New World").asFormattedString(),
                 64,
-                getTranslation("key.categories.atum","Atum").getString()
+                getTranslation("key.categories.atum","Atum").asFormattedString()
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();

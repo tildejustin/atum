@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.TranslatableText;
@@ -28,11 +28,11 @@ public abstract class MinecraftClientMixin {
 
     @Shadow public int height;
 
-    @Inject(method = "startGame",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
+    @Inject(method = "startIntegratedServer",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
     public void atum_trackPostWorldGen(CallbackInfo ci){
         Atum.hotkeyState= Atum.HotkeyState.POST_WORLDGEN;
     }
-    @Inject(method = "startGame",at = @At(value = "HEAD"))
+    @Inject(method = "startIntegratedServer",at = @At(value = "HEAD"))
     public void atum_trackPreWorldGen( CallbackInfo ci){
         Atum.hotkeyState= Atum.HotkeyState.PRE_WORLDGEN;
     }
@@ -48,7 +48,7 @@ public abstract class MinecraftClientMixin {
                 ButtonWidget b=null;
                 for (ButtonWidget e: ((ScreenAccessor)(s)).getButtons()  ) {
                     if(e != null){
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asString())){
+                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asFormattedString())){
                             if(b==null){
                                 b =(ButtonWidget)e;
                             }
@@ -63,9 +63,9 @@ public abstract class MinecraftClientMixin {
                     MinecraftClient.getInstance().world.disconnect();
                     MinecraftClient.getInstance().connect((ClientWorld)null);
                     if (bl) {
-                        MinecraftClient.getInstance().openScreen(new TitleScreen());
+                        MinecraftClient.getInstance().setScreen(new TitleScreen());
                     } else {
-                        MinecraftClient.getInstance().openScreen(new MultiplayerScreen(new TitleScreen()));
+                        MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
                     }
                     ci.cancel();
                 }
@@ -78,18 +78,18 @@ public abstract class MinecraftClientMixin {
                 KeyBinding.setKeyPressed ( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
                 Atum.isRunning=true;
-                MinecraftClient.getInstance().openScreen(new TitleScreen());
+                MinecraftClient.getInstance().setScreen(new TitleScreen());
             }
         }
     }
-    @Inject(method = "startGame",at=@At(value = "INVOKE",shift = At.Shift.AFTER,target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"),cancellable = true)
+    @Inject(method = "startIntegratedServer",at=@At(value = "INVOKE",shift = At.Shift.AFTER,target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"),cancellable = true)
     public void atum_tickDuringWorldGen( CallbackInfo ci){
         if(Atum.hotkeyPressed&&Atum.hotkeyState==Atum.HotkeyState.WORLD_GEN){
             if(currentScreen instanceof ProgressScreen){
                 ButtonWidget b=null;
                 if(!((ScreenAccessor)(currentScreen)).getButtons().isEmpty()){
                     for (ButtonWidget e: ((ScreenAccessor)(currentScreen)).getButtons() ) {
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.returnToMenu").asString())){
+                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.returnToMenu").asFormattedString())){
                             if(b==null){
                                 b =(ButtonWidget)e;
                             }
