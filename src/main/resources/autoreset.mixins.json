@@ -16,7 +16,6 @@
     "hotkey.GameOptionsMixin",
     "hotkey.MinecraftServerMixin",
     "ServerPlayerEntityMixin",
-    "hotkey.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
