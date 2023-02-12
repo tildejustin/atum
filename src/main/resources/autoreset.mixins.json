@@ -6,6 +6,7 @@
   "mixins": [
     "CreateWorldScreenMixin",
     "DebugHudMixin",
+    "DownloadingTerrainScreenMixin",
     "LoadingScreenRendererMixin",
     "TitleScreenMixin",
     "SettingsScreenMixin",
