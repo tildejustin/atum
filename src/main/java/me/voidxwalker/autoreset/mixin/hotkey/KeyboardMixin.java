@@ -15,11 +15,10 @@ public class KeyboardMixin {
     long atum_lastHeld=0;
     @Inject(method = "handleKeyInput",at = @At("HEAD"))
     public void atum_onKey(CallbackInfo ci){
-        int i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
         if(System.currentTimeMillis()- atum_lastHeld>1000){
             Atum.hotkeyHeld=false;
         }
-        if(Atum.resetKey.getCode()==i&&Keyboard.getEventKeyState()&&!Atum.hotkeyHeld){
+        if(Keyboard.isKeyDown(Atum.resetKey.getCode()) && !Atum.hotkeyHeld){
             Atum.hotkeyHeld=true;
             atum_lastHeld=System.currentTimeMillis();
             KeyBinding.setKeyPressed( Atum.resetKey.getCode(),true);

@@ -39,39 +39,19 @@ public abstract class MinecraftClientMixin {
     @Inject(method = "tick",at = @At("HEAD"),cancellable = true)
     public void atum_tick(CallbackInfo ci){
         if(Atum.hotkeyPressed){
-            if(Atum.hotkeyState==Atum.HotkeyState.INSIDE_WORLD){
-                Screen s = new GameMenuScreen();
-                Window window = new Window((MinecraftClient) (Object)this,this.width,this.height);
-                int i = window.getWidth();
-                int j = window.getHeight();
-                s.init( (MinecraftClient) (Object)this, i, j);
-                ButtonWidget b=null;
-                for (ButtonWidget e: ((ScreenAccessor)(s)).getButtons()  ) {
-                    if(e != null){
-                        if( ((ButtonWidget)e).message.equals(new TranslatableText("menu.quitWorld").asFormattedString())){
-                            if(b==null){
-                                b =(ButtonWidget)e;
-                            }
-                        }
-                    }
-                }
+            if(Atum.hotkeyState==Atum.HotkeyState.INSIDE_WORLD || Atum.hotkeyState == Atum.HotkeyState.POST_WORLDGEN){
                 KeyBinding.setKeyPressed( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
                 Atum.isRunning = true;
-                if(b==null){
-                    boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
-                    MinecraftClient.getInstance().world.disconnect();
-                    MinecraftClient.getInstance().connect((ClientWorld)null);
-                    if (bl) {
-                        MinecraftClient.getInstance().setScreen(new TitleScreen());
-                    } else {
-                        MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
-                    }
-                    ci.cancel();
+                boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
+                MinecraftClient.getInstance().world.disconnect();
+                MinecraftClient.getInstance().connect((ClientWorld)null);
+                if (bl) {
+                    MinecraftClient.getInstance().setScreen(new TitleScreen());
+                } else {
+                    MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
                 }
-                else {
-                    b.mouseReleased(0,0);
-                }
+                ci.cancel();
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
                 System.out.println(1);
