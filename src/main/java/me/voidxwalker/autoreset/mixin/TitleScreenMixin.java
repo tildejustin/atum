@@ -27,7 +27,7 @@ public abstract class TitleScreenMixin extends Screen {
     private void init(CallbackInfo info) {
         if (Atum.isRunning&& Atum.loopPrevent2) {
             Atum.loopPrevent2=false;
-            client.openScreen(new CreateWorldScreen(this));
+            client.setScreen(new CreateWorldScreen(this));
         } else {
             Atum.hotkeyState= Atum.HotkeyState.OUTSIDE_WORLD;
             this.buttons.add(new ButtonWidget(69,this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
@@ -47,10 +47,10 @@ public abstract class TitleScreenMixin extends Screen {
     public void buttonClicked(ButtonWidget button, CallbackInfo ci){
         if(button.id==69){
             if (hasShiftDown()) {
-                client.openScreen(new AutoResetOptionScreen(null));
+                client.setScreen(new AutoResetOptionScreen(null));
             } else {
                 Atum.isRunning = true;
-                MinecraftClient.getInstance().openScreen(null);
+                MinecraftClient.getInstance().setScreen(null);
             }
             ci.cancel();
         }

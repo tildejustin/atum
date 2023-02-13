@@ -34,9 +34,9 @@ public class SettingsScreenMixin extends Screen {
             MinecraftClient.getInstance().world.disconnect();
             MinecraftClient.getInstance().connect((ClientWorld)null);
             if (bl) {
-                MinecraftClient.getInstance().openScreen(new TitleScreen());
+                MinecraftClient.getInstance().setScreen(new TitleScreen());
             }  else {
-                MinecraftClient.getInstance().openScreen(new MultiplayerScreen(new TitleScreen()));
+                MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
             }
         }
     }

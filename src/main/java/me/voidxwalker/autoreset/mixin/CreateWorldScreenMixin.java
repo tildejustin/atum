@@ -55,7 +55,7 @@ public abstract class CreateWorldScreenMixin extends Screen{
         }
     }
     private void createLevel (){
-        this.client.openScreen((Screen)null);
+        this.client.setScreen((Screen)null);
         if (this.creatingLevel) {
             return;
         }
@@ -89,7 +89,7 @@ public abstract class CreateWorldScreenMixin extends Screen{
         Atum.saveProperties();
         Atum.log(Level.INFO,(Atum.seed==null|| Atum.seed.isEmpty()?"Resetting a random seed":"Resetting the set seed"+"\""+l+"\""));
         levelNameField.setText((Atum.seed==null|| Atum.seed.isEmpty())?"Random Speedrun #" + Atum.rsgAttempts:"Set Speedrun #" + Atum.ssgAttempts);
-        this.client.startGame(this.saveDirectoryName, levelNameField.getText().trim(), levelInfo);
+        this.client.startIntegratedServer(levelNameField.getText().trim(), levelNameField.getText().trim(), levelInfo);
 
 
 

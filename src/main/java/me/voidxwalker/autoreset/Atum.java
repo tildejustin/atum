@@ -1,17 +1,13 @@
 package me.voidxwalker.autoreset;
 
-import me.voidxwalker.autoreset.mixin.LoadingScreenRendererMixin;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.screen.ProgressScreen;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Language;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +35,8 @@ public class Atum implements ModInitializer {
     public static boolean hotkeyPressed;
     public static boolean hotkeyHeld=false;
 
+    public static final boolean HAS_ANCHIALE = FabricLoader.getInstance().isModLoaded("anchiale");
+
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
     }
@@ -50,17 +48,14 @@ public class Atum implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        if(!((Pingable)(new ProgressScreen())).ping()){
-            throw new IllegalStateException();
-        }
         if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
             throw new IllegalStateException();
         }
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset","Create New World").getString(),
+                getTranslation("key.atum.reset","Create New World").asFormattedString(),
                 64,
-                getTranslation("key.categories.atum","Atum").getString()
+                getTranslation("key.categories.atum","Atum").asFormattedString()
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();

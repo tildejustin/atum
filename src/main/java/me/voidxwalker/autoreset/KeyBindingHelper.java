@@ -2,7 +2,7 @@ package me.voidxwalker.autoreset;
 
 import com.google.common.collect.Lists;
 import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 
 import java.util.List;
 import java.util.Map;
