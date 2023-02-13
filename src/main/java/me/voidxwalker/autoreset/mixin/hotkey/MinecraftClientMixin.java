@@ -62,7 +62,6 @@ public abstract class MinecraftClientMixin {
                 } else {
                     MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
                 }
-                ci.cancel();
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
                 System.out.println(1);
