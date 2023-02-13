@@ -90,7 +90,7 @@ public abstract class MinecraftClientMixin {
                     this.openScreen(new MultiplayerScreen(new TitleScreen()));
                 }
                 if (Atum.HAS_ANCHIALE) {
-                    Anchiale.fastReset = true;
+                    Anchiale.fastReset = false;
                 }
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
