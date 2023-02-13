@@ -40,7 +40,7 @@ public class Atum implements ModInitializer {
     public static boolean hotkeyPressed;
     public static boolean hotkeyHeld=false;
 
-    public static boolean HAS_ANCHIALE = FabricLoader.getInstance().isModLoaded("anchiale");
+    public static final boolean HAS_ANCHIALE = FabricLoader.getInstance().isModLoaded("anchiale");
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
