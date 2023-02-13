@@ -1,26 +1,17 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
-import com.google.common.collect.HashBiMap;
-import me.voidxwalker.anchiale.Anchiale;
+import me.voidxwalker.autoreset.AnchialeAPI;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.Pingable;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.LoadingScreenRenderer;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.realms.RealmsBridge;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -69,7 +60,7 @@ public abstract class MinecraftClientMixin {
         if(Atum.hotkeyPressed){
             if(Atum.hotkeyState==Atum.HotkeyState.INSIDE_WORLD || Atum.hotkeyState == Atum.HotkeyState.POST_WORLDGEN){
                 if (Atum.HAS_ANCHIALE) {
-                    Anchiale.fastReset = true;
+                    AnchialeAPI.setAnchialeFastReset(true);
                 }
                 KeyBinding.setKeyPressed( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
@@ -90,7 +81,7 @@ public abstract class MinecraftClientMixin {
                     this.openScreen(new MultiplayerScreen(new TitleScreen()));
                 }
                 if (Atum.HAS_ANCHIALE) {
-                    Anchiale.fastReset = false;
+                    AnchialeAPI.setAnchialeFastReset(false);
                 }
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
