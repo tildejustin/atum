@@ -24,6 +24,8 @@ An empty seed will result in the mod resetting random seeds.
 
 This mod is valid for speedruns on http://speedrun.com/mc and its category extensions.
 
+Compatible with all other legal 1.8.9 mods.
+
 Note for resource pack creators: the "Stop Resets & Quit" button can be changed by customizing menu.stop_resets in your language file if you like.
 
 ## Authors
