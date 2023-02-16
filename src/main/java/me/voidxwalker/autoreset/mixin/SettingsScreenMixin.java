@@ -30,14 +30,9 @@ public class SettingsScreenMixin extends Screen {
     public void buttonClicked(ButtonWidget button, CallbackInfo ci){
         if(button.id==1238){
             Atum.isRunning=false;
-            boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
             MinecraftClient.getInstance().world.disconnect();
             MinecraftClient.getInstance().connect((ClientWorld)null);
-            if (bl) {
-                MinecraftClient.getInstance().setScreen(new TitleScreen());
-            }  else {
-                MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
-            }
+            MinecraftClient.getInstance().setScreen(new TitleScreen());
         }
     }
 }
