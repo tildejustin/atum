@@ -66,20 +66,11 @@ public abstract class MinecraftClientMixin {
                 Atum.hotkeyPressed=false;
                 Atum.isRunning = true;
                 Atum.loopPrevent2=true;
-                boolean bl = this.isIntegratedServerRunning();
-                boolean bl2 = this.isConnectedToRealms();
                 if (this.world != null) {
                     this.world.disconnect();
                 }
                 this.connect(null);
-                if (bl) {
-                    this.openScreen(new TitleScreen());
-                } else if (bl2) {
-                    RealmsBridge realmsBridge = new RealmsBridge();
-                    realmsBridge.switchToRealms(new TitleScreen());
-                } else {
-                    this.openScreen(new MultiplayerScreen(new TitleScreen()));
-                }
+                this.openScreen(new TitleScreen());
                 if (Atum.HAS_ANCHIALE) {
                     AnchialeAPI.setAnchialeFastReset(false);
                 }
