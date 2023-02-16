@@ -52,16 +52,11 @@ public abstract class MinecraftClientMixin {
                 KeyBinding.setKeyPressed( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
                 Atum.isRunning = true;
-                boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
                 if (world != null) {
                     MinecraftClient.getInstance().world.disconnect();
                 }
                 MinecraftClient.getInstance().connect((ClientWorld)null);
-                if (bl) {
-                    MinecraftClient.getInstance().setScreen(new TitleScreen());
-                } else {
-                    MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
-                }
+                MinecraftClient.getInstance().setScreen(new TitleScreen());
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
                 System.out.println(1);
