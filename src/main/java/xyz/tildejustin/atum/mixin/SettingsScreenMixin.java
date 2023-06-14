@@ -41,6 +41,7 @@ public abstract class SettingsScreenMixin extends Screen {
     )
     private void atum$stopResetsAndQuit(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 201) {
+            button.active = false;
             Atum.running = false;
             if (this.parent instanceof GameMenuScreen) {
                 // good code :)
