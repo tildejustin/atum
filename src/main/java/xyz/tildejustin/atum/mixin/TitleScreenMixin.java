@@ -39,7 +39,7 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(
             method = "buttonClicked",
-                at = @At(
+            at = @At(
                     value = "TAIL"
             )
     )

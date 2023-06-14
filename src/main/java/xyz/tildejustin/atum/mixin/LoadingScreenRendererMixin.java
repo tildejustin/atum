@@ -13,7 +13,8 @@ import xyz.tildejustin.atum.Atum;
 
 @Mixin(LoadingScreenRenderer.class)
 public abstract class LoadingScreenRendererMixin {
-    @Shadow private Minecraft client;
+    @Shadow
+    private Minecraft client;
 
     @Inject(
             method = "setProgressPercentage",

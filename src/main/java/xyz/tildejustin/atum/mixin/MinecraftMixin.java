@@ -14,7 +14,8 @@ import xyz.tildejustin.atum.Atum;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-    @Shadow public Screen currentScreen;
+    @Shadow
+    public Screen currentScreen;
 
     @Inject(
             method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V",
