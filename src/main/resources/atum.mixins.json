@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xyz.tildejustin.atum.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "accessor.GameMenuScreenAccessor",
+    "accessor.ScreenAccessor",
+    "ControlsOptionsScreenMixin",
+    "GameOptionsMixin",
+    "LoadingScreenRendererMixin",
+    "MinecraftMixin",
+    "SettingsScreenMixin",
+    "TitleScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
