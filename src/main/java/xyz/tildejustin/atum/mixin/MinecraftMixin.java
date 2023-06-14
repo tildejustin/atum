@@ -3,6 +3,7 @@ package xyz.tildejustin.atum.mixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.world.ClientWorld;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,11 +12,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.tildejustin.atum.Atum;
+import xyz.tildejustin.atum.mixin.accessor.GameMenuScreenAccessor;
+import xyz.tildejustin.atum.mixin.accessor.ScreenAccessor;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
     @Shadow
     public Screen currentScreen;
+
+    @Shadow
+    public abstract void openGameMenuScreen();
+
+    @Shadow public ClientWorld world;
 
     @Inject(
             method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V",
@@ -39,6 +47,11 @@ public abstract class MinecraftMixin {
     )
     private void atum$checkHotkey(CallbackInfo ci) {
         if (Keyboard.isKeyDown(Atum.resetKey.code) && !(this.currentScreen instanceof ControlsOptionsScreen)) {
+            if (currentScreen == null && this.world != null) {
+                this.openGameMenuScreen();
+                ButtonWidget quitButton = (ButtonWidget) ((ScreenAccessor) this.currentScreen).getButtons().get(0);
+                ((GameMenuScreenAccessor) this.currentScreen).callButtonClicked(quitButton);
+            }
             Atum.tryCreateWorld();
         }
     }

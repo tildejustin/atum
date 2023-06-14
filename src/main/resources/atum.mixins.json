@@ -4,16 +4,17 @@
   "package": "xyz.tildejustin.atum.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ServerWorldMixin"
   ],
   "client": [
-    "accessor.GameMenuScreenAccessor",
-    "accessor.ScreenAccessor",
     "ControlsOptionsScreenMixin",
     "GameOptionsMixin",
     "LoadingScreenRendererMixin",
     "MinecraftMixin",
     "SettingsScreenMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "accessor.GameMenuScreenAccessor",
+    "accessor.ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
