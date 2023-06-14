@@ -5,7 +5,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.LevelInfo;
@@ -65,7 +64,6 @@ public class Atum implements ClientModInitializer {
         // https://discord.com/channels/889854621491814491/889854621491814493/998920572396380201
         saveDirectoryName = CreateWorldScreen.checkDirectoryName(minecraft.getCurrentSave(), saveDirectoryName);
         Config.writeConfig(Atum.config);
-        System.out.println("making new world, no ticks after this message can happen");
         Minecraft.getMinecraft().method_2935(saveDirectoryName, levelName, levelInfo);
     }
 

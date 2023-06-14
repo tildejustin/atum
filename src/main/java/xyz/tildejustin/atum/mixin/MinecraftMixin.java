@@ -19,11 +19,11 @@ import xyz.tildejustin.atum.mixin.accessor.ScreenAccessor;
 public abstract class MinecraftMixin {
     @Shadow
     public Screen currentScreen;
+    @Shadow
+    public ClientWorld world;
 
     @Shadow
     public abstract void openGameMenuScreen();
-
-    @Shadow public ClientWorld world;
 
     @Inject(
             method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V",
