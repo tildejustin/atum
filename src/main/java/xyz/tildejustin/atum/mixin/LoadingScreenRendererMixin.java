@@ -27,7 +27,7 @@ public abstract class LoadingScreenRendererMixin {
             )
     )
     public void renderSeed(int percentage, CallbackInfo ci, long time, Window window, int width, int height) {
-        if (Atum.running && !Atum.config.seed.isEmpty()) {
+        if (Atum.loading && !Atum.config.seed.isEmpty()) {
             this.client.textRenderer.method_956(Atum.config.seed, (width - this.client.textRenderer.getStringWidth(Atum.config.seed)) / 2, height / 2 - 4 - 16 - 24, 0xFFFFFF);
         }
     }
