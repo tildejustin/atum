@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -13,13 +14,8 @@ import xyz.tildejustin.atum.screen.ConfigScreen;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
-    @Inject(
-            method = "init",
-            at = @At(
-                    value = "HEAD"
-            )
-    )
-    private void atum$reset(CallbackInfo ci) {
+    @Inject(method = "init", at = @At(value = "HEAD"))
+    private void reset(CallbackInfo ci) {
         if (Atum.running) {
             disableAllButtons();
             Atum.tryCreateWorld();
@@ -27,23 +23,13 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @SuppressWarnings("unchecked")
-    @Inject(
-            method = "init",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void atum$addTitleScreenButton(CallbackInfo ci) {
+    @Inject(method = "init", at = @At(value = "TAIL"))
+    private void addTitleScreenButton(CallbackInfo ci) {
         this.buttons.add(new ButtonWidget(13, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
     }
 
-    @Inject(
-            method = "buttonClicked",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void atum$startResetsOnClick(ButtonWidget button, CallbackInfo ci) {
+    @Inject(method = "buttonClicked", at = @At(value = "TAIL"))
+    private void startResetsOnClick(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 13) {
             if (!Screen.hasShiftDown()) {
                 Minecraft minecraft = Minecraft.getMinecraft();
@@ -55,20 +41,15 @@ public abstract class TitleScreenMixin extends Screen {
         }
     }
 
-    @Inject(
-            method = "buttonClicked",
-            cancellable = true,
-            at = @At(
-                    value = "HEAD"
-            )
-    )
-    private void atum$fixTitleScreenButtonsNotRespectingTheirDisabledStatus(ButtonWidget button, CallbackInfo ci) {
+    @Inject(method = "buttonClicked", cancellable = true, at = @At(value = "HEAD"))
+    private void fixTitleScreenButtonsNotRespectingTheirDisabledStatus(ButtonWidget button, CallbackInfo ci) {
         if (!button.active || Atum.loading) {
             ci.cancel();
         }
     }
 
-    // minecraft is a well coded game
+    // minecraft is a well-coded game
+    @Unique
     private void disableAllButtons() {
         for (Object buttonWidget : this.buttons) {
             ((ButtonWidget) buttonWidget).active = false;

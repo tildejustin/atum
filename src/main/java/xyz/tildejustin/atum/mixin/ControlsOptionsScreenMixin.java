@@ -9,15 +9,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(ControlsOptionsScreen.class)
 public abstract class ControlsOptionsScreenMixin extends Screen {
-    @ModifyArg(
-            method = "init",
-            index = 2,
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/widget/ButtonWidget;<init>(IIILjava/lang/String;)V"
-            )
-    )
-    private int atum$dynamicDoneButton(int num) {
+    @ModifyArg(method = "init", index = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget;<init>(IIILjava/lang/String;)V"))
+    private int dynamicDoneButton(int num) {
         return this.height / 6 + 24 * (((Minecraft.getMinecraft().options.allKeys.length + 2 - 1) / 2));
     }
 }

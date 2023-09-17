@@ -18,13 +18,8 @@ public abstract class GameOptionsMixin {
     @Shadow
     public KeyBinding[] allKeys;
 
-    @Inject(
-            method = "load",
-            at = @At(
-                    value = "HEAD"
-            )
-    )
-    private void atum$addResetKey(CallbackInfo ci) {
+    @Inject(method = "load", at = @At(value = "HEAD"))
+    private void addResetKey(CallbackInfo ci) {
         List<KeyBinding> newKeys = new ArrayList<>(Arrays.asList(allKeys));
         newKeys.add(Atum.resetKey);
         allKeys = newKeys.toArray(new KeyBinding[0]);

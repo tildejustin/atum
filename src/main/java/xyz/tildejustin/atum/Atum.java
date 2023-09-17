@@ -64,7 +64,7 @@ public class Atum implements ClientModInitializer {
         // https://discord.com/channels/889854621491814491/889854621491814493/998920572396380201
         saveDirectoryName = CreateWorldScreen.checkDirectoryName(minecraft.getCurrentSave(), saveDirectoryName);
         Config.writeConfig(Atum.config);
-        Minecraft.getMinecraft().method_2935(saveDirectoryName, levelName, levelInfo);
+        minecraft.method_2935(saveDirectoryName, levelName, levelInfo);
     }
 
     @Override

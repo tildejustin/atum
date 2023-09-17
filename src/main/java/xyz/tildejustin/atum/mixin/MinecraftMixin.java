@@ -25,34 +25,23 @@ public abstract class MinecraftMixin {
     @Shadow
     public abstract void openGameMenuScreen();
 
-    @Inject(
-            method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void atum$allowResettingAfterWorldJoin(ClientWorld world, String loadingMessage, CallbackInfo ci) {
+    @Inject(method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V", at = @At(value = "TAIL"))
+    private void allowResettingAfterWorldJoin(ClientWorld world, String loadingMessage, CallbackInfo ci) {
         if (world != null) {
             Atum.loading = false;
         }
     }
 
-    @Inject(
-            method = "runGameLoop",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
-                    ordinal = 4
-            )
-    )
-    private void atum$checkHotkey(CallbackInfo ci) {
+    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 4))
+    private void checkHotkey(CallbackInfo ci) {
         if (Keyboard.isKeyDown(Atum.resetKey.code) && !(this.currentScreen instanceof ControlsOptionsScreen)) {
             if (currentScreen == null && this.world != null) {
                 this.openGameMenuScreen();
                 ButtonWidget quitButton = (ButtonWidget) ((ScreenAccessor) this.currentScreen).getButtons().get(0);
                 ((GameMenuScreenAccessor) this.currentScreen).callButtonClicked(quitButton);
+            } else {
+                Atum.tryCreateWorld();
             }
-            Atum.tryCreateWorld();
         }
     }
 }

@@ -21,25 +21,15 @@ public abstract class SettingsScreenMixin extends Screen {
     private Screen parent;
 
     @SuppressWarnings("unchecked")
-    @Inject(
-            method = "init",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void atum$addStopResetsButton(CallbackInfo ci) {
+    @Inject(method = "init", at = @At(value = "TAIL"))
+    private void addStopResetsButton(CallbackInfo ci) {
         if (Atum.running) {
             this.buttons.add(new ButtonWidget(201, 5, this.height - 20 - 5, 100, 20, "Stop Resets & Quit"));
         }
     }
 
-    @Inject(
-            method = "buttonClicked",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void atum$stopResetsAndQuit(ButtonWidget button, CallbackInfo ci) {
+    @Inject(method = "buttonClicked", at = @At(value = "TAIL"))
+    private void stopResetsAndQuit(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 201) {
             button.active = false;
             Atum.running = false;

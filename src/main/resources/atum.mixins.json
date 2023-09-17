@@ -4,6 +4,8 @@
   "package": "xyz.tildejustin.atum.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "LayeredBiomeSourceMixin",
+    "PlayerManagerMixin"
   ],
   "client": [
     "ControlsOptionsScreenMixin",
