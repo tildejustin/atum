@@ -7,10 +7,8 @@
   "authors": [
     "Void_X_Walker"
   ],
-
   "license": "All-Rights-Reserved",
-  "icon": "assets/modid/icon.png",
-
+  "icon": "assets/atum/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -20,7 +18,13 @@
   "mixins": [
     "autoreset.mixins.json"
   ],
+  "accessWidener": "atum.accesswidener",
   "depends": {
-    "fabricloader": ">=0.12.0"
+    "speedrunapi": "*"
+  },
+  "custom": {
+    "speedrunapi": {
+      "config": "me.voidxwalker.autoreset.AtumConfig"
+    }
   }
 }

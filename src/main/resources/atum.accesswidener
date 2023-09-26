@@ -1,0 +1,8 @@
+accessWidener v2 named
+accessible class net/minecraft/client/gui/screen/world/CreateWorldScreen$Mode
+accessible field net/minecraft/client/world/GeneratorType FLAT Lnet/minecraft/client/world/GeneratorType;
+accessible field net/minecraft/client/world/GeneratorType LARGE_BIOMES Lnet/minecraft/client/world/GeneratorType;
+accessible field net/minecraft/client/world/GeneratorType DEBUG_ALL_BLOCK_STATES Lnet/minecraft/client/world/GeneratorType;
+accessible field net/minecraft/client/gui/screen/world/CreateWorldScreen$Mode translationSuffix Ljava/lang/String;
+accessible method net/minecraft/client/gui/screen/GameMenuScreen initWidgets ()V
+accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog tryParseLong (Ljava/lang/String;)Ljava/util/OptionalLong;

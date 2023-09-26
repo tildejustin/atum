@@ -1,8 +1,10 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.autoreset.Pingable;
+import me.voidxwalker.autoreset.AtumConfig;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Language;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -11,29 +13,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(DebugHud.class)
-public class DebugHudMixin implements Pingable {
-    @Inject(
-            method = {"getRightText"},
-            at = {@At("RETURN")},
-            cancellable = true
-    )
-    private void atum_getRightText(CallbackInfoReturnable<List<String>> info) {
-        if(Atum.isRunning){
+public class DebugHudMixin {
+    @Inject(method = "getRightText", at = @At(value = "RETURN"))
+    private void modifyRightText(CallbackInfoReturnable<List<String>> info) {
+        if (Atum.running) {
             List<String> returnValue = info.getReturnValue();
-            returnValue.add("Resetting "+(Atum.seed==null|| Atum.seed.isEmpty()?"a random seed":("the seed: \""+ Atum.seed+"\"")));
-            if(Atum.generatorType!=0){
-                returnValue.add("GenType:" + GeneratorTypeAccessor.getVALUES().get(Atum.generatorType).getTranslationKey().getString());
-            }
-            if(!Atum.structures){
-                returnValue.add("NoStructures");
-            }
-            if(Atum.bonusChest){
-                returnValue.add("BonusChest");
-            }
+            Language language = Language.getInstance();
+            returnValue.add(AtumConfig.instance.seed.isEmpty() ? language.get("seed.random") : new TranslatableText("seed.set", AtumConfig.instance.seed).getString());
+            if (AtumConfig.instance.generatorType != AtumConfig.AtumGeneratorType.DEFAULT)
+                returnValue.add(language.get("selectWorld.mapType") + " " + AtumConfig.instance.generatorType.get().getTranslationKey().getString());
+            if (!AtumConfig.instance.structures) returnValue.add(language.get("selectWorld.mapFeatures") + " " + language.get("gui.no"));
+            if (AtumConfig.instance.bonusChest) returnValue.add(language.get("selectWorld.bonusItems") + " " + language.get("gui.yes"));
         }
-    }
-    @Override
-    public boolean ping() {
-        return true;
     }
 }

@@ -1,7 +1,7 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.autoreset.Pingable;
+import me.voidxwalker.autoreset.AtumConfig;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,20 +13,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LevelLoadingScreen.class)
-public class LevelLoadingScreenMixin extends Screen implements Pingable {
+public class LevelLoadingScreenMixin extends Screen {
     protected LevelLoadingScreenMixin(Text title) {
         super(title);
     }
 
-    @Inject(method = "render", at = @At("TAIL"),locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void atum_modifyString(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci,String ignored,long l,int i, int j){
-        if(Atum.isRunning&& Atum.seed!=null&&!Atum.seed.isEmpty()){
-            String string = Atum.seed;
-            drawCenteredString(matrices, this.textRenderer, string, i, j - 9 / 2 - 50, 16777215);
+    @SuppressWarnings("InvalidInjectorMethodSignature")
+    @Inject(method = "render", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void modifyString(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci, String string, int i, int j, int k) {
+        if (Atum.running && !AtumConfig.instance.seed.isEmpty()) {
+            this.drawCenteredString(matrices, this.textRenderer, AtumConfig.instance.seed, i, j - 9 / 2 - 50, 16777215);
         }
     }
-    @Override
-    public boolean ping() {
-        return true;
+
+    @SuppressWarnings({"UnresolvedMixinReference", "MixinAnnotationTarget"})
+    // https://github.com/tildejustin/mcsr-worldpreview-1.16.1/blob/1330dc54fc83327b67f8b55f41f133570e5da098/src/main/java/me/voidxwalker/worldpreview/mixin/client/render/LevelLoadingScreenMixin.java#L143
+    @Inject(method = "worldpreview_initWidgets", at = @At(value = "TAIL"), require = 0)
+    private void worldpreviewCheck(CallbackInfo ci) {
+        Atum.loading = false;
     }
 }

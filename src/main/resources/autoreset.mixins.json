@@ -6,20 +6,17 @@
   "mixins": [
     "CreateWorldScreenMixin",
     "DebugHudMixin",
-    "GeneratorTypeAccessor",
+    "KeyboardMixin",
     "LevelLoadingScreenMixin",
     "MoreOptionsDialogMixin",
-    "hotkey.MouseMixin",
     "OptionsScreenMixin",
-    "TitleScreenMixin",
-    "hotkey.KeyBindingAccessor",
-    "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin",
-    "hotkey.ClientPlayerNetworkHandlerMixin",
-    "hotkey.GameOptionsMixin",
-    "hotkey.MinecraftServerMixin"
+    "PlayerManagerMixin",
+    "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "MinecraftClientMixin"
+  ]
 }
