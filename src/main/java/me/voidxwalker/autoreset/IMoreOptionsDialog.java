@@ -3,9 +3,9 @@ package me.voidxwalker.autoreset;
 import net.minecraft.client.world.GeneratorType;
 
 public interface IMoreOptionsDialog {
-    void setGeneratorType(GeneratorType g);
+    void atum$setGeneratorType(GeneratorType g);
 
-    void setGenerateStructure(boolean generate);
+    void atum$setGenerateStructure(boolean generate);
 
-    void setGenerateBonusChest(boolean generate);
+    void atum$setGenerateBonusChest(boolean generate);
 }

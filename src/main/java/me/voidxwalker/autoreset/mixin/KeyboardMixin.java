@@ -37,6 +37,7 @@ public class KeyboardMixin {
                         element -> element instanceof ButtonWidget && ((ButtonWidget) element).getMessage().equals(new TranslatableText("menu.returnToMenu"))
                 ).findFirst().ifPresent(button -> ((ButtonWidget) button).onPress());
             } else {
+                // fastreset hack
                 Optional<? extends Element> buttonWidget = Optional.empty();
                 if (client.currentScreen == null) {
                     GameMenuScreen menuScreen = new GameMenuScreen(true);

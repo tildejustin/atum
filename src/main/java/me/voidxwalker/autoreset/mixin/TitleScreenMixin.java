@@ -26,7 +26,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At(value = "TAIL"))
     private void init(CallbackInfo info) {
-        if (Atum.running) Atum.tryCreateWorld();
+        if (Atum.running) Atum.client.submitAsync(Atum::tryCreateWorld);
         this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, (buttonWidget) -> Atum.tryCreateWorld()));
     }
 

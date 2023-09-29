@@ -6,6 +6,7 @@
   "mixins": [
     "CreateWorldScreenMixin",
     "DebugHudMixin",
+    "GeneratorOptionsMixin",
     "KeyboardMixin",
     "LevelLoadingScreenMixin",
     "MoreOptionsDialogMixin",
@@ -13,10 +14,10 @@
     "PlayerManagerMixin",
     "TitleScreenMixin"
   ],
-  "injectors": {
-    "defaultRequire": 1
-  },
   "client": [
     "MinecraftClientMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

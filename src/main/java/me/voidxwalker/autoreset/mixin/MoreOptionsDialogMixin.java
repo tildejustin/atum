@@ -28,39 +28,27 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @Shadow
     private RegistryTracker.Modifiable field_25483;
 
-    @Shadow
-    private static OptionalLong tryParseLong(String string) {
-        return OptionalLong.empty();
-    }
-
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
     public OptionalLong setSeed(OptionalLong seed) {
-        if (!Atum.running) {
-            return seed;
-        }
-        OptionalLong newSeed = tryParseLong(AtumConfig.instance.seed);
-        if (AtumConfig.instance.seed.isEmpty() || newSeed.orElse(1) == 0) newSeed = OptionalLong.empty();
-        else newSeed = OptionalLong.of(newSeed.orElseGet(() -> AtumConfig.instance.seed.hashCode()));
-        Atum.log(Level.INFO, !newSeed.isPresent() ? "Resetting a random seed" : String.format("Resetting the set seed: \"%d\"", newSeed.getAsLong()));
-        return newSeed;
+        if (!Atum.running) return seed;
+        OptionalLong atumSeed = AtumConfig.instance.checkRandomSeed();
+        Atum.log(Level.INFO, !atumSeed.isPresent() ? "Resetting a random seed" : String.format("Resetting the set seed: \"%d\"", atumSeed.getAsLong()));
+        return atumSeed;
     }
 
-    @SuppressWarnings("AddedMixinMembersNamePattern")
-    public void setGeneratorType(GeneratorType generatorType) {
+    public void atum$setGeneratorType(GeneratorType generatorType) {
         this.field_25049 = Optional.of(generatorType);
         this.generatorOptions = generatorType.method_29077(this.field_25483, this.generatorOptions.getSeed(), this.generatorOptions.shouldGenerateStructures(), this.generatorOptions.hasBonusChest());
     }
 
-    @SuppressWarnings("AddedMixinMembersNamePattern")
-    public void setGenerateStructure(boolean generate) {
+    public void atum$setGenerateStructure(boolean generate) {
         if (generate != generatorOptions.shouldGenerateStructures()) {
             generatorOptions = generatorOptions.toggleGenerateStructures();
         }
     }
 
-    @SuppressWarnings("AddedMixinMembersNamePattern")
-    public void setGenerateBonusChest(boolean generate) {
+    public void atum$setGenerateBonusChest(boolean generate) {
         if (generate != generatorOptions.hasBonusChest()) {
             generatorOptions = generatorOptions.toggleBonusChest();
         }

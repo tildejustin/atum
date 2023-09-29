@@ -10,8 +10,9 @@ base {
 }
 
 repositories {
+    mavenLocal()
     maven { url "https://jitpack.io" }
-    flatDir { dirs "libs" }
+    // flatDir { dirs "libs" }
 }
 
 loom {
@@ -22,12 +23,12 @@ dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
     mappings "com.github.RedLime:yarn:${minecraft_version}.build.$yarn_build:v2"
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
-    modImplementation "com.github.KingContaria:SpeedrunAPI:master-SNAPSHOT"
+    // modImplementation "com.github.KingContaria:SpeedrunAPI:master-SNAPSHOT"
+     modImplementation "org.mcsr:SpeedrunAPI:1.0.0-alpha.2+1.16.1"
+    // modImplementation files("libs/speedrunapi-1.0.0-alpha.2+1.16.1.jar")
 }
 
 processResources {
-    inputs.property "version", version
-
     filesMatching("fabric.mod.json") {
         expand "version": version
     }

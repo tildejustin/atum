@@ -1,16 +1,21 @@
 package me.voidxwalker.autoreset;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
+import org.apache.commons.lang3.StringUtils;
 import org.mcsr.speedrunapi.config.api.EnumTextProvider;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
 import org.mcsr.speedrunapi.config.api.annotations.SpeedrunConfig;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.OptionalLong;
 
 @SpeedrunConfig(modID = "atum")
 public class AtumConfig {
@@ -23,6 +28,7 @@ public class AtumConfig {
     public AtumDifficulty difficulty = AtumDifficulty.NORMAL;
 
     @Config.Name(value = "commands.seed.success")
+    @Config.Strings.MaxChars(value = 32)
     public String seed = "";
 
     @Config.Name(value = "selectWorld.mapFeatures")
@@ -34,8 +40,17 @@ public class AtumConfig {
     @Config.Name(value = "selectWorld.bonusItems")
     public boolean bonusChest = false;
 
+    @Config.Name(value = "createWorld.customize.flat.title")
+    public String superflatConfig = "minecraft:bedrock,2*minecraft:dirt,minecraft:grass_block;minecraft:plains";
+
+    @Config.Name(value = "createWorld.customize.custom.fixedBiome")
+    public String biome = "plains";
+
     @NoConfig
     public AttemptTracker attemptTracker = new AttemptTracker();
+
+    @NoConfig
+    public static List<AtumGeneratorType> singleBiomeSourceBiomes = Arrays.asList(AtumGeneratorType.SINGLE_BIOME_SURFACE, AtumGeneratorType.SINGLE_BIOME_CAVES, AtumGeneratorType.SINGLE_BIOME_FLOATING_ISLANDS);
 
     {
         instance = this;
@@ -44,12 +59,26 @@ public class AtumConfig {
     public AtumConfig() throws IOException {
     }
 
+    public OptionalLong checkRandomSeed() {
+        OptionalLong optionalLong;
+        if (StringUtils.isEmpty(this.seed)) optionalLong = OptionalLong.empty();
+        else {
+            OptionalLong optionalLong2 = MoreOptionsDialog.tryParseLong(this.seed);
+            if (optionalLong2.isPresent() && optionalLong2.getAsLong() != 0) optionalLong = optionalLong2;
+            else optionalLong = OptionalLong.of(this.seed.hashCode());
+        }
+        return optionalLong;
+    }
+
     @SuppressWarnings("unused")
     public enum AtumGeneratorType implements EnumTextProvider {
         DEFAULT(GeneratorType.DEFAULT),
         FLAT(GeneratorType.FLAT),
         LARGE_BIOMES(GeneratorType.LARGE_BIOMES),
         AMPLIFIED(GeneratorType.AMPLIFIED),
+        SINGLE_BIOME_SURFACE(GeneratorType.SINGLE_BIOME_SURFACE),
+        SINGLE_BIOME_CAVES(GeneratorType.SINGLE_BIOME_CAVES),
+        SINGLE_BIOME_FLOATING_ISLANDS(GeneratorType.SINGLE_BIOME_FLOATING_ISLANDS),
         DEBUG(GeneratorType.DEBUG_ALL_BLOCK_STATES);
 
         private final GeneratorType generatorType;
