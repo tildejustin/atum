@@ -24,7 +24,7 @@ dependencies {
     mappings "com.github.RedLime:yarn:${minecraft_version}.build.$yarn_build:v2"
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
     // modImplementation "com.github.KingContaria:SpeedrunAPI:master-SNAPSHOT"
-     modImplementation "org.mcsr:SpeedrunAPI:1.0.0-alpha.2+1.16.1"
+     modImplementation "org.mcsr:SpeedrunAPI:$speedrun_api_version+$minecraft_version"
     // modImplementation files("libs/speedrunapi-1.0.0-alpha.2+1.16.1.jar")
 }
 
