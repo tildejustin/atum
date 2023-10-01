@@ -33,7 +33,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     public OptionalLong setSeed(OptionalLong seed) {
         if (!Atum.running) return seed;
         OptionalLong atumSeed = AtumConfig.instance.checkRandomSeed();
-        Atum.log(Level.INFO, !atumSeed.isPresent() ? "Resetting a random seed" : String.format("Resetting the set seed: \"%d\"", atumSeed.getAsLong()));
+        Atum.logger.log(Level.INFO, !atumSeed.isPresent() ? "Resetting a random seed" : String.format("Resetting the set seed: \"%d\"", atumSeed.getAsLong()));
         return atumSeed;
     }
 

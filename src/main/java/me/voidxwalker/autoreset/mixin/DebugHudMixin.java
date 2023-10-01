@@ -22,8 +22,10 @@ public class DebugHudMixin {
             returnValue.add(AtumConfig.instance.seed.isEmpty() ? language.get("seed.random") : new TranslatableText("seed.set", AtumConfig.instance.seed).getString());
             if (AtumConfig.instance.generatorType != AtumConfig.AtumGeneratorType.DEFAULT)
                 returnValue.add(language.get("selectWorld.mapType") + " " + AtumConfig.instance.generatorType.get().getTranslationKey().getString());
-            if (!AtumConfig.instance.structures) returnValue.add(language.get("selectWorld.mapFeatures") + " " + language.get("gui.no"));
-            if (AtumConfig.instance.bonusChest) returnValue.add(language.get("selectWorld.bonusItems") + " " + language.get("gui.yes"));
+            if (!AtumConfig.instance.structures)
+                returnValue.add(language.get("selectWorld.mapFeatures") + " " + language.get("gui.no"));
+            if (AtumConfig.instance.bonusChest)
+                returnValue.add(language.get("selectWorld.bonusItems") + " " + language.get("gui.yes"));
         }
     }
 }

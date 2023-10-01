@@ -30,7 +30,8 @@ public abstract class GeneratorOptionsMixin {
 
     @ModifyArg(method = "withHardcore", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;<init>(JZZLnet/minecraft/util/registry/SimpleRegistry;)V", ordinal = 1), index = 3)
     private SimpleRegistry<DimensionOptions> setSuperflatChunkGenerator(SimpleRegistry<DimensionOptions> simpleRegistry) {
-        if (!Atum.running || !AtumConfig.instance.generatorType.equals(AtumConfig.AtumGeneratorType.FLAT)) return simpleRegistry;
+        if (!Atum.running || !AtumConfig.instance.generatorType.equals(AtumConfig.AtumGeneratorType.FLAT))
+            return simpleRegistry;
         FlatChunkGeneratorConfig config = FlatChunkGeneratorConfig.getDefaultConfig();
         config = PresetsScreen.method_29060(AtumConfig.instance.superflatConfig, config);
         return GeneratorOptions.method_28608(this.getDimensionMap(), new FlatChunkGenerator(config));
@@ -40,7 +41,11 @@ public abstract class GeneratorOptionsMixin {
     @Inject(method = "withHardcore", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void setBiomeforSingleBiomeGeneratorTypes(boolean hardcore, OptionalLong seed, CallbackInfoReturnable<GeneratorOptions> cir, GeneratorOptions generatorOptions) {
         if (Atum.running && AtumConfig.singleBiomeSourceBiomes.contains(AtumConfig.instance.generatorType)) {
-            cir.setReturnValue(GeneratorType.method_29079(generatorOptions, AtumConfig.instance.generatorType.get(), Optional.ofNullable(Registry.BIOME.get(new Identifier(AtumConfig.instance.biome))).orElse(Biomes.PLAINS)));
+            cir.setReturnValue(GeneratorType.method_29079(
+                    generatorOptions,
+                    AtumConfig.instance.generatorType.get(),
+                    Optional.ofNullable(Registry.BIOME.get(new Identifier(AtumConfig.instance.biome))).orElse(Biomes.PLAINS)
+            ));
         }
     }
 }

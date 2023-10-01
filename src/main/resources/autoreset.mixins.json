@@ -12,6 +12,7 @@
     "MoreOptionsDialogMixin",
     "OptionsScreenMixin",
     "PlayerManagerMixin",
+    "SplashScreenMixin",
     "TitleScreenMixin"
   ],
   "client": [

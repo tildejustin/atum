@@ -25,9 +25,14 @@ public class TitleScreenMixin extends Screen {
     }
 
     @Inject(method = "init", at = @At(value = "TAIL"))
-    private void init(CallbackInfo info) {
-        if (Atum.running) Atum.client.submitAsync(Atum::tryCreateWorld);
+    private void init(CallbackInfo ci) {
+        if (Atum.running) Atum.runnable = Atum::tryCreateWorld;
         this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, (buttonWidget) -> Atum.tryCreateWorld()));
+    }
+
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    private void runRunnable(CallbackInfo ci) {
+        if (Atum.runnable != null) Atum.runnable.run();
     }
 
     @SuppressWarnings("DataFlowIssue")

@@ -39,7 +39,7 @@ public class AttemptTracker {
         return result;
     }
 
-    private void save() {
+    private synchronized void save() {
         try {
             file.setLength(0);
             file.seek(0);
