@@ -35,6 +35,12 @@ public class Atum implements ClientModInitializer {
         MinecraftClient.getInstance().openScreen(new CreateWorldScreen(null));
     }
 
+    // for the method reference
+    @SuppressWarnings("unused")
+    public static <V> void tryCreateWorld(V $) {
+        Atum.tryCreateWorld();
+    }
+
     // need to use fabric initializer to load class early enough to register the keybind before GameOptions is initialized
     @Override
     public void onInitializeClient() {

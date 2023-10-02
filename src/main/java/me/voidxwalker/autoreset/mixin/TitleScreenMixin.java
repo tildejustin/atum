@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Optional;
+
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
@@ -27,12 +29,15 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At(value = "TAIL"))
     private void init(CallbackInfo ci) {
         if (Atum.running) Atum.runnable = Atum::tryCreateWorld;
-        this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, (buttonWidget) -> Atum.tryCreateWorld()));
+        this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, Atum::tryCreateWorld));
     }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     private void runRunnable(CallbackInfo ci) {
-        if (Atum.runnable != null) Atum.runnable.run();
+        Optional.ofNullable(Atum.runnable).ifPresent(runnable -> {
+            Atum.runnable = null;
+            runnable.run();
+        });
     }
 
     @SuppressWarnings("DataFlowIssue")
