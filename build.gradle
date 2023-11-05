@@ -11,8 +11,8 @@ base {
 }
 
 repositories {
-    mavenLocal()
     maven { url "https://jitpack.io" }
+    mavenLocal()
 }
 
 loom {
@@ -21,10 +21,10 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings "com.github.RedLime:yarn:${minecraft_version}.build.$yarn_build:v2"
+    mappings "com.github.tildejustin:1.16.1-yarn:$minecraft_version-SNAPSHOT" // :v2
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
     // modImplementation "com.github.KingContaria:SpeedrunAPI:master-SNAPSHOT"
-    modImplementation "org.mcsr:SpeedrunAPI:$speedrun_api_version+$minecraft_version"
+    modImplementation "org.mcsr:SpeedrunAPI:$speedrun_api_version"
 }
 
 processResources {
@@ -45,9 +45,7 @@ java {
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}" }
-    }
+    from("LICENSE")
 }
 
 publishing {

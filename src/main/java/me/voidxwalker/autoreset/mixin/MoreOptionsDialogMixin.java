@@ -20,13 +20,13 @@ import java.util.OptionalLong;
 public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Shadow
-    private Optional<GeneratorType> field_25049;
+    private Optional<GeneratorType> generatorType;
 
     @Shadow
     private GeneratorOptions generatorOptions;
 
     @Shadow
-    private RegistryTracker.Modifiable field_25483;
+    private RegistryTracker.Modifiable registryManager;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
@@ -38,8 +38,8 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     }
 
     public void atum$setGeneratorType(GeneratorType generatorType) {
-        this.field_25049 = Optional.of(generatorType);
-        this.generatorOptions = generatorType.method_29077(this.field_25483, this.generatorOptions.getSeed(), this.generatorOptions.shouldGenerateStructures(), this.generatorOptions.hasBonusChest());
+        this.generatorType = Optional.of(generatorType);
+        this.generatorOptions = generatorType.createDefaultOptions(this.registryManager, this.generatorOptions.getSeed(), this.generatorOptions.shouldGenerateStructures(), this.generatorOptions.hasBonusChest());
     }
 
     public void atum$setGenerateStructure(boolean generate) {

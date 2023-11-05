@@ -1,7 +1,7 @@
 accessWidener v2 named
 accessible class net/minecraft/client/gui/screen/world/CreateWorldScreen$Mode
 accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog tryParseLong (Ljava/lang/String;)Ljava/util/OptionalLong;
-accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
+accessible method net/minecraft/client/world/GeneratorType createFixedBiomeOptions (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
 accessible method net/minecraft/util/thread/ThreadExecutor submitAsync (Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;
 accessible field net/minecraft/client/world/GeneratorType FLAT Lnet/minecraft/client/world/GeneratorType;
 accessible field net/minecraft/client/world/GeneratorType LARGE_BIOMES Lnet/minecraft/client/world/GeneratorType;

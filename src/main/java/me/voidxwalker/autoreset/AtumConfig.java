@@ -1,5 +1,6 @@
 package me.voidxwalker.autoreset;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.world.GeneratorType;
@@ -7,18 +8,17 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
 import org.apache.commons.lang3.StringUtils;
-import org.mcsr.speedrunapi.config.api.EnumTextProvider;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
-import org.mcsr.speedrunapi.config.api.annotations.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
-@SpeedrunConfig(modID = "atum")
-public class AtumConfig {
+public class AtumConfig implements SpeedrunConfig {
     public static AtumConfig instance;
 
     @Config.Name(value = "selectWorld.gameMode")
@@ -68,6 +68,16 @@ public class AtumConfig {
             else optionalLong = OptionalLong.of(this.seed.hashCode());
         }
         return optionalLong;
+    }
+
+    @Override
+    public String modID() {
+        return "atum";
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return MinecraftClient.getInstance().world == null;
     }
 
     @SuppressWarnings("unused")

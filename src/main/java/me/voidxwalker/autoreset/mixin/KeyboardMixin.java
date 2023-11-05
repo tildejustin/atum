@@ -27,7 +27,7 @@ public class KeyboardMixin {
     private MinecraftClient client;
 
     // all the deranged code stays here
-    @Inject(method = "onKey", at = @At(value = "HEAD"))
+    @Inject(method = "onKey", at = @At("HEAD"))
     public void onKey(long window, int key, int scancode, int i, int j, CallbackInfo ci) {
         if (!Atum.loading && !Atum.blocking && Atum.resetKey.matchesKey(key, scancode) && !(client.currentScreen instanceof ControlsOptionsScreen)) {
             Atum.running = Atum.blocking = true;

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
-    @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
+    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void joinedWorld(CallbackInfo ci) {
         Atum.loading = false;
     }

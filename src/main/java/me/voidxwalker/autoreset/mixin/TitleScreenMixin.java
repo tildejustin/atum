@@ -26,13 +26,13 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "init", at = @At(value = "TAIL"))
+    @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         if (Atum.running) Atum.runnable = Atum::tryCreateWorld;
         this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, Atum::tryCreateWorld));
     }
 
-    @Inject(method = "tick", at = @At(value = "HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void runRunnable(CallbackInfo ci) {
         Optional.ofNullable(Atum.runnable).ifPresent(runnable -> {
             Atum.runnable = null;
@@ -41,7 +41,7 @@ public class TitleScreenMixin extends Screen {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    @Inject(method = "render", at = @At(value = "TAIL"))
+    @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         this.client.getTextureManager().bindTexture(BUTTON_IMAGE);
         drawTexture(matrices, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);

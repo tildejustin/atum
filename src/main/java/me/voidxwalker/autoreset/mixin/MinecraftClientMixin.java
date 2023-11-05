@@ -25,7 +25,7 @@ public abstract class MinecraftClientMixin {
     @Shadow
     protected abstract boolean shouldMonitorTickDuration();
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At(value = "TAIL"))
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
     private void fixGhostPie(Screen screen, CallbackInfo ci) {
         this.tickProfilerResult = null;
         this.options.debugProfilerEnabled = false;

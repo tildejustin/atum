@@ -25,10 +25,10 @@ public abstract class CreateWorldScreenMixin {
     private TextFieldWidget levelNameField;
 
     @Shadow
-    private Difficulty field_24290;
+    private Difficulty safeDifficulty;
 
     @Shadow
-    private Difficulty field_24289;
+    private Difficulty difficulty;
 
     @Shadow
     protected abstract void createLevel();
@@ -36,10 +36,10 @@ public abstract class CreateWorldScreenMixin {
     @Shadow
     protected abstract void tweakDefaultsTo(CreateWorldScreen.Mode mode);
 
-    @Inject(method = "init", at = @At(value = "TAIL"))
+    @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.running) {
-            field_24290 = field_24289 = AtumConfig.instance.difficulty.get();
+            safeDifficulty = difficulty = AtumConfig.instance.difficulty.get();
             this.tweakDefaultsTo(AtumConfig.instance.gameMode.get());
             levelNameField.setText(
                     !AtumConfig.instance.checkRandomSeed().isPresent()

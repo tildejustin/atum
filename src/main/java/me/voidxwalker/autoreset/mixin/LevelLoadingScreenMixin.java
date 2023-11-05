@@ -19,7 +19,7 @@ public class LevelLoadingScreenMixin extends Screen {
     }
 
     @SuppressWarnings("InvalidInjectorMethodSignature")
-    @Inject(method = "render", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "render", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
     public void modifyString(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci, String string, int i, int j, int k) {
         if (Atum.running && AtumConfig.instance.checkRandomSeed().isPresent()) {
             this.drawCenteredString(matrices, this.textRenderer, AtumConfig.instance.seed, i, j - 9 / 2 - 50, 16777215);
@@ -28,7 +28,7 @@ public class LevelLoadingScreenMixin extends Screen {
 
     @SuppressWarnings({"UnresolvedMixinReference", "MixinAnnotationTarget"})
     // https://github.com/tildejustin/mcsr-worldpreview-1.16.1/blob/1330dc54fc83327b67f8b55f41f133570e5da098/src/main/java/me/voidxwalker/worldpreview/mixin/client/render/LevelLoadingScreenMixin.java#L143
-    @Inject(method = "worldpreview_initWidgets()V", at = @At(value = "TAIL"), require = 0)
+    @Inject(method = "worldpreview_initWidgets()V", at = @At("TAIL"), require = 0)
     private void worldpreviewCheck(CallbackInfo ci) {
         Atum.loading = false;
     }

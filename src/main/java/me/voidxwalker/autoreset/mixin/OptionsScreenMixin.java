@@ -21,7 +21,7 @@ public class OptionsScreenMixin extends Screen {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    @Inject(method = "init", at = @At(value = "TAIL"))
+    @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.running) {
             this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, new TranslatableText("menu.stop_resets"), (buttonWidget) -> {
