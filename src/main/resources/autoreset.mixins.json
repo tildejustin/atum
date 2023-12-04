@@ -3,20 +3,20 @@
   "minVersion": "0.8",
   "package": "me.voidxwalker.autoreset.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "CreateWorldScreenMixin",
-    "DebugHudMixin",
-    "KeyboardMixin",
-    "LevelLoadingScreenMixin",
-    "MoreOptionsDialogMixin",
-    "OptionsScreenMixin",
-    "PlayerManagerMixin",
-    "TitleScreenMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "access.RuleAccessor",
+    "access.GeneratorTypeAccessor",
+    "access.PresetsScreenAccessor",
+    "config.CreateWorldScreenMixin",
+    "config.MoreOptionsDialogMixin",
+    "gui.DebugHudMixin",
+    "gui.LevelLoadingScreenMixin",
+    "gui.OptionsScreenMixin",
+    "gui.TitleScreenMixin",
+    "hotkey.KeyboardMixin"
   ]
 }

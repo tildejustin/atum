@@ -1,6 +1,7 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,8 @@ public class AttemptTracker {
             file.seek(0);
             file.writeInt(rsgAttempts.get());
             file.writeInt(ssgAttempts.get());
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            Atum.log(Level.WARN, "Failed to save Atum attempt tracker.");
         }
     }
 

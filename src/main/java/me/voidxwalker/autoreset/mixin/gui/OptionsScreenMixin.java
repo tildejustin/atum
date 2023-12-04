@@ -1,4 +1,4 @@
-package me.voidxwalker.autoreset.mixin;
+package me.voidxwalker.autoreset.mixin.gui;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
@@ -13,23 +13,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 @Mixin(OptionsScreen.class)
-public class OptionsScreenMixin extends Screen {
+public abstract class OptionsScreenMixin extends Screen {
     protected OptionsScreenMixin(Text title) {
         super(title);
     }
 
-    @SuppressWarnings("DataFlowIssue")
-    @Inject(method = "init", at = @At(value = "TAIL"))
-    public void addAutoResetButton(CallbackInfo ci) {
-        if (Atum.running) {
-            this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, new TranslatableText("menu.stop_resets"), (buttonWidget) -> {
-                Atum.running = false;
-                if (client.world != null) {
-                    client.world.disconnect();
-                    client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
-                    client.openScreen(new TitleScreen());
+    @Inject(method = "init", at = @At("TAIL"))
+    private void addStopResetsButton(CallbackInfo ci) {
+        if (Atum.isRunning()) {
+            this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, new TranslatableText("menu.stop_resets"), button -> {
+                button.active = false;
+                Atum.stopRunning();
+                if (this.client != null && this.client.world != null) {
+                    this.client.world.disconnect();
+                    this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                    this.client.openScreen(new TitleScreen());
                 }
             }));
         }
