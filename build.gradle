@@ -1,6 +1,5 @@
 plugins {
     id "fabric-loom" version "$loom_version"
-    id "io.github.juuxel.loom-vineflower" version "$loom_vineflower_version"
 }
 
 version = "$mod_version+$target_version"
@@ -25,7 +24,6 @@ dependencies {
 
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
     modImplementation "com.github.KingContaria:SpeedrunAPI:8ab3380064"
-    implementation(annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.1")
     modImplementation "net.fabricmc.fabric-api:fabric-key-binding-api-v1:1.0.36+fb8d95da77"
 }
 
@@ -52,8 +50,4 @@ jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName.get()}" }
     }
-}
-
-vineflower {
-    toolVersion = vineflower_version
 }
