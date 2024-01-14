@@ -11,7 +11,7 @@
   "icon": "assets/atum/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "me.voidxwalker.autoreset.Atum"
     ]
   },
@@ -24,8 +24,8 @@
     "speedrunapi": "*"
   },
   "breaks": {
-    "fast_reset": "<2.0",
-    "worldpreview": "<6.0.0"
+    "fast_reset": "<=1.x",
+    "worldpreview": "<=5.x"
   },
   "custom": {
     "speedrunapi": {
