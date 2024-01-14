@@ -24,8 +24,8 @@
     "speedrunapi": "*"
   },
   "breaks": {
-    "fast_reset": "<=1.x",
-    "worldpreview": "<=5.x"
+    "fast_reset": "<2.0-alpha.1",
+    "worldpreview": "<6.0.0-alpha.1"
   },
   "custom": {
     "speedrunapi": {
