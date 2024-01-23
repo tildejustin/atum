@@ -3,13 +3,12 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.Window;
-import net.minecraft.realms.RealmsBridge;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,86 +19,51 @@ public abstract class MinecraftClientMixin {
     @Nullable
     public Screen currentScreen;
 
-    @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;", shift = At.Shift.BEFORE))
-    public void atum_trackPostWorldGen(CallbackInfo ci) {
-        Atum.hotkeyState = Atum.HotkeyState.POST_WORLDGEN;
-    }
+    @Shadow
+    public ClientWorld world;
 
-    @Inject(method = "startIntegratedServer", at = @At(value = "HEAD"))
-    public void atum_trackPreWorldGen(CallbackInfo ci) {
-        Atum.hotkeyState = Atum.HotkeyState.PRE_WORLDGEN;
-    }
+    @Shadow
+    public abstract void connect(@Nullable ClientWorld world);
 
-    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    public void atum_tick(CallbackInfo ci) {
-        if (Atum.hotkeyPressed) {
-            System.out.println(1);
-            if (Atum.hotkeyState == Atum.HotkeyState.INSIDE_WORLD) {
-                Screen s = new GameMenuScreen();
-                Window window = new Window((MinecraftClient) (Object) this);
-                int i = window.getWidth();
-                int j = window.getHeight();
-                s.init((MinecraftClient) (Object) this, i, j);
-                ButtonWidget b = null;
-                for (ButtonWidget e : ((ScreenAccessor) (s)).getButtons()) {
-                    if (e != null) {
-                        if (e.message.equals(new TranslatableText("menu.quitWorld").asUnformattedString())) {
-                            if (b == null) {
-                                b = e;
-                            }
-                        }
-                    }
-                }
-                KeyBinding.setKeyPressed(Atum.resetKey.getCode(), false);
-                Atum.hotkeyPressed = false;
-                Atum.isRunning = true;
-                if (b == null) {
-                    boolean bl = MinecraftClient.getInstance().isIntegratedServerRunning();
-                    boolean bl2 = MinecraftClient.getInstance().isConnectedToRealms();
-                    MinecraftClient.getInstance().world.disconnect();
-                    MinecraftClient.getInstance().connect(null);
-                    if (bl) {
-                        MinecraftClient.getInstance().setScreen(new TitleScreen());
-                    } else if (bl2) {
-                        RealmsBridge realmsBridge = new RealmsBridge();
-                        realmsBridge.switchToRealms(new TitleScreen());
-                    } else {
-                        MinecraftClient.getInstance().setScreen(new MultiplayerScreen(new TitleScreen()));
-                    }
-                    ci.cancel();
-                } else {
-                    b.mouseReleased(0, 0);
-                }
-            } else if (Atum.hotkeyState == Atum.HotkeyState.OUTSIDE_WORLD) {
-                System.out.println(1);
-                KeyBinding.setKeyPressed(Atum.resetKey.getCode(), false);
-                Atum.hotkeyPressed = false;
-                Atum.isRunning = true;
-                MinecraftClient.getInstance().setScreen(new TitleScreen());
+
+    @Inject(method = "handleKeyInput", at = @At("HEAD"), cancellable = true)
+    private void atum_onKey(CallbackInfo ci) {
+        if (!Keyboard.isRepeatEvent() && Atum.resetKey.getCode() == Keyboard.getEventKey()) {
+            if (this.currentScreen instanceof ControlsOptionsScreen && ((ControlsOptionsScreen) this.currentScreen).selectedKeyBinding == Atum.resetKey) {
+                return;
             }
+            Atum.scheduleReset();
+            ci.cancel();
         }
     }
 
-    @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"))
-    public void atum_tickDuringWorldGen(CallbackInfo ci) {
-        if (Atum.hotkeyPressed && Atum.hotkeyState == Atum.HotkeyState.WORLD_GEN) {
-            if (currentScreen instanceof ProgressScreen) {
-                ButtonWidget b = null;
-                if (!((ScreenAccessor) (currentScreen)).getButtons().isEmpty()) {
-                    for (ButtonWidget e : ((ScreenAccessor) (currentScreen)).getButtons()) {
-                        if (e.message.equals(new TranslatableText("menu.returnToMenu").asUnformattedString())) {
-                            if (b == null) {
-                                b = e;
-                            }
-                        }
-                    }
-                    if (b != null) {
-                        KeyBinding.setKeyPressed(Atum.resetKey.getCode(), false);
-                        Atum.hotkeyPressed = false;
-                        b.mouseReleased(0, 0);
+    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJ)V", shift = At.Shift.AFTER))
+    private void executeReset(CallbackInfo ci) {
+        while (Atum.shouldReset()) {
+            if (this.world != null) {
+                Screen gameMenuScreen = new GameMenuScreen();
+                gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
+                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
+                    if (this.world != null) {
+                        this.world.disconnect();
+                        this.connect(null);
                     }
                 }
             }
+            Atum.createNewWorld();
         }
+    }
+
+    @Unique
+    private boolean clickButton(Screen screen, String... translationKeys) {
+        for (String translationKey : translationKeys) {
+            for (ButtonWidget button : ((ScreenAccessor) screen).getButtons()) {
+                if (button.message.equals(new TranslatableText(translationKey).asUnformattedString())) {
+                    ((ScreenAccessor) screen).callButtonClicked(button);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

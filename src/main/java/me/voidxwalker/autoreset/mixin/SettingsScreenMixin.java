@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SettingsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
-
         if (Atum.isRunning) {
             this.addButton(new ButtonWidget(1238, 0, this.height - 20, 100, 20, "Stop Resets & Quit"));
         }

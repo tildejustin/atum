@@ -2,9 +2,7 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.*;
@@ -20,16 +18,12 @@ public abstract class TitleScreenMixin extends Screen {
     @Unique
     private String difficulty;
 
-
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
-        if (Atum.isRunning && Atum.loopPrevent2) {
-            Atum.loopPrevent2 = false;
-            client.setScreen(new CreateWorldScreen(this));
-        } else {
-            Atum.hotkeyState = Atum.HotkeyState.OUTSIDE_WORLD;
-            addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
+        if (Atum.isRunning) {
+            Atum.scheduleReset();
         }
+        addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -46,10 +40,9 @@ public abstract class TitleScreenMixin extends Screen {
     public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 69) {
             if (hasShiftDown()) {
-                client.setScreen(new AutoResetOptionScreen(null));
+                client.setScreen(new AutoResetOptionScreen(this));
             } else {
-                Atum.isRunning = true;
-                MinecraftClient.getInstance().setScreen(null);
+                Atum.scheduleReset();
             }
             ci.cancel();
         }
