@@ -17,21 +17,20 @@ import java.util.*;
 public class Atum implements ModInitializer {
     public static boolean isRunning = false;
     public static Logger LOGGER = LogManager.getLogger();
-    public static boolean loopPrevent = false;
+
     public static String seed = "";
     public static int difficulty = 1;
     public static int generatorType = 0;
     public static int rsgAttempts;
-    public static boolean hasClicked = false;
     public static int ssgAttempts;
     public static boolean structures = true;
     public static boolean bonusChest = false;
-    public static KeyBinding resetKey;
-    public static HotkeyState hotkeyState;
-    public static boolean hotkeyPressed;
-    public static boolean hotkeyHeld;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
+
     static File configFile;
+
+    public static KeyBinding resetKey;
+    public static boolean hotkeyHeld;
     public static boolean shouldReset = false;
 
     public static void scheduleReset() {
@@ -70,6 +69,58 @@ public class Atum implements ModInitializer {
             return new LiteralText(text);
         } else {
             return new TranslatableText(path);
+        }
+    }
+
+    @Override
+    public void onInitialize() {
+        log(Level.INFO, "Initializing");
+        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                getTranslation("key.atum.reset", "Create New World").getString(),
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_F6,
+                getTranslation("key.categories.atum", "Atum").getString()
+        ));
+        new File("config").mkdir();
+        new File("config/atum").mkdir();
+        configFile = new File("config/atum/atum.properties");
+
+        if (!configFile.exists()) {
+            try {
+                configFile.createNewFile();
+                saveProperties();
+            } catch (IOException e) {
+                log(Level.ERROR, "Could not create config file:\n" + e.getMessage());
+            }
+            File difficultyFile = new File("ardifficulty.txt");
+            if (difficultyFile.exists()) {
+                String difInput = load(difficultyFile);
+                difficulty = difInput == null ? 1 : Integer.parseInt(difInput.trim());
+                if (difficulty > 4) {
+                    difficulty = 1;
+                }
+                difficultyFile.delete();
+            }
+            File seedFile = new File("seed.txt");
+            if (seedFile.exists()) {
+                seed = load(seedFile);
+                seed = seed == null ? "" : seed;
+                seedFile.delete();
+            }
+            File attemptsFile = new File("attempts.txt");
+            if (attemptsFile.exists()) {
+                String s = load(attemptsFile);
+                if (s != null) {
+                    try {
+                        rsgAttempts = Integer.parseInt(s);
+                    } catch (NumberFormatException e) {
+                        rsgAttempts = 0;
+                    }
+                }
+                attemptsFile.delete();
+            }
+        } else {
+            loadFromProperties(getProperties(configFile));
         }
     }
 
@@ -160,66 +211,5 @@ public class Atum implements ModInitializer {
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
         }
-    }
-
-    @Override
-    public void onInitialize() {
-        log(Level.INFO, "Initializing");
-        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").getString(),
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_F6,
-                getTranslation("key.categories.atum", "Atum").getString()
-        ));
-        new File("config").mkdir();
-        new File("config/atum").mkdir();
-        configFile = new File("config/atum/atum.properties");
-
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-                saveProperties();
-            } catch (IOException e) {
-                log(Level.ERROR, "Could not create config file:\n" + e.getMessage());
-            }
-            File difficultyFile = new File("ardifficulty.txt");
-            if (difficultyFile.exists()) {
-                String difInput = load(difficultyFile);
-                difficulty = difInput == null ? 1 : Integer.parseInt(difInput.trim());
-                if (difficulty > 4) {
-                    difficulty = 1;
-                }
-                difficultyFile.delete();
-            }
-            File seedFile = new File("seed.txt");
-            if (seedFile.exists()) {
-                seed = load(seedFile);
-                seed = seed == null ? "" : seed;
-                seedFile.delete();
-            }
-            File attemptsFile = new File("attempts.txt");
-            if (attemptsFile.exists()) {
-                String s = load(attemptsFile);
-                if (s != null) {
-                    try {
-                        rsgAttempts = Integer.parseInt(s);
-                    } catch (NumberFormatException e) {
-                        rsgAttempts = 0;
-                    }
-                }
-                attemptsFile.delete();
-            }
-        } else {
-            loadFromProperties(getProperties(configFile));
-        }
-    }
-
-    public enum HotkeyState {
-        OUTSIDE_WORLD,
-        INSIDE_WORLD,
-        PRE_WORLDGEN,
-        WORLD_GEN,
-        POST_WORLDGEN,
-        RESETTING
     }
 }
