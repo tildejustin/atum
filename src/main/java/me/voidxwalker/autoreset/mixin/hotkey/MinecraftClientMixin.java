@@ -6,9 +6,11 @@ import net.minecraft.client.*;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.profiler.ProfileResult;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.*;
@@ -24,17 +26,24 @@ public abstract class MinecraftClientMixin {
     @Shadow
     @Nullable
     public Screen currentScreen;
+    @Shadow
+    @Final
+    public Keyboard keyboard;
+    @Shadow
+    @Final
+    public GameOptions options;
+    @Shadow
+    @Final
+    private Window window;
+
+    @Shadow
+    private @Nullable ProfileResult tickProfilerResult;
 
     @Shadow
     public abstract void disconnect(Screen screen);
 
     @Shadow
-    @Final
-    public Keyboard keyboard;
-
-    @Shadow
-    @Final
-    private Window window;
+    protected abstract boolean shouldMonitorTickDuration();
 
     @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
@@ -76,5 +85,16 @@ public abstract class MinecraftClientMixin {
             }
         }
         return false;
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
+    private void fixGhostPie(Screen screen, CallbackInfo ci) {
+        this.tickProfilerResult = null;
+        this.options.debugProfilerEnabled = false;
+    }
+
+    @ModifyArg(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;endMonitor(ZLnet/minecraft/util/TickDurationMonitor;)V"), index = 0)
+    private boolean fixGhostPieBlink(boolean active) {
+        return active && this.shouldMonitorTickDuration();
     }
 }
