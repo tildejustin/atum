@@ -1,6 +1,8 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.*;
@@ -32,6 +34,34 @@ public class Atum implements ModInitializer {
     public static boolean hotkeyPressed;
     public static boolean hasClicked = false;
     public static boolean hotkeyHeld;
+    public static boolean shouldReset = false;
+
+    public static void scheduleReset() {
+        shouldReset = true;
+    }
+
+    public static void createNewWorld() {
+        isRunning = true;
+        shouldReset = false;
+
+        MinecraftClient.getInstance().openScreen(CreateWorldScreen.create(null));
+    }
+
+    public static boolean isResetScheduled() {
+        return shouldReset;
+    }
+
+    public static boolean shouldReset() {
+        return isResetScheduled() && !isBlocking();
+    }
+
+    public static boolean isBlocking() {
+        return MinecraftClient.getInstance().getOverlay() != null || isLoadingWorld();
+    }
+
+    public static boolean isLoadingWorld() {
+        return MinecraftClient.getInstance().getServer() != null && MinecraftClient.getInstance().world == null;
+    }
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);

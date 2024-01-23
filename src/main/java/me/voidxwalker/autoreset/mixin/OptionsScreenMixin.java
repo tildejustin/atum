@@ -21,9 +21,11 @@ public class OptionsScreenMixin extends Screen {
         if (Atum.isRunning) {
             this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit"), (buttonWidget) -> {
                 Atum.isRunning = false;
-                this.client.world.disconnect();
-                this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
-                this.client.openScreen(new TitleScreen());
+                if (this.client != null && this.client.world != null) {
+                    this.client.world.disconnect();
+                    this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                    this.client.openScreen(new TitleScreen());
+                }
             }));
         }
     }

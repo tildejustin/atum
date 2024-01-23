@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
     @Unique
@@ -35,14 +34,13 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            client.openScreen(CreateWorldScreen.create(this));
+            Atum.scheduleReset();
         } else {
             resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 if (hasShiftDown()) {
                     client.openScreen(new AutoResetOptionScreen(this));
                 } else {
-                    Atum.isRunning = true;
-                    this.client.openScreen(this);
+                    Atum.scheduleReset();
                 }
             }));
         }
