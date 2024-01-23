@@ -7,16 +7,17 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.profiler.ProfileResult;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
@@ -39,6 +40,16 @@ public abstract class MinecraftClientMixin {
     @Shadow public abstract void setScreen(@Nullable Screen screen);
 
     @Shadow @Final public Keyboard keyboard;
+
+    @Shadow
+    private @Nullable ProfileResult tickProfilerResult;
+
+    @Shadow
+    @Final
+    public GameOptions options;
+
+    @Shadow
+    protected abstract boolean shouldMonitorTickDuration();
 
     @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V",at = @At(value = "INVOKE",target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;",shift = At.Shift.BEFORE))
     public void atum_trackPostWorldGen(CallbackInfo ci){
@@ -122,5 +133,16 @@ public abstract class MinecraftClientMixin {
                 }
             }
         }
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
+    private void fixGhostPie(Screen screen, CallbackInfo ci) {
+        this.tickProfilerResult = null;
+        this.options.debugProfilerEnabled = false;
+    }
+
+    @ModifyArg(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;endMonitor(ZLnet/minecraft/util/TickDurationMonitor;)V"), index = 0)
+    private boolean fixGhostPieBlink(boolean active) {
+        return active && this.shouldMonitorTickDuration();
     }
 }
