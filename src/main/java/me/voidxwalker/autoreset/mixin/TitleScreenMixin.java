@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
     private ButtonWidget resetButton;
@@ -34,20 +33,16 @@ public class TitleScreenMixin extends Screen {
     }
     @Inject(method="init", at=@At("TAIL"))
     private void init(CallbackInfo info) {
-        this.resetButton = addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), buttonWidget -> {
-            if (hasShiftDown()) {
-                this.client.setScreen(new AutoResetOptionScreen(this));
-            } else {
-                Atum.isRunning = true;
-            }
-        }));
-    }
-
-    @Inject(method="render", at=@At("HEAD"), cancellable = true)
-    private void reset(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (Atum.isRunning) {
-            this.client.setScreen(CreateWorldScreen.create(this));
-            ci.cancel();
+            Atum.scheduleReset();
+        } else {
+            resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
+                if (hasShiftDown()) {
+                    client.openScreen(new AutoResetOptionScreen(this));
+                } else {
+                    Atum.scheduleReset();
+                }
+            }));
         }
     }
 
