@@ -2,14 +2,13 @@ package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.*;
 import net.minecraft.util.Language;
 import org.apache.logging.log4j.*;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.*;
@@ -26,16 +25,10 @@ public class Atum implements ModInitializer {
     public static int ssgAttempts;
     public static boolean structures = true;
     public static boolean bonusChest = false;
-    static Map<String, String> extraProperties = new LinkedHashMap<>();
-
-    static File configFile;
-
     public static KeyBinding resetKey;
-    public static HotkeyState hotkeyState;
-    public static boolean hotkeyPressed;
-    public static boolean hasClicked = false;
-    public static boolean hotkeyHeld;
     public static boolean shouldReset = false;
+    static Map<String, String> extraProperties = new LinkedHashMap<>();
+    static File configFile;
 
     public static void scheduleReset() {
         shouldReset = true;
@@ -78,12 +71,6 @@ public class Atum implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        if (!((Pingable) (new LevelLoadingScreen(null))).ping()) {
-            throw new IllegalStateException();
-        }
-        if (!((Pingable) (new DebugHud(MinecraftClient.getInstance()))).ping()) {
-            throw new IllegalStateException();
-        }
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 getTranslation("key.atum.reset", "Create New World").getString(),
@@ -159,19 +146,25 @@ public class Atum implements ModInitializer {
 
     public static void saveProperties() throws IOException {
         try (FileWriter f = new FileWriter(configFile)) {
-            Properties properties = new Properties();
-            properties.put("rsgAttempts", String.valueOf(rsgAttempts));
-            properties.put("ssgAttempts", String.valueOf(ssgAttempts));
-            properties.put("seed", seed);
-            properties.put("difficulty", String.valueOf(difficulty));
-            properties.put("generatorType", String.valueOf(generatorType));
-            properties.put("structures", String.valueOf(structures));
-            properties.put("bonusChest", String.valueOf(bonusChest));
+            Properties properties = getProperties();
             properties.putAll(extraProperties);
             properties.store(f, "This is the config file for Atum.\nseed: leave empty for a random seed\ndifficulty: -1 = HARDCORE, 0 = PEACEFUL, 1 = EASY, 2= NORMAL, 3= HARD \ngeneratorType: 0 = DEFAULT, 1= FLAT, 2= LARGE_BIOMES, 3 = AMPLIFIED, 4 = SINGLE_BIOME_SURFACE, 5 = SINGLE_BIOME_CAVES, 6 =SINGLE_BIOME_FLOATING_ISLANDS");
         } catch (IOException e) {
             log(Level.WARN, "Could not save config file:\n" + e.getMessage());
         }
+    }
+
+    @NotNull
+    private static Properties getProperties() {
+        Properties properties = new Properties();
+        properties.put("rsgAttempts", String.valueOf(rsgAttempts));
+        properties.put("ssgAttempts", String.valueOf(ssgAttempts));
+        properties.put("seed", seed);
+        properties.put("difficulty", String.valueOf(difficulty));
+        properties.put("generatorType", String.valueOf(generatorType));
+        properties.put("structures", String.valueOf(structures));
+        properties.put("bonusChest", String.valueOf(bonusChest));
+        return properties;
     }
 
     static void loadFromProperties(Properties properties) {
@@ -215,14 +208,5 @@ public class Atum implements ModInitializer {
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
         }
-    }
-
-    public enum HotkeyState {
-        OUTSIDE_WORLD,
-        INSIDE_WORLD,
-        PRE_WORLDGEN,
-        WORLD_GEN,
-        POST_WORLDGEN,
-        RESETTING
     }
 }

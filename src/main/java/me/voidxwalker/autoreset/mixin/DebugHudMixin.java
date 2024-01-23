@@ -1,6 +1,6 @@
 package me.voidxwalker.autoreset.mixin;
 
-import me.voidxwalker.autoreset.*;
+import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.text.LiteralText;
 import org.spongepowered.asm.mixin.Mixin;

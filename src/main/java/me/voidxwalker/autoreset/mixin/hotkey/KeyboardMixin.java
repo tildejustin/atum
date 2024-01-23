@@ -1,23 +1,27 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
 import me.voidxwalker.autoreset.Atum;
-import net.minecraft.client.Keyboard;
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.client.*;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
+import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Keyboard.class)
-public class KeyboardMixin {
-    @Inject(method = "onKey", at = @At("HEAD"))
-    public void atum_onKey(long window, int key, int scancode, int i, int j, CallbackInfo ci) {
-        if (Atum.hasClicked) {
-            if (Atum.resetKey.matchesKey(key, scancode) && !Atum.hotkeyHeld) {
-                Atum.hotkeyHeld = true;
-                Atum.resetKey.setPressed(true);
-                Atum.hotkeyPressed = true;
-            } else if (Atum.hotkeyHeld) {
-                Atum.hotkeyHeld = false;
+public abstract class KeyboardMixin {
+    @Shadow
+    @Final
+    private MinecraftClient client;
+
+    @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Keyboard;debugCrashStartTime:J", ordinal = 0), cancellable = true)
+    private void atum_onKey(long window, int key, int scancode, int action, int mods, CallbackInfo ci) {
+        if (action == GLFW.GLFW_PRESS && Atum.resetKey.matchesKey(key, scancode)) {
+            if (this.client.currentScreen instanceof KeybindsScreen && ((KeybindsScreen) this.client.currentScreen).selectedKeyBinding == Atum.resetKey) {
+                return;
             }
+            Atum.scheduleReset();
+            ci.cancel();
         }
     }
 }
