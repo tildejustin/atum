@@ -10,14 +10,11 @@
     "LevelLoadingScreenMixin",
     "MoreOptionsDialogMixin",
     "OptionsScreenMixin",
-    "hotkey.MouseMixin",
     "TitleScreenMixin",
+    "hotkey.GameOptionsMixin",
     "hotkey.KeyBindingAccessor",
     "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin",
-    "hotkey.ClientPlayerNetworkHandlerMixin",
-    "hotkey.GameOptionsMixin",
-    "hotkey.MinecraftServerMixin"
+    "hotkey.MinecraftClientMixin"
   ],
   "client": [
   ],

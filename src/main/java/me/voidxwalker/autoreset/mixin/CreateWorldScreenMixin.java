@@ -58,8 +58,4 @@ public abstract class CreateWorldScreenMixin {
             createLevel();
         }
     }
-    @Inject(method = "createLevel",at = @At("HEAD"))
-    public void atum_trackResetting(CallbackInfo ci){
-        Atum.hotkeyState= Atum.HotkeyState.RESETTING;
-    }
 }

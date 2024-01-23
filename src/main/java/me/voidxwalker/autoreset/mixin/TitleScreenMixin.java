@@ -5,7 +5,6 @@ import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -26,24 +25,19 @@ public class TitleScreenMixin extends Screen {
     protected TitleScreenMixin(Text title) {
         super(title);
     }
-    @Inject(method = "<init>()V",at = @At("TAIL"))
-    public void resetHotkey(CallbackInfo ci){
-        Atum.resetKey.setPressed(false);
-        Atum.hotkeyPressed=false;
-    }
+
     @Inject(method="init", at=@At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
             Atum.scheduleReset();
-        } else {
-            resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
-                if (hasShiftDown()) {
-                    client.openScreen(new AutoResetOptionScreen(this));
-                } else {
-                    Atum.scheduleReset();
-                }
-            }));
         }
+        this.resetButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
+            if (hasShiftDown()) {
+                client.setScreen(new AutoResetOptionScreen(this));
+            } else {
+                Atum.scheduleReset();
+            }
+        }));
     }
 
     @Inject(method = "render", at = @At("TAIL"))
