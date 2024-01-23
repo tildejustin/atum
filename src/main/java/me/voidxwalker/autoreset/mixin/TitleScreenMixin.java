@@ -34,15 +34,14 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            client.openScreen(new CreateWorldScreen(this));
+            Atum.scheduleReset();
         } else {
             Atum.hotkeyState = Atum.HotkeyState.OUTSIDE_WORLD;
             resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 if (hasShiftDown()) {
                     client.openScreen(new AutoResetOptionScreen(this));
                 } else {
-                    Atum.isRunning = true;
-                    this.client.openScreen(this);
+                    Atum.scheduleReset();
                 }
             }));
         }
