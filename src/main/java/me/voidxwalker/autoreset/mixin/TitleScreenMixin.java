@@ -38,11 +38,7 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            if (Atum.loopPrevent) {
-                Atum.loopPrevent = false;
-            } else {
-                minecraft.openScreen(new CreateWorldScreen(this));
-            }
+            minecraft.openScreen(new CreateWorldScreen(this));
         } else {
             resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, "", (buttonWidget) -> {
                 if (hasShiftDown()) {
