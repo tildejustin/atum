@@ -1,6 +1,7 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
 import me.voidxwalker.autoreset.Atum;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
@@ -28,9 +29,6 @@ public abstract class MinecraftClientMixin {
     public Screen currentScreen;
 
     @Shadow
-    public abstract void openScreen(@Nullable Screen screen);
-
-    @Shadow
     private @Nullable ProfileResult tickProfilerResult;
 
     @Shadow
@@ -40,29 +38,10 @@ public abstract class MinecraftClientMixin {
     @Shadow
     protected abstract boolean shouldMonitorTickDuration();
 
-    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;", shift = At.Shift.BEFORE))
-    public void atum_trackPostWorldGen(CallbackInfo ci) {
-        Atum.hotkeyState = Atum.HotkeyState.POST_WORLDGEN;
-    }
-
-    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "HEAD"))
-    public void atum_trackPreWorldGen(CallbackInfo ci) {
-        Atum.hotkeyState = Atum.HotkeyState.PRE_WORLDGEN;
-    }
-
-    @Inject(method = "tick", at = @At("HEAD"))
-    public void atum_tick(CallbackInfo ci) {
-        if (Atum.hotkeyPressed) {
-            if (Atum.hotkeyState == Atum.HotkeyState.INSIDE_WORLD) {
-                Screen gameMenuScreen = new GameMenuScreen(true);
-                gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
-                this.clickButton(this.currentScreen, "menu.quitWorld");
-            } else if (Atum.hotkeyState == Atum.HotkeyState.OUTSIDE_WORLD) {
-                Atum.scheduleReset();
-            }
-            Atum.resetKey.setPressed(false);
-            Atum.hotkeyPressed = false;
-            Atum.isRunning = true;
+    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
+    private void resetPreview(CallbackInfo ci) {
+        if (Atum.isResetScheduled() && FabricLoader.getInstance().isModLoaded("worldpreview")) {
+            this.clickButton(this.currentScreen, "menu.returnToMenu");
         }
     }
 
@@ -80,21 +59,6 @@ public abstract class MinecraftClientMixin {
                 }
             }
             Atum.createNewWorld();
-        }
-    }
-
-    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z"), cancellable = true)
-    public void atum_tickDuringWorldGen(CallbackInfo ci) {
-        if (Atum.hotkeyPressed && Atum.hotkeyState == Atum.HotkeyState.WORLD_GEN) {
-            if (currentScreen instanceof LevelLoadingScreen) {
-                if (currentScreen.children().isEmpty()) {
-                    this.openScreen(new GameMenuScreen(true));
-                }
-                if (this.clickButton(this.currentScreen, "menu.returnToMenu")) {
-                    Atum.resetKey.setPressed(false);
-                    Atum.hotkeyPressed = false;
-                }
-            }
         }
     }
 

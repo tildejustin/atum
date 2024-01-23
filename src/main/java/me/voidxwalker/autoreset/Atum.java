@@ -30,9 +30,6 @@ public class Atum implements ModInitializer {
     static File configFile;
 
     public static KeyBinding resetKey;
-    public static HotkeyState hotkeyState;
-    public static boolean hotkeyPressed;
-    public static boolean hasClicked = false;
     public static boolean hotkeyHeld;
     public static boolean shouldReset = false;
 
@@ -214,14 +211,5 @@ public class Atum implements ModInitializer {
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
         }
-    }
-
-    public enum HotkeyState {
-        OUTSIDE_WORLD,
-        INSIDE_WORLD,
-        PRE_WORLDGEN,
-        WORLD_GEN,
-        POST_WORLDGEN,
-        RESETTING
     }
 }

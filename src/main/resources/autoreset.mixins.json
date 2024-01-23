@@ -11,13 +11,10 @@
     "MoreOptionsDialogMixin",
     "OptionsScreenMixin",
     "TitleScreenMixin",
-    "hotkey.ClientPlayerNetworkHandlerMixin",
     "hotkey.GameOptionsMixin",
     "hotkey.KeyBindingAccessor",
     "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin",
-    "hotkey.MinecraftServerMixin",
-    "hotkey.MouseMixin"
+    "hotkey.MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
