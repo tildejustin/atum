@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
@@ -13,7 +12,6 @@ import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
@@ -36,14 +34,13 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            client.setScreen(CreateWorldScreen.create(this));
+            Atum.scheduleReset();
         } else {
             resetButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 if (hasShiftDown()) {
                     client.setScreen(new AutoResetOptionScreen(this));
                 } else {
-                    Atum.isRunning = true;
-                    this.client.setScreen(this);
+                    Atum.scheduleReset();
                 }
             }));
         }

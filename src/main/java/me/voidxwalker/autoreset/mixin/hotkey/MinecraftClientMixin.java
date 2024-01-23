@@ -1,15 +1,17 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
 import me.voidxwalker.autoreset.Atum;
-import net.minecraft.client.*;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
+import net.minecraft.util.profiler.ProfileResult;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -27,11 +29,14 @@ public abstract class MinecraftClientMixin {
 
     @Shadow
     @Final
-    public Keyboard keyboard;
+    public GameOptions options;
 
     @Shadow
     @Final
     private Window window;
+
+    @Shadow
+    private @Nullable ProfileResult tickProfilerResult;
 
     @Shadow
     public abstract void disconnect(Screen screen);
@@ -44,6 +49,9 @@ public abstract class MinecraftClientMixin {
 
     @Shadow
     public abstract void disconnect();
+
+    @Shadow
+    protected abstract boolean shouldMonitorTickDuration();
 
     @Shadow
     public abstract void setScreen(@Nullable Screen screen);
@@ -103,6 +111,7 @@ public abstract class MinecraftClientMixin {
                 Atum.isRunning = true;
                 MinecraftClient.getInstance().setScreen(new TitleScreen());
             }
+            Atum.createNewWorld();
         }
     }
 
@@ -110,25 +119,44 @@ public abstract class MinecraftClientMixin {
     public void atum_tickDuringWorldGen(CallbackInfo ci) {
         if (Atum.hotkeyPressed && Atum.hotkeyState == Atum.HotkeyState.WORLD_GEN) {
             if (currentScreen instanceof LevelLoadingScreen) {
-                ButtonWidget b = null;
-                keyboard.onKey(this.window.getHandle(), 256, 1, 1, 0);
-                if (!currentScreen.children().isEmpty()) {
-                    for (Element e : currentScreen.children()) {
-                        if (e instanceof ButtonWidget) {
-                            if (((ButtonWidget) e).getMessage().equals(new TranslatableText("menu.returnToMenu"))) {
-                                if (b == null) {
-                                    b = (ButtonWidget) e;
-                                }
-                            }
-                        }
-                    }
-                    if (b != null) {
-                        Atum.resetKey.setPressed(false);
-                        Atum.hotkeyPressed = false;
-                        b.onPress();
-                    }
+
+                if (currentScreen.children().isEmpty()) {
+                    this.setScreen(new GameMenuScreen(true));
+                }
+                if (this.clickButton(this.currentScreen, "menu.returnToMenu")) {
+
+                    Atum.resetKey.setPressed(false);
+                    Atum.hotkeyPressed = false;
                 }
             }
         }
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("TAIL"))
+    private void fixGhostPie(Screen screen, CallbackInfo ci) {
+        this.tickProfilerResult = null;
+        this.options.debugProfilerEnabled = false;
+    }
+
+    @ModifyArg(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;endMonitor(ZLnet/minecraft/util/TickDurationMonitor;)V"), index = 0)
+    private boolean fixGhostPieBlink(boolean active) {
+        return active && this.shouldMonitorTickDuration();
+    }
+
+    @Unique
+    private boolean clickButton(Screen screen, String... translationKeys) {
+        for (String translationKey : translationKeys) {
+            for (Element element : screen.children()) {
+                if (!(element instanceof ButtonWidget button)) {
+                    continue;
+                }
+                Text text = button.getMessage();
+                if (text instanceof TranslatableText && ((TranslatableText) text).getKey().equals(translationKey)) {
+                    button.onPress();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
