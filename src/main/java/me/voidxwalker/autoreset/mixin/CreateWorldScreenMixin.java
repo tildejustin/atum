@@ -1,6 +1,8 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.nbt.CompoundTag;
@@ -25,14 +27,13 @@ public abstract class CreateWorldScreenMixin {
     private int generatorType;
 
     @Shadow
+    protected abstract void createLevel();
+
+    @Shadow
     private boolean structures;
 
     @Shadow
     private boolean bonusChest;
-
-
-    @Shadow
-    protected abstract void createLevel();
 
     @Shadow
     private boolean hardcore;
@@ -43,8 +44,14 @@ public abstract class CreateWorldScreenMixin {
             if (Atum.difficulty == -1) {
                 this.hardcore = true;
             }
-            Atum.loopPrevent = true;
             createLevel();
+        }
+    }
+
+    @Redirect(method = "createLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V", ordinal = 0))
+    private void doNotReopenTitleScreen(MinecraftClient instance, Screen screen) {
+        if (!Atum.isRunning) {
+            instance.openScreen(screen);
         }
     }
 
@@ -96,10 +103,5 @@ public abstract class CreateWorldScreenMixin {
     @Unique
     private void setGenerateBonusChest(boolean generate) {
         this.bonusChest = generate;
-    }
-
-    @Inject(method = "createLevel", at = @At("HEAD"))
-    public void atum_trackResetting(CallbackInfo ci) {
-        Atum.hotkeyState = Atum.HotkeyState.RESETTING;
     }
 }

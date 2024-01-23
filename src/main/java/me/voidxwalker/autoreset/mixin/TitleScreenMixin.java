@@ -5,7 +5,6 @@ import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.text.*;
@@ -28,27 +27,18 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "<init>()V", at = @At("TAIL"))
-    public void resetHotkey(CallbackInfo ci) {
-        KeyBinding.setKeyPressed(HashBiMap.create(KeyBindingAccessor.getKeysByCode()).inverse().get(Atum.resetKey), true);
-
-        Atum.hotkeyPressed = false;
-    }
-
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            minecraft.openScreen(new CreateWorldScreen(this));
-        } else {
-            resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, "", (buttonWidget) -> {
-                if (hasShiftDown()) {
-                    minecraft.openScreen(new AutoResetOptionScreen(this));
-                } else {
-                    Atum.isRunning = true;
-                    this.minecraft.openScreen(this);
-                }
-            }));
+            Atum.scheduleReset();
         }
+        this.resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, "", (buttonWidget) -> {
+            if (hasShiftDown()) {
+                minecraft.openScreen(new AutoResetOptionScreen(this));
+            } else {
+                Atum.scheduleReset();
+            }
+        }));
     }
 
     @Inject(method = "render", at = @At("TAIL"))

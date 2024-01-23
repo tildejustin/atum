@@ -17,21 +17,20 @@ import java.util.*;
 public class Atum implements ModInitializer {
     public static boolean isRunning = false;
     public static Logger LOGGER = LogManager.getLogger();
-    public static boolean loopPrevent = false;
+
     public static String seed = "";
     public static int difficulty = 1;
     public static int generatorType = 0;
     public static int rsgAttempts;
-    public static boolean hasClicked = false;
     public static int ssgAttempts;
     public static boolean structures = true;
     public static boolean bonusChest = false;
-    public static KeyBinding resetKey;
-    public static HotkeyState hotkeyState;
-    public static boolean hotkeyPressed;
-    public static boolean hotkeyHeld;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
+
     static File configFile;
+
+    public static KeyBinding resetKey;
+    public static boolean hotkeyHeld;
     public static boolean shouldReset = false;
 
     public static void scheduleReset() {
@@ -212,14 +211,5 @@ public class Atum implements ModInitializer {
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
         }
-    }
-
-    public enum HotkeyState {
-        OUTSIDE_WORLD,
-        INSIDE_WORLD,
-        PRE_WORLDGEN,
-        WORLD_GEN,
-        POST_WORLDGEN,
-        RESETTING
     }
 }
