@@ -2,18 +2,15 @@ package me.voidxwalker.autoreset.screen;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-
-public class AutoResetOptionScreen extends Screen{
+public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;
     private String seed;
@@ -23,60 +20,61 @@ public class AutoResetOptionScreen extends Screen{
     private boolean bonusChest;
 
     public AutoResetOptionScreen(@Nullable Screen parent) {
-        super(Atum.getTranslation("menu.autoresetTitle","Autoreset Options"));
+        super(Atum.getTranslation("menu.autoresetTitle", "Autoreset Options"));
         this.parent = parent;
     }
 
     protected void init() {
         this.minecraft.keyboard.enableRepeatEvents(true);
-        this.isHardcore=Atum.difficulty==-1;
-        this.seedField = new TextFieldWidget(this.minecraft.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Atum.getTranslation("menu.enterSeed","Enter a Seed").asString()) {};
-        this.seedField.setText(Atum.seed==null?"":Atum.seed);
-        this.seed=Atum.seed;
-        this.generatorType=Atum.generatorType;
-        this.structures=Atum.structures;
-        this.bonusChest=Atum.bonusChest;
+        this.isHardcore = Atum.difficulty == -1;
+        this.seedField = new TextFieldWidget(this.minecraft.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Atum.getTranslation("menu.enterSeed", "Enter a Seed").asString()) {
+        };
+        this.seedField.setText(Atum.seed == null ? "" : Atum.seed);
+        this.seed = Atum.seed;
+        this.generatorType = Atum.generatorType;
+        this.structures = Atum.structures;
+        this.bonusChest = Atum.bonusChest;
         this.seedField.setChangedListener((string) -> this.seed = string);
         this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 100, 150, 20, new LiteralText("Is Hardcore:").asString(), (buttonWidget) -> {
-            this.isHardcore=!this.isHardcore;
-        }){
+            this.isHardcore = !this.isHardcore;
+        }) {
             public String getMessage() {
-                return super.getMessage()+" "+isHardcore;
+                return super.getMessage() + " " + isHardcore;
             }
         });
         this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asString(), (buttonWidget) -> {
             generatorType++;
-            if(generatorType>5){
-                generatorType=0;
+            if (generatorType > 5) {
+                generatorType = 0;
             }
-        }){
+        }) {
             public String getMessage() {
-                return super.getMessage()+" "+ LevelGeneratorType.TYPES[generatorType].getTranslationKey();
+                return super.getMessage() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey();
             }
         });
 
-        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 64, 150, 20,  new TranslatableText("selectWorld.mapFeatures").asString(), (buttonWidget) -> {
-            this.structures=!structures;
-        }){
+        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asString(), (buttonWidget) -> {
+            this.structures = !structures;
+        }) {
             public String getMessage() {
-                return super.getMessage()+" "+structures;
+                return super.getMessage() + " " + structures;
             }
         });
 
         this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asString(), (buttonWidget) -> {
-            this.bonusChest=!bonusChest;
-        }){
+            this.bonusChest = !bonusChest;
+        }) {
             public String getMessage() {
-                return super.getMessage()+" "+bonusChest;
+                return super.getMessage() + " " + bonusChest;
             }
         });
 
-        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done","Done").asString(), (buttonWidget) -> {
-            Atum.seed=this.seed;
-            Atum.difficulty=this.isHardcore?-1:0;
-            Atum.structures=this.structures;
-            Atum.bonusChest=this.bonusChest;
-            Atum.generatorType=this.generatorType;
+        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asString(), (buttonWidget) -> {
+            Atum.seed = this.seed;
+            Atum.difficulty = this.isHardcore ? -1 : 0;
+            Atum.structures = this.structures;
+            Atum.bonusChest = this.bonusChest;
+            Atum.generatorType = this.generatorType;
             try {
                 Atum.saveProperties();
             } catch (IOException e) {
@@ -100,11 +98,9 @@ public class AutoResetOptionScreen extends Screen{
     public void render(int mouseX, int mouseY, float delta) {
         this.renderBackground();
         drawCenteredString(minecraft.textRenderer, this.title.asString(), this.width / 2, this.height - 210, -1);
-        drawString( minecraft.textRenderer, Atum.getTranslation("menu.enterSeed","Seed (Leave empty for a random Seed)").asString(), this.width / 2 - 100, this.height - 180, -6250336);
+        drawString(minecraft.textRenderer, Atum.getTranslation("menu.enterSeed", "Seed (Leave empty for a random Seed)").asString(), this.width / 2 - 100, this.height - 180, -6250336);
 
-        this.seedField.render( mouseX, mouseY, delta);
+        this.seedField.render(mouseX, mouseY, delta);
         super.render(mouseX, mouseY, delta);
     }
-
-
 }
