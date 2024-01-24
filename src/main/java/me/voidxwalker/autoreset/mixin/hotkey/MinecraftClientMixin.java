@@ -56,11 +56,6 @@ public abstract class MinecraftClientMixin {
                         this.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
                     }
                 }
-            } else if (Atum.hotkeyState == Atum.HotkeyState.OUTSIDE_WORLD) {
-                Atum.resetKey.setPressed(false);
-                Atum.hotkeyPressed = false;
-                Atum.isRunning = true;
-                MinecraftClient.getInstance().openScreen(new TitleScreen());
             }
             Atum.createNewWorld();
         }

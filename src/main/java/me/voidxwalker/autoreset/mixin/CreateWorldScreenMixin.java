@@ -36,13 +36,13 @@ public abstract class CreateWorldScreenMixin {
     private boolean bonusChest;
 
     @Shadow
-    private boolean hardcore;
+    private boolean field_3178;
 
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.isRunning) {
             if (Atum.difficulty == -1) {
-                this.hardcore = true;
+                this.field_3178 = true;
             }
             createLevel();
         }

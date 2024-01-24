@@ -1,12 +1,9 @@
 package me.voidxwalker.autoreset.mixin;
 
-import com.google.common.collect.HashBiMap;
 import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.options.KeyBinding;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
