@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
     @Unique
-    private ButtonWidget resetButton;
+    private static final Identifier BUTTON_IMAGE = new Identifier("textures/item/golden_boots.png");
 
     @Unique
-    private static final Identifier BUTTON_IMAGE = new Identifier("textures/item/golden_boots.png");
+    private ButtonWidget resetButton;
 
     protected TitleScreenMixin(Text title) {
         super(title);

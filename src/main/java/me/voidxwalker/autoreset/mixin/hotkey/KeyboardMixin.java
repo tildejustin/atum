@@ -2,7 +2,7 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.*;
-import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
+import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;

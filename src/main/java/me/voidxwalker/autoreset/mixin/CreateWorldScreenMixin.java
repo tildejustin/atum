@@ -17,10 +17,11 @@ public abstract class CreateWorldScreenMixin {
     public boolean hardcore;
 
     @Shadow
-    private TextFieldWidget levelNameField;
+    @Final
+    public MoreOptionsDialog moreOptionsDialog;
 
     @Shadow
-    protected abstract void createLevel();
+    private TextFieldWidget levelNameField;
 
     @Shadow
     private Difficulty field_24289;
@@ -29,8 +30,7 @@ public abstract class CreateWorldScreenMixin {
     private Difficulty field_24290;
 
     @Shadow
-    @Final
-    public MoreOptionsDialog moreOptionsDialog;
+    protected abstract void createLevel();
 
     @Inject(method = "init", at = @At("TAIL"))
     private void atum_createDesiredWorld(CallbackInfo info) {

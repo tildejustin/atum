@@ -15,11 +15,6 @@ import java.util.*;
 @Mixin(MoreOptionsDialog.class)
 public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @Shadow
-    private static OptionalLong tryParseLong(String string) {
-        return OptionalLong.empty();
-    }
-
-    @Shadow
     private Optional<GeneratorType> generatorType;
 
     @Shadow
@@ -27,6 +22,11 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
 
     @Shadow
     private DynamicRegistryManager.Impl registryManager;
+
+    @Shadow
+    private static OptionalLong tryParseLong(String string) {
+        return OptionalLong.empty();
+    }
 
     @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
     public OptionalLong setSeed(OptionalLong originalSeed) {

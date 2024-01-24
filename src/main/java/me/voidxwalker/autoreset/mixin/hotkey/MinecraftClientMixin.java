@@ -20,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
     @Shadow
-    public abstract void disconnect(Screen screen);
-
-    @Shadow
     @Nullable
     public ClientWorld world;
 
@@ -31,22 +28,25 @@ public abstract class MinecraftClientMixin {
     public Screen currentScreen;
 
     @Shadow
-    private @Nullable ProfileResult tickProfilerResult;
-
-    @Shadow
     @Final
     public GameOptions options;
-
-    @Shadow
-    protected abstract boolean shouldMonitorTickDuration();
 
     @Shadow
     @Final
     public Keyboard keyboard;
 
     @Shadow
+    private @Nullable ProfileResult tickProfilerResult;
+
+    @Shadow
     @Final
     private Window window;
+
+    @Shadow
+    public abstract void disconnect(Screen screen);
+
+    @Shadow
+    protected abstract boolean shouldMonitorTickDuration();
 
     @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
