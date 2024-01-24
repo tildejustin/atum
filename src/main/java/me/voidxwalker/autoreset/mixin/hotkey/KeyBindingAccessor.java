@@ -8,7 +8,8 @@ import java.util.Map;
 
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
-    @Accessor("CATEGORY_ORDER_MAP") static Map<String, Integer> invokeGetCategoryMap() {
+    @Accessor("CATEGORY_ORDER_MAP")
+    static Map<String, Integer> invokeGetCategoryMap() {
         throw new AssertionError();
     }
 }

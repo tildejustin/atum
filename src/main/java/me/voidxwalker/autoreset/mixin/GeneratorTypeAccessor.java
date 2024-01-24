@@ -8,7 +8,8 @@ import java.util.List;
 
 @Mixin(GeneratorType.class)
 public interface GeneratorTypeAccessor {
-    @Accessor static List<GeneratorType> getVALUES(){
-        throw  new IllegalArgumentException();
+    @Accessor
+    static List<GeneratorType> getVALUES() {
+        throw new IllegalArgumentException();
     }
 }
