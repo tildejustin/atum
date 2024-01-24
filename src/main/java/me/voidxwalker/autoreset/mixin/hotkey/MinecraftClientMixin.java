@@ -51,7 +51,7 @@ public abstract class MinecraftClientMixin {
     @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
         if (Atum.isResetScheduled() && FabricLoader.getInstance().isModLoaded("worldpreview")) {
-            this.keyboard.onKey(this.window.getHandle(), GLFW.GLFW_KEY_ESCAPE, 1, 0, 0);
+            this.keyboard.onKey(this.window.getHandle(), GLFW.GLFW_KEY_ESCAPE, 1, 1, 1);
             this.clickButton(this.currentScreen, "menu.returnToMenu");
         }
     }
