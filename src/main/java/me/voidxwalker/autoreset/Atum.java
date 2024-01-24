@@ -30,7 +30,6 @@ public class Atum implements ModInitializer {
     static File configFile;
 
     public static KeyBinding resetKey;
-    public static boolean hotkeyHeld;
     public static boolean shouldReset = false;
 
     public static void scheduleReset() {
