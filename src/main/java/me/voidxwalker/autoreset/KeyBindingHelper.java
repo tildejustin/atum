@@ -4,11 +4,9 @@ import com.google.common.collect.Lists;
 import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
 import net.minecraft.client.option.KeyBinding;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public final class KeyBindingHelper{
+public final class KeyBindingHelper {
     private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
 
     private static Map<String, Integer> getCategoryMap() {

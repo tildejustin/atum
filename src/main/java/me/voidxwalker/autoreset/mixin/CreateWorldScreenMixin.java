@@ -1,29 +1,32 @@
 package me.voidxwalker.autoreset.mixin;
 
-import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.autoreset.IMoreOptionsDialog;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
+import me.voidxwalker.autoreset.*;
+import net.minecraft.client.gui.screen.world.*;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.world.Difficulty;
 import org.apache.logging.log4j.Level;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
-    @Shadow public boolean hardcore;
-    @Shadow private TextFieldWidget levelNameField;
-    @Shadow protected abstract void createLevel();
+    @Shadow
+    public boolean hardcore;
 
-    @Shadow private Difficulty currentDifficulty;
+    @Shadow
+    @Final
+    public MoreOptionsDialog moreOptionsDialog;
 
-    @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
+    @Shadow
+    private TextFieldWidget levelNameField;
+
+    @Shadow
+    private Difficulty currentDifficulty;
+
+    @Shadow
+    protected abstract void createLevel();
 
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
@@ -43,18 +46,17 @@ public abstract class CreateWorldScreenMixin {
                     difficulty = Difficulty.EASY;
                 }
             }
-            if(Atum.seed==null|| Atum.seed.isEmpty()){
+            if (Atum.seed == null || Atum.seed.isEmpty()) {
                 Atum.rsgAttempts++;
-            }
-            else {
+            } else {
                 Atum.ssgAttempts++;
             }
             Atum.saveProperties();
             currentDifficulty = difficulty;
-            levelNameField.setText((Atum.seed==null|| Atum.seed.isEmpty())?"Random Speedrun #" + Atum.rsgAttempts:"Set Speedrun #" + Atum.ssgAttempts);
-            ((IMoreOptionsDialog)moreOptionsDialog).setGeneratorType(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType));
-            ((IMoreOptionsDialog)moreOptionsDialog).setGenerateStructure(Atum.structures);
-            ((IMoreOptionsDialog)moreOptionsDialog).setGenerateBonusChest(Atum.bonusChest);
+            levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
+            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGeneratorType(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType));
+            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateStructure(Atum.structures);
+            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateBonusChest(Atum.bonusChest);
             createLevel();
         }
     }
