@@ -2,7 +2,7 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -17,7 +17,10 @@ public class DebugHudMixin {
             List<String> returnValue = info.getReturnValue();
             returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : ("the seed: \"" + Atum.seed + "\"")));
             if (Atum.generatorType != 0) {
-                returnValue.add(new LiteralText("").append("GenType:").append(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType).getDisplayName()).asString());
+                String s = Atum.getGeneratorTypeString(Atum.generatorType);
+                if (s != null) {
+                    returnValue.add(Text.literal("GenType:").append(s).getString());
+                }
             }
             if (!Atum.structures) {
                 returnValue.add("NoStructures");

@@ -1,9 +1,9 @@
 package me.voidxwalker.autoreset;
 
-import net.minecraft.client.world.GeneratorType;
+import net.minecraft.world.gen.WorldPreset;
 
 public interface IMoreOptionsDialog {
-    void atum$setGeneratorType(GeneratorType g);
+    void atum$setGeneratorType(WorldPreset preset);
 
     void atum$setGenerateStructure(boolean generate);
 

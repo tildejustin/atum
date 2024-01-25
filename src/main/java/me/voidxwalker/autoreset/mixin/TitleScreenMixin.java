@@ -3,12 +3,10 @@ package me.voidxwalker.autoreset.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.*;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.*;
@@ -28,13 +26,12 @@ public class TitleScreenMixin extends Screen {
     }
 
 
-
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
             Atum.scheduleReset();
         }
-        this.resetButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
+        this.resetButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, Text.literal(""), (buttonWidget) -> {
             if (hasShiftDown()) {
                 client.setScreen(new AutoResetOptionScreen(this));
             } else {
@@ -55,7 +52,7 @@ public class TitleScreenMixin extends Screen {
     @Unique
     Text getDifficultyText() {
         if (Atum.difficulty == -1) {
-            return new TranslatableText("selectWorld.gameMode.hardcore");
+            return Text.translatable("selectWorld.gameMode.hardcore");
         }
         return Difficulty.byOrdinal(Atum.difficulty).getTranslatableName();
     }

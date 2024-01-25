@@ -38,10 +38,7 @@ public abstract class MinecraftClientMixin {
     @Shadow
     public abstract void disconnect(Screen screen);
 
-    @Inject(
-            method = "startIntegratedServer(Ljava/lang/String;Ljava/util/function/Function;Ljava/util/function/Function;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER), require = 1
-    )
+    @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
         if (Atum.isResetScheduled() && FabricLoader.getInstance().isModLoaded("worldpreview")) {
             this.clickButton(this.currentScreen, "menu.returnToMenu");
@@ -57,7 +54,7 @@ public abstract class MinecraftClientMixin {
                 if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
                     if (this.world != null) {
                         this.world.disconnect();
-                        this.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                        this.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
                     }
                 }
             }
@@ -84,7 +81,7 @@ public abstract class MinecraftClientMixin {
                     continue;
                 }
                 Text text = button.getMessage();
-                if (text instanceof TranslatableText && ((TranslatableText) text).getKey().equals(translationKey)) {
+                if (text.equals(Text.translatable(translationKey)) || ((TranslatableTextContent) text).getKey().equals(translationKey)) {
                     button.onPress();
                     return true;
                 }

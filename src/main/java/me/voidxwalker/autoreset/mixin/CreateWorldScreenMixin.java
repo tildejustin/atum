@@ -3,14 +3,17 @@ package me.voidxwalker.autoreset.mixin;
 import me.voidxwalker.autoreset.*;
 import net.minecraft.client.gui.screen.world.*;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.*;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.gen.*;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
-
+import java.util.Optional;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
@@ -68,7 +71,13 @@ public abstract class CreateWorldScreenMixin {
             }
             currentDifficulty = difficulty;
             levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
-            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGeneratorType(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType));
+            RegistryKey<WorldPreset> key = RegistryKey.of(Registry.WORLD_PRESET_KEY, new Identifier(Atum.getGeneratorTypeString(Atum.generatorType)));
+            Optional<RegistryEntry<WorldPreset>> entry = this.moreOptionsDialog
+                    .getGeneratorOptionsHolder()
+                    .dynamicRegistryManager()
+                    .get(Registry.WORLD_PRESET_KEY)
+                    .getEntry(key);
+            entry.ifPresent(preset -> ((IMoreOptionsDialog) moreOptionsDialog).atum$setGeneratorType(preset.value()));
             ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateStructure(Atum.structures);
             ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateBonusChest(Atum.bonusChest);
             createLevel();

@@ -5,10 +5,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.*;
+import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.apache.logging.log4j.*;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.*;
@@ -38,7 +38,7 @@ public class Atum implements ModInitializer {
         isRunning = true;
         shouldReset = false;
 
-        MinecraftClient.getInstance().setScreen(CreateWorldScreen.create(null));
+        CreateWorldScreen.create(MinecraftClient.getInstance(), null);
     }
 
     public static boolean isResetScheduled() {
@@ -63,9 +63,9 @@ public class Atum implements ModInitializer {
 
     public static Text getTranslation(String path, String text) {
         if (Language.getInstance().get(path).equals(path)) {
-            return new LiteralText(text);
+            return Text.literal(text);
         } else {
-            return new TranslatableText(path);
+            return Text.translatable(path);
         }
     }
 
@@ -192,7 +192,7 @@ public class Atum implements ModInitializer {
             } catch (NumberFormatException e) {
                 generatorType = 0;
             }
-            if (generatorType > 6) {
+            if (generatorType > 5) {
                 generatorType = 0;
             }
             try {
@@ -208,5 +208,17 @@ public class Atum implements ModInitializer {
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
         }
+    }
+
+    @Nullable
+    public static String getGeneratorTypeString(int generatorType) {
+        return switch (generatorType) {
+            case 0 -> "normal";
+            case 1 -> "flat";
+            case 2 -> "large_biomes";
+            case 3 -> "amplified";
+            case 4 -> "single_biome_surface";
+            default -> null;
+        };
     }
 }

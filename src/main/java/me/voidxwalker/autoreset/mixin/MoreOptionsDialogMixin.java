@@ -2,50 +2,41 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.*;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
-import net.minecraft.client.world.GeneratorType;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.gen.GeneratorOptions;
+import net.minecraft.client.world.GeneratorOptionsHolder;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.*;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 
-import java.util.*;
+import java.util.OptionalLong;
 
 @Mixin(MoreOptionsDialog.class)
 public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @Shadow
-    private GeneratorOptions generatorOptions;
+    abstract void apply(GeneratorOptionsHolder.Modifier modifier);
 
-    @Shadow
-    private Optional<GeneratorType> generatorType;
+    @Shadow private GeneratorOptionsHolder generatorOptionsHolder;
 
-    @Shadow
-    private DynamicRegistryManager.Immutable registryManager;
-
-    @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
-    public OptionalLong setSeed(OptionalLong originalSeed) {
+    @Redirect(method = "getGeneratorOptionsHolder(Z)Lnet/minecraft/client/world/GeneratorOptionsHolder;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;parseSeed(Ljava/lang/String;)Ljava/util/OptionalLong;", ordinal = 0))
+    public OptionalLong setSeed(String string) {
         if (!Atum.isRunning) {
-            return originalSeed;
+            return GeneratorOptions.parseSeed(string);
         }
         OptionalLong optionalLong = GeneratorOptions.parseSeed(Atum.seed);
         Atum.log(Level.INFO, "Resetting " + ((Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : "the set seed: " + "\"" + optionalLong.getAsLong() + "\"")));
         return optionalLong;
     }
 
-    public void atum$setGeneratorType(GeneratorType generatorType) {
-        this.generatorType = Optional.of(generatorType);
-        this.generatorOptions = generatorType.createDefaultOptions(this.registryManager, this.generatorOptions.getSeed(), this.generatorOptions.shouldGenerateStructures(), this.generatorOptions.hasBonusChest());
+    public void atum$setGeneratorType(WorldPreset preset) {
+        this.apply(preset::createGeneratorOptions);
     }
 
     public void atum$setGenerateStructure(boolean generate) {
-        if (generate != generatorOptions.shouldGenerateStructures()) {
-            generatorOptions = generatorOptions.toggleGenerateStructures();
-        }
+        this.apply(options -> new GeneratorOptions(options.getSeed(), generate, options.hasBonusChest(), options.getDimensions()));
     }
 
     public void atum$setGenerateBonusChest(boolean generate) {
-        if (generate != generatorOptions.hasBonusChest()) {
-            generatorOptions = generatorOptions.toggleBonusChest();
-        }
+        this.apply(options -> new GeneratorOptions(options.getSeed(), options.shouldGenerateStructures(), generate, options.getDimensions()));
     }
 }
