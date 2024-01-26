@@ -37,7 +37,7 @@ public abstract class CreateWorldScreenMixin {
                 case 1 -> difficulty = Difficulty.EASY;
                 case 2 -> difficulty = Difficulty.NORMAL;
                 case 3 -> difficulty = Difficulty.HARD;
-                case 4 -> {
+                case -1 -> {
                     difficulty = Difficulty.HARD;
                     hardcore = true;
                 }
