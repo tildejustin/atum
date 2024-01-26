@@ -21,18 +21,18 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            Atum.scheduleReset();
+            Atum.createNewWorld();
         }
-        addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
+        this.addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
     }
 
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        getDifficulty();
+        this.getDifficulty();
         this.client.getTextureManager().bindTexture(BUTTON_IMAGE);
         drawTexture(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && hasShiftDown()) {
-            drawCenteredString(client.textRenderer, difficulty, this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+            this.drawCenteredString(client.textRenderer, difficulty, this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class TitleScreenMixin extends Screen {
     public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 69) {
             if (hasShiftDown()) {
-                client.setScreen(new AutoResetOptionScreen(this));
+                this.client.setScreen(new AutoResetOptionScreen(this));
             } else {
                 Atum.scheduleReset();
             }

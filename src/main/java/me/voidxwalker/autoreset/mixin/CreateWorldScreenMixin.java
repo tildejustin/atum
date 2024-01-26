@@ -4,7 +4,6 @@ import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +16,6 @@ import java.util.Random;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
-    @Shadow
-    private TextFieldWidget levelNameField;
-
     @Shadow
     private boolean creatingLevel;
 
@@ -50,8 +46,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Unique
     private void createLevel() {
-        this.client.setScreen(null);
         if (this.creatingLevel) {
+            this.client.setScreen(null);
             return;
         }
         this.creatingLevel = true;

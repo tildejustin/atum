@@ -29,6 +29,7 @@ public class Atum implements ModInitializer {
     public static boolean shouldReset = false;
 
     public static void scheduleReset() {
+        isRunning = true;
         shouldReset = true;
     }
 
@@ -48,7 +49,7 @@ public class Atum implements ModInitializer {
     }
 
     public static boolean isBlocking() {
-        return MinecraftClient.getInstance().method_14462() != null || isLoadingWorld();
+        return isLoadingWorld();
     }
 
     public static boolean isLoadingWorld() {
@@ -111,7 +112,6 @@ public class Atum implements ModInitializer {
             }
         } else {
             loadFromProperties(getProperties(configFile));
-            System.out.println(ssgAttempts);
         }
     }
 
@@ -147,7 +147,6 @@ public class Atum implements ModInitializer {
         } catch (IOException e) {
             log(Level.WARN, "Could not save config file:\n" + e.getMessage());
         }
-        System.out.println(ssgAttempts);
     }
 
     @NotNull

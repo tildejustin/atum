@@ -25,6 +25,8 @@ public abstract class MinecraftClientMixin {
     @Shadow
     public abstract void connect(@Nullable ClientWorld world);
 
+    @Shadow
+    public abstract void setScreen(@Nullable Screen screen);
 
     @Inject(method = "handleKeyInput", at = @At("HEAD"), cancellable = true)
     private void atum_onKey(CallbackInfo ci) {
@@ -37,21 +39,21 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJ)V", shift = At.Shift.AFTER))
-    private void executeReset(CallbackInfo ci) {
-        while (Atum.shouldReset()) {
-            if (this.world != null) {
-                Screen gameMenuScreen = new GameMenuScreen();
-                gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
-                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
-                    if (this.world != null) {
-                        this.world.disconnect();
-                        this.connect(null);
-                    }
-                }
-            }
-            Atum.createNewWorld();
+    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 0), cancellable = true)
+    private void getToTitleScreenToReset(CallbackInfo ci) {
+        if (!Atum.shouldReset()) {
+            return;
         }
+        if (this.world != null) {
+            Screen gameMenuScreen = new GameMenuScreen();
+            gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
+            if (!this.clickButton(gameMenuScreen, "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
+                this.world.disconnect();
+                this.connect(null);
+            }
+        }
+        this.setScreen(null);
+        ci.cancel();
     }
 
     @Unique
