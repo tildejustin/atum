@@ -29,7 +29,6 @@ public class Atum implements ModInitializer {
     public static boolean shouldReset = false;
 
     public static void scheduleReset() {
-        isRunning = true;
         shouldReset = true;
     }
 
@@ -49,7 +48,8 @@ public class Atum implements ModInitializer {
     }
 
     public static boolean isBlocking() {
-        return isLoadingWorld();
+        // TODO find overlay
+        return MinecraftClient.getInstance().method_9391() != null || isLoadingWorld();
     }
 
     public static boolean isLoadingWorld() {
@@ -68,9 +68,9 @@ public class Atum implements ModInitializer {
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").asUnformattedString(),
+                getTranslation("key.atum.reset", "Create New World").getString(),
                 64,
-                getTranslation("key.categories.atum", "Atum").asUnformattedString()
+                getTranslation("key.categories.atum", "Atum").getString()
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();

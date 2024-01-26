@@ -12,19 +12,17 @@ public class SettingsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.isRunning) {
-            this.addButton(new ButtonWidget(1238, 0, this.height - 20, 100, 20, "Stop Resets & Quit"));
-        }
-    }
-
-    @Inject(method = "buttonClicked", at = @At("HEAD"))
-    public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
-        if (button.id == 1238) {
-            Atum.isRunning = false;
-            if (this.client != null && this.client.world != null) {
-                this.client.world.disconnect();
-                this.client.connect(null);
-                this.client.setScreen(new TitleScreen());
-            }
+            this.addButton(new ButtonWidget(1238, 0, this.height - 20, 100, 20, "Stop Resets & Quit") {
+                @Override
+                public void method_18374(double d, double e) {
+                    Atum.isRunning = false;
+                    if (client != null && client.world != null) {
+                        client.world.disconnect();
+                        client.connect(null);
+                        client.setScreen(new TitleScreen());
+                    }
+                }
+            });
         }
     }
 }

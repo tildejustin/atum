@@ -1,9 +1,13 @@
 package me.voidxwalker.autoreset.mixin;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.JsonOps;
 import me.voidxwalker.autoreset.Atum;
+import net.minecraft.class_4372;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
@@ -29,8 +33,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private String gamemodeName;
 
     @Shadow
-    public String generatorOptions;
-
+    public NbtCompound field_20472;
     @Unique
     private final MinecraftClient client = MinecraftClient.getInstance();
 
@@ -68,8 +71,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
         } else {
             Atum.ssgAttempts++;
         }
+        this.field_20472 = new NbtCompound();
         LevelInfo levelInfo = new LevelInfo(l, GameMode.setGameModeWithString(this.gamemodeName), Atum.structures, this.hardcore, LevelGeneratorType.TYPES[Atum.generatorType]);
-        levelInfo.setGeneratorOptions(this.generatorOptions);
+        levelInfo.method_16395(Dynamic.convert(class_4372.field_21487, JsonOps.INSTANCE, this.field_20472));
         if (Atum.bonusChest && !this.hardcore) {
             levelInfo.setBonusChest();
         }

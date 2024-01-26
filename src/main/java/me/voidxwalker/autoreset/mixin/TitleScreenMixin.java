@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
     @Unique
-    private static final Identifier BUTTON_IMAGE = new Identifier("textures/items/gold_boots.png");
+    private static final Identifier BUTTON_IMAGE = new Identifier("textures/items/golden_boots.png");
 
     @Unique
     private String difficulty;
@@ -21,9 +21,18 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            Atum.createNewWorld();
+            Atum.scheduleReset();
         }
-        this.addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
+        this.addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, "") {
+            @Override
+            public void method_18374(double d, double e) {
+                if (hasShiftDown()) {
+                    client.setScreen(new AutoResetOptionScreen(TitleScreenMixin.this));
+                } else {
+                    Atum.scheduleReset();
+                }
+            }
+        });
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -33,18 +42,6 @@ public abstract class TitleScreenMixin extends Screen {
         drawTexture(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && hasShiftDown()) {
             this.drawCenteredString(client.textRenderer, difficulty, this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
-        }
-    }
-
-    @Inject(method = "buttonClicked", at = @At("HEAD"), cancellable = true)
-    public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
-        if (button.id == 69) {
-            if (hasShiftDown()) {
-                this.client.setScreen(new AutoResetOptionScreen(this));
-            } else {
-                Atum.scheduleReset();
-            }
-            ci.cancel();
         }
     }
 

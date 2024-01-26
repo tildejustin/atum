@@ -21,7 +21,7 @@ public class AutoResetOptionScreen extends Screen {
 
     public AutoResetOptionScreen(@Nullable Screen parent) {
         super();
-        title = Atum.getTranslation("menu.autoresetTitle", "Autoreset Options").asUnformattedString();
+        title = Atum.getTranslation("menu.autoresetTitle", "Autoreset Options").getString();
         this.parent = parent;
     }
 
@@ -35,12 +35,52 @@ public class AutoResetOptionScreen extends Screen {
         this.structures = Atum.structures;
         this.bonusChest = Atum.bonusChest;
 
-        this.addButton(new ButtonWidget(340, this.width / 2 + 5, this.height - 100, 150, 20, "Is Hardcore: " + isHardcore));
-        this.addButton(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
-        this.addButton(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asUnformattedString() + " " + structures));
-        this.addButton(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asUnformattedString() + " " + bonusChest));
-        this.addButton(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asUnformattedString()));
-        this.addButton(new ButtonWidget(343, this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel")));
+        this.addButton(new ButtonWidget(340, this.width / 2 + 5, this.height - 100, 150, 20, "Is Hardcore: " + isHardcore) {
+            @Override
+            public void method_18374(double d, double e) {
+                isHardcore = !isHardcore;
+                this.message = ("Is Hardcore: " + isHardcore);
+            }
+        });
+        this.addButton(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").getString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())) {
+            @Override
+            public void method_18374(double d, double e) {
+                generatorType = (generatorType + 1) % 5;
+                this.message = new TranslatableText("selectWorld.mapType").getString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey());
+            }
+        });
+        this.addButton(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").getString() + " " + structures) {
+            @Override
+            public void method_18374(double d, double e) {
+                structures = !structures;
+                this.message = (new TranslatableText("selectWorld.mapFeatures").getString() + " " + structures);
+            }
+        });
+        this.addButton(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").getString() + " " + bonusChest) {
+            @Override
+            public void method_18374(double d, double e) {
+                bonusChest = !bonusChest;
+                this.message = (new TranslatableText("selectWorld.bonusItems").getString() + " " + bonusChest);
+            }
+        });
+        this.addButton(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").getString()) {
+            @Override
+            public void method_18374(double d, double e) {
+                Atum.seed = seed;
+                Atum.difficulty = isHardcore ? -1 : 0;
+                Atum.structures = structures;
+                Atum.bonusChest = bonusChest;
+                Atum.generatorType = generatorType;
+                Atum.saveProperties();
+                client.setScreen(parent);
+            }
+        });
+        this.addButton(new ButtonWidget(343, this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel")) {
+            @Override
+            public void method_18374(double d, double e) {
+                AutoResetOptionScreen.this.client.setScreen(parent);
+            }
+        });
     }
 
     public void tick() {
@@ -51,52 +91,7 @@ public class AutoResetOptionScreen extends Screen {
         this.renderBackground();
         drawCenteredString(client.textRenderer, this.title, this.width / 2, this.height - 210, -1);
         this.drawWithShadow(client.textRenderer, "Seed (Leave empty for a random Seed)", this.width / 2 - 100, this.height - 180, -6250336);
-
-        this.seedField.render();
+        this.seedField.method_18385(mouseX, mouseY, delta);
         super.render(mouseX, mouseY, delta);
-    }
-
-
-    public void keyPressed(char character, int code) {
-        if (this.seedField.isFocused()) {
-            this.seedField.keyPressed(character, code);
-            this.seed = this.seedField.getText();
-        }
-    }
-
-    protected void buttonClicked(ButtonWidget button) {
-        switch (button.id) {
-            case 340:
-                isHardcore = !isHardcore;
-                button.message = ("Is Hardcore: " + isHardcore);
-                break;
-            case 341:
-                generatorType++;
-                if (generatorType > 5) {
-                    generatorType = 0;
-                }
-                button.message = new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey());
-                break;
-            case 342:
-                structures = !structures;
-                button.message = (new TranslatableText("selectWorld.mapFeatures").asUnformattedString() + " " + structures);
-                break;
-            case 344:
-                bonusChest = !bonusChest;
-                button.message = (new TranslatableText("selectWorld.bonusItems").asUnformattedString() + " " + bonusChest);
-                break;
-            case 345:
-                Atum.seed = seed;
-                Atum.difficulty = isHardcore ? -1 : 0;
-                Atum.structures = structures;
-                Atum.bonusChest = bonusChest;
-                Atum.generatorType = generatorType;
-                Atum.saveProperties();
-                client.setScreen(parent);
-                break;
-            case 343:
-                client.setScreen(parent);
-                break;
-        }
     }
 }
