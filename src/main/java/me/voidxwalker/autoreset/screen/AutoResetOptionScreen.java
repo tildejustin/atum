@@ -39,8 +39,8 @@ public class AutoResetOptionScreen extends Screen {
         this.difficulty = Atum.difficulty;
         this.seedField.setChangedListener((string) -> this.seed = string);
         this.addDrawableChild(
-                CyclingButtonWidget.<Integer>builder(value -> value == -1 ? Text.translatable("selectWorld.gameMode.hardcore") : Difficulty.byId(value).getTranslatableName())
-                        .values(IntStream.range(-1, 4).boxed().sorted().toList())
+                CyclingButtonWidget.<Integer>builder(value -> value == 4 ? Text.translatable("selectWorld.gameMode.hardcore") : Difficulty.byId(value).getTranslatableName())
+                        .values(IntStream.range(0, 5).boxed().sorted().toList())
                         .initially(this.difficulty)
                         .build(this.width / 2 + 5, this.height - 100, 150, 20, Text.translatable("options.difficulty"), ((button, value) -> this.difficulty = value))
         );
