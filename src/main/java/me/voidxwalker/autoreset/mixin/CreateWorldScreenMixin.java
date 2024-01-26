@@ -53,7 +53,6 @@ public abstract class CreateWorldScreenMixin {
             this.worldCreator.setGenerateStructures(Atum.structures);
             this.worldCreator.setBonusChestEnabled(Atum.bonusChest);
             this.worldCreator.setSeed(Atum.seed);
-            System.out.println(this.worldCreator.isHardcore());
             createLevel();
         }
     }
