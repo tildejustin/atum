@@ -1,11 +1,10 @@
 package me.voidxwalker.autoreset.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
@@ -42,11 +41,10 @@ public class TitleScreenMixin extends Screen {
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void goldBootsOverlay(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        RenderSystem.setShaderTexture(0, BUTTON_IMAGE);
-        drawTexture(matrices, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+    private void goldBootsOverlay(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        context.drawTexture(BUTTON_IMAGE, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0f, 0f, 16, 16, 16, 16);
         if (resetButton.isHovered() && hasShiftDown()) {
-            drawCenteredTextWithShadow(matrices, textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+            context.drawCenteredTextWithShadow(textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 

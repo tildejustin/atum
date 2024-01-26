@@ -1,19 +1,14 @@
 package me.voidxwalker.autoreset.mixin;
 
-import me.voidxwalker.autoreset.*;
+import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.screen.world.*;
-import net.minecraft.registry.*;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.gen.WorldPreset;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
@@ -33,9 +28,9 @@ public abstract class CreateWorldScreenMixin {
                 case 1 -> difficulty = Difficulty.EASY;
                 case 2 -> difficulty = Difficulty.NORMAL;
                 case 3 -> difficulty = Difficulty.HARD;
-                case 4 -> {
-                    difficulty = Difficulty.HARD;
+                case -1 -> {
                     this.worldCreator.setGameMode(WorldCreator.Mode.HARDCORE);
+                    difficulty = Difficulty.HARD;
                 }
                 default -> {
                     Atum.log(Level.WARN, "Invalid difficulty");
@@ -58,6 +53,7 @@ public abstract class CreateWorldScreenMixin {
             this.worldCreator.setGenerateStructures(Atum.structures);
             this.worldCreator.setBonusChestEnabled(Atum.bonusChest);
             this.worldCreator.setSeed(Atum.seed);
+            System.out.println(this.worldCreator.isHardcore());
             createLevel();
         }
     }
