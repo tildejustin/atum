@@ -24,8 +24,8 @@ public abstract class MinecraftClientMixin {
 
 
     @Inject(method = "method_18228", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_4218;method_19061(FJZ)V", ordinal = 0))
-    private void executeReset(CallbackInfo ci) {
-        while (Atum.shouldReset()) {
+    private void executeReset(boolean bl, CallbackInfo ci) {
+        while (Atum.shouldReset() && bl) {
             if (this.world != null) {
                 Screen gameMenuScreen = new GameMenuScreen();
                 gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);

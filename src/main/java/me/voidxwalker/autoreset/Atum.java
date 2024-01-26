@@ -1,6 +1,7 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.class_4158;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
@@ -48,8 +49,7 @@ public class Atum implements ModInitializer {
     }
 
     public static boolean isBlocking() {
-        // TODO find overlay
-        return MinecraftClient.getInstance().method_9391() != null || isLoadingWorld();
+        return MinecraftClient.getInstance().currentScreen instanceof class_4158 || isLoadingWorld();
     }
 
     public static boolean isLoadingWorld() {

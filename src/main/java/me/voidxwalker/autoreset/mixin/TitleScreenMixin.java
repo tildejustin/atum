@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
     @Unique
-    private static final Identifier BUTTON_IMAGE = new Identifier("textures/items/golden_boots.png");
+    private static final Identifier BUTTON_IMAGE = new Identifier("textures/item/golden_boots.png");
 
     @Unique
     private String difficulty;
