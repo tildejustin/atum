@@ -6,7 +6,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.*;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.gen.*;
+import net.minecraft.world.gen.WorldPreset;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -38,26 +38,18 @@ public abstract class CreateWorldScreenMixin {
         if (Atum.isRunning) {
             Difficulty difficulty;
             switch (Atum.difficulty) {
-                case 0:
-                    difficulty = Difficulty.PEACEFUL;
-                    break;
-                case 1:
-                    difficulty = Difficulty.EASY;
-                    break;
-                case 2:
-                    difficulty = Difficulty.NORMAL;
-                    break;
-                case 3:
-                    difficulty = Difficulty.HARD;
-                    break;
-                case 4:
+                case 0 -> difficulty = Difficulty.PEACEFUL;
+                case 1 -> difficulty = Difficulty.EASY;
+                case 2 -> difficulty = Difficulty.NORMAL;
+                case 3 -> difficulty = Difficulty.HARD;
+                case 4 -> {
                     difficulty = Difficulty.HARD;
                     hardcore = true;
-                    break;
-                default:
+                }
+                default -> {
                     Atum.log(Level.WARN, "Invalid difficulty");
                     difficulty = Difficulty.EASY;
-                    break;
+                }
             }
             if (Atum.seed == null || Atum.seed.isEmpty()) {
                 Atum.rsgAttempts++;
