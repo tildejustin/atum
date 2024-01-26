@@ -7,7 +7,6 @@
     "CreateWorldScreenMixin",
     "DebugHudMixin",
     "LevelLoadingScreenMixin",
-    "MoreOptionsDialogMixin",
     "OptionsScreenMixin",
     "TitleScreenMixin",
     "hotkey.GameOptionsMixin",

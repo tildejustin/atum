@@ -2,11 +2,11 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.*;
 import net.minecraft.client.gui.screen.world.*;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.*;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.gen.*;
+import net.minecraft.world.gen.WorldPreset;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -18,46 +18,29 @@ import java.util.Optional;
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
     @Shadow
-    public boolean hardcore;
+    protected abstract void createLevel();
 
     @Shadow
     @Final
-    public MoreOptionsDialog moreOptionsDialog;
-
-    @Shadow
-    private TextFieldWidget levelNameField;
-
-    @Shadow
-    private Difficulty currentDifficulty;
-
-    @Shadow
-    protected abstract void createLevel();
+    WorldCreator worldCreator;
 
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.isRunning) {
             Difficulty difficulty;
             switch (Atum.difficulty) {
-                case 0:
-                    difficulty = Difficulty.PEACEFUL;
-                    break;
-                case 1:
-                    difficulty = Difficulty.EASY;
-                    break;
-                case 2:
-                    difficulty = Difficulty.NORMAL;
-                    break;
-                case 3:
+                case 0 -> difficulty = Difficulty.PEACEFUL;
+                case 1 -> difficulty = Difficulty.EASY;
+                case 2 -> difficulty = Difficulty.NORMAL;
+                case 3 -> difficulty = Difficulty.HARD;
+                case 4 -> {
                     difficulty = Difficulty.HARD;
-                    break;
-                case 4:
-                    difficulty = Difficulty.HARD;
-                    hardcore = true;
-                    break;
-                default:
+                    this.worldCreator.setGameMode(WorldCreator.Mode.HARDCORE);
+                }
+                default -> {
                     Atum.log(Level.WARN, "Invalid difficulty");
                     difficulty = Difficulty.EASY;
-                    break;
+                }
             }
             if (Atum.seed == null || Atum.seed.isEmpty()) {
                 Atum.rsgAttempts++;
@@ -69,17 +52,12 @@ public abstract class CreateWorldScreenMixin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            currentDifficulty = difficulty;
-            levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
-            RegistryKey<WorldPreset> key = RegistryKey.of(Registry.WORLD_PRESET_KEY, new Identifier(Atum.getGeneratorTypeString(Atum.generatorType)));
-            Optional<RegistryEntry<WorldPreset>> entry = this.moreOptionsDialog
-                    .getGeneratorOptionsHolder()
-                    .dynamicRegistryManager()
-                    .get(Registry.WORLD_PRESET_KEY)
-                    .getEntry(key);
-            entry.ifPresent(preset -> ((IMoreOptionsDialog) moreOptionsDialog).atum$setGeneratorType(preset.value()));
-            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateStructure(Atum.structures);
-            ((IMoreOptionsDialog) moreOptionsDialog).atum$setGenerateBonusChest(Atum.bonusChest);
+            this.worldCreator.setDifficulty(difficulty);
+            this.worldCreator.setWorldName((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
+            this.worldCreator.setWorldType(this.worldCreator.getNormalWorldTypes().get(Atum.generatorType));
+            this.worldCreator.setGenerateStructures(Atum.structures);
+            this.worldCreator.setBonusChestEnabled(Atum.bonusChest);
+            this.worldCreator.setSeed(Atum.seed);
             createLevel();
         }
     }

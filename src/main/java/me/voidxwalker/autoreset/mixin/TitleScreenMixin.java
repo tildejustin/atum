@@ -31,13 +31,14 @@ public class TitleScreenMixin extends Screen {
         if (Atum.isRunning) {
             Atum.scheduleReset();
         }
-        this.resetButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, Text.literal(""), (buttonWidget) -> {
-            if (hasShiftDown()) {
-                client.setScreen(new AutoResetOptionScreen(this));
-            } else {
-                Atum.scheduleReset();
-            }
-        }));
+        this.resetButton = this.addDrawableChild(ButtonWidget.builder(Text.literal(""), buttonWidget -> {
+                    if (hasShiftDown()) {
+                        client.setScreen(new AutoResetOptionScreen(this));
+                    } else {
+                        Atum.scheduleReset();
+                    }
+                }
+        ).dimensions(this.width / 2 - 124, this.height / 4 + 48, 20, 20).build());
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -45,7 +46,7 @@ public class TitleScreenMixin extends Screen {
         RenderSystem.setShaderTexture(0, BUTTON_IMAGE);
         drawTexture(matrices, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (resetButton.isHovered() && hasShiftDown()) {
-            drawCenteredText(matrices, textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+            drawCenteredTextWithShadow(matrices, textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 
@@ -54,6 +55,6 @@ public class TitleScreenMixin extends Screen {
         if (Atum.difficulty == -1) {
             return Text.translatable("selectWorld.gameMode.hardcore");
         }
-        return Difficulty.byOrdinal(Atum.difficulty).getTranslatableName();
+        return Difficulty.byId(Atum.difficulty).getTranslatableName();
     }
 }
