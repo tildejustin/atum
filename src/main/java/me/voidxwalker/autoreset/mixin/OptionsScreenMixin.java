@@ -19,7 +19,7 @@ public class OptionsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.isRunning) {
-            this.addDrawableChild(new ButtonWidget(0, this.height - 20, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit"), (buttonWidget) -> {
+            this.addDrawableChild(new ButtonWidget(5, this.height - 25, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit"), (buttonWidget) -> {
                 Atum.isRunning = false;
                 if (this.client != null && this.client.world != null) {
                     this.client.world.disconnect();

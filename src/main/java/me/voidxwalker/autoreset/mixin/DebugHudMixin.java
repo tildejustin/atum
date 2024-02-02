@@ -19,7 +19,7 @@ public class DebugHudMixin {
             if (Atum.generatorType != 0) {
                 String s = Atum.getGeneratorTypeString(Atum.generatorType);
                 if (s != null) {
-                    returnValue.add(Text.literal("GenType:").append(s).getString());
+                    returnValue.add(Text.literal("GenType: ").append(s).getString());
                 }
             }
             if (!Atum.structures) {
