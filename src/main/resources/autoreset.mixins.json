@@ -15,8 +15,7 @@
     "hotkey.GameOptionsMixin",
     "hotkey.KeyBindingAccessor",
     "hotkey.MinecraftClientMixin",
-    "hotkey.MinecraftServerMixin",
-    "hotkey.ScreenAccessor"
+    "hotkey.MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
