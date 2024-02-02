@@ -25,12 +25,12 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private boolean tweakedCheats;
 
     @Shadow
-    private String gamemodeName;
+    public String field_3200;
 
     @Shadow
-    public String generatorOptions;
+    private String gameMode;
 
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "method_2224", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.isRunning) {
             if (Atum.difficulty == -1) {
@@ -63,8 +63,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
         } else {
             Atum.ssgAttempts++;
         }
-        LevelInfo levelInfo = new LevelInfo(l, GameMode.setGameModeWithString(this.gamemodeName), Atum.structures, this.hardcore, LevelGeneratorType.TYPES[Atum.generatorType]);
-        levelInfo.setGeneratorOptions(this.generatorOptions);
+        LevelInfo levelInfo = new LevelInfo(l, GameMode.byName(this.gameMode), Atum.structures, this.hardcore, LevelGeneratorType.TYPES[Atum.generatorType]);
+        levelInfo.method_8579(this.field_3200);
         if (Atum.bonusChest && !this.hardcore) {
             levelInfo.setBonusChest();
         }
@@ -74,6 +74,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
         Atum.saveProperties();
         Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() ? "Resetting a random seed" : "Resetting the set seed" + "\"" + l + "\""));
         String saveName = (Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts;
-        this.client.startIntegratedServer(CreateWorldScreen.checkDirectoryName(this.client.getCurrentSave(), saveName), saveName, levelInfo);
+        this.field_2563.startIntegratedServer(CreateWorldScreen.method_2724(this.field_2563.getLevelStorage(), saveName), saveName, levelInfo);
     }
 }

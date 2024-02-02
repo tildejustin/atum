@@ -24,6 +24,9 @@ loom {
     mixin {
         useLegacyMixinAp = false
     }
+    legacyLooming {
+        intermediaryVersion = 2
+    }
 }
 
 dependencies {

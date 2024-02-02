@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-    @Inject(method = "prepareWorlds", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getTimeMillis()J", ordinal = 0))
+    @Inject(method = "method_3774", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;method_0_6455()J", ordinal = 0))
     public void trackWorldGenStart(CallbackInfo ci) {
         Atum.hotkeyState = Atum.HotkeyState.WORLD_GEN;
     }

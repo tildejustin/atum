@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
-    @Redirect(method = "stopRunning", at = @At(value = "INVOKE", target = "Lcom/google/common/util/concurrent/Futures;getUnchecked(Ljava/util/concurrent/Future;)Ljava/lang/Object;"))
+    @Redirect(method = "method_3747", at = @At(value = "INVOKE", target = "Lcom/google/common/util/concurrent/Futures;getUnchecked(Ljava/util/concurrent/Future;)Ljava/lang/Object;"))
     public Object anchiale(Future<?> e) {
         return null;
     }

@@ -3,7 +3,7 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
+import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
@@ -21,10 +21,9 @@ public abstract class MinecraftClientMixin {
     public ClientWorld world;
 
     @Shadow
-    public abstract void connect(@Nullable ClientWorld world);
-
-    @Shadow
     public abstract void setScreen(@Nullable Screen screen);
+
+    @Shadow public abstract void method_1550(@Nullable ClientWorld clientWorld);
 
     @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/ServerNetworkIo;bindLocal()Ljava/net/SocketAddress;", shift = At.Shift.BEFORE))
     public void atum_trackPostWorldGen(CallbackInfo ci) {
@@ -36,17 +35,17 @@ public abstract class MinecraftClientMixin {
         Atum.hotkeyState = Atum.HotkeyState.PRE_WORLDGEN;
     }
 
-    @Inject(method = "handleKeyInput", at = @At("HEAD"))
+    @Inject(method = "method_0_2243", at = @At("HEAD"))
     public void atum_onKey(CallbackInfo ci) {
-        if (!Keyboard.isRepeatEvent() && Atum.resetKey.getCode() == Keyboard.getEventKey()) {
-            if (this.currentScreen instanceof ControlsOptionsScreen && ((ControlsOptionsScreen) this.currentScreen).selectedKeyBinding == Atum.resetKey) {
+        if (!Keyboard.isRepeatEvent() && Atum.resetKey.method_1421() == Keyboard.getEventKey()) {
+            if (this.currentScreen instanceof ControlsOptionsScreen && ((ControlsOptionsScreen) this.currentScreen).focusedBinding == Atum.resetKey) {
                 return;
             }
             Atum.hotkeyPressed = true;
         }
     }
 
-    @Inject(method = "runGameLoop", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "method_0_2281", at = @At(value = "HEAD"), cancellable = true)
     public void atum_tick(CallbackInfo ci) {
         if (Atum.hotkeyPressed) {
             if (Atum.hotkeyState != Atum.HotkeyState.INSIDE_WORLD && Atum.hotkeyState != Atum.HotkeyState.OUTSIDE_WORLD) {
@@ -58,7 +57,7 @@ public abstract class MinecraftClientMixin {
                 if (this.world != null) {
                     this.world.disconnect();
                 }
-                this.connect(null);
+                this.method_1550(null);
             }
             this.setScreen(new TitleScreen());
             ci.cancel();

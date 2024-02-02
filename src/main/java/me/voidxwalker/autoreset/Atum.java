@@ -32,16 +32,16 @@ public class Atum implements ModInitializer {
     }
 
     public static Text getTranslation(String path, String text) {
-        return new LiteralText(text);
+        return new LiteralTextContent(text);
     }
 
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").asUnformattedString(),
+                getTranslation("key.atum.reset", "Create New World").method_0_5147(),
                 64,
-                getTranslation("key.categories.atum", "Atum").asUnformattedString()
+                getTranslation("key.categories.atum", "Atum").method_0_5147()
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();
