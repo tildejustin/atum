@@ -192,7 +192,7 @@ public class Atum implements ModInitializer {
             } catch (NumberFormatException e) {
                 generatorType = 0;
             }
-            if (generatorType > 6) {
+            if (generatorType > 4) {
                 generatorType = 0;
             }
             try {
