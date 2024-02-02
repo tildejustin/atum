@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
-    @Accessor
+    @Accessor("KEY_CATEGORIES")
     static Set<String> getCategories() {
         throw new AssertionError();
     }

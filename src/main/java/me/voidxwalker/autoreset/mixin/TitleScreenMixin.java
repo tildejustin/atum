@@ -5,12 +5,11 @@ import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
@@ -20,31 +19,31 @@ public abstract class TitleScreenMixin extends Screen {
     @Unique
     private String difficulty;
 
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "method_2224", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            client.setScreen(new CreateWorldScreen(this));
+            field_2563.setScreen(new CreateWorldScreen(this));
         } else {
             Atum.hotkeyState = Atum.HotkeyState.OUTSIDE_WORLD;
-            this.buttons.add(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, ""));
+            this.field_2564.add(new ClickableWidget(69, this.field_2561 / 2 - 124, this.field_2559 / 4 + 48, 20, 20, ""));
         }
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
+    @Inject(method = "method_2214", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         getDifficulty();
-        this.client.getTextureManager().bindTexture(BUTTON_IMAGE);
-        drawTexture(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
-        if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && hasShiftDown()) {
-            drawCenteredString(client.textRenderer, difficulty, this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+        this.field_2563.getTextureManager().bindTextureInner(BUTTON_IMAGE);
+        method_1781(this.field_2561 / 2 - 124 + 2, this.field_2559 / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+        if (mouseX > this.field_2561 / 2 - 124 && mouseX < this.field_2561 / 2 - 124 + 20 && mouseY > this.field_2559 / 4 + 48 && mouseY < this.field_2559 / 4 + 48 + 20 && method_2223()) {
+            method_1789(field_2563.field_1772, difficulty, this.field_2561 / 2 - 124 + 11, this.field_2559 / 4 + 48 - 15, 16777215);
         }
     }
 
-    @Inject(method = "buttonClicked", at = @At("HEAD"), cancellable = true)
-    public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
-        if (button.id == 69) {
-            if (hasShiftDown()) {
-                client.setScreen(new AutoResetOptionScreen(null));
+    @Inject(method = "method_0_2778", at = @At("HEAD"), cancellable = true)
+    public void buttonClicked(ClickableWidget button, CallbackInfo ci) {
+        if (button.field_2077 == 69) {
+            if (method_2223()) {
+                field_2563.setScreen(new AutoResetOptionScreen(null));
             } else {
                 Atum.isRunning = true;
                 MinecraftClient.getInstance().setScreen(null);
