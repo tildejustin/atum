@@ -34,12 +34,12 @@ public class AutoResetOptionScreen extends Screen {
         this.structures = Atum.structures;
         this.bonusChest = Atum.bonusChest;
 
-        this.addButton(new ButtonWidget(340, this.width / 2 + 5, this.height - 100, 150, 20, "Is Hardcore: " + isHardcore));
-        this.addButton(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
-        this.addButton(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asUnformattedString() + " " + structures));
-        this.addButton(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asUnformattedString() + " " + bonusChest));
-        this.addButton(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asUnformattedString()));
-        this.addButton(new ButtonWidget(343, this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel")));
+        this.buttons.add(new ButtonWidget(340, this.width / 2 + 5, this.height - 100, 150, 20, "Is Hardcore: " + isHardcore));
+        this.buttons.add(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
+        this.buttons.add(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asUnformattedString() + " " + structures));
+        this.buttons.add(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asUnformattedString() + " " + bonusChest));
+        this.buttons.add(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asUnformattedString()));
+        this.buttons.add(new ButtonWidget(343, this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel")));
     }
 
     public void tick() {
