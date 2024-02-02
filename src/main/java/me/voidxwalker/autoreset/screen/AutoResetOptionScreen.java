@@ -8,7 +8,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.jetbrains.annotations.Nullable;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;
@@ -26,10 +25,8 @@ public class AutoResetOptionScreen extends Screen {
     }
 
     public void init() {
-
         this.isHardcore = Atum.difficulty == -1;
-        this.seedField = new TextFieldWidget(350, this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20) {
-        };
+        this.seedField = new TextFieldWidget(350, this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20);
         this.seedField.setText(Atum.seed == null ? "" : Atum.seed);
         this.seedField.setFocused(true);
         this.seed = Atum.seed;
@@ -38,7 +35,7 @@ public class AutoResetOptionScreen extends Screen {
         this.bonusChest = Atum.bonusChest;
 
         this.addButton(new ButtonWidget(340, this.width / 2 + 5, this.height - 100, 150, 20, "Is Hardcore: " + isHardcore));
-        this.addButton(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey()));
+        this.addButton(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
         this.addButton(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asUnformattedString() + " " + structures));
         this.addButton(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asUnformattedString() + " " + bonusChest));
         this.addButton(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asUnformattedString()));
@@ -77,7 +74,7 @@ public class AutoResetOptionScreen extends Screen {
                 if (generatorType > 5) {
                     generatorType = 0;
                 }
-                button.message = (new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey());
+                button.message = new TranslatableText("selectWorld.mapType").asUnformattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey());
                 break;
             case 342:
                 structures = !structures;

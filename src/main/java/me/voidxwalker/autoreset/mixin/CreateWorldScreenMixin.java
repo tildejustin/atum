@@ -3,7 +3,6 @@ package me.voidxwalker.autoreset.mixin;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +16,6 @@ import java.util.Random;
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow
-    private TextFieldWidget levelNameField;
-
-    @Shadow
     private boolean creatingLevel;
 
     @Shadow
@@ -29,11 +25,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private boolean tweakedCheats;
 
     @Shadow
-    private String saveDirectoryName;
-
-    @Shadow
     private String gamemodeName;
-
 
     @Shadow
     public String generatorOptions;
@@ -50,10 +42,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Unique
     private void createLevel() {
-        this.client.setScreen(null);
         if (this.creatingLevel) {
+            System.out.println("skipping reset");
             return;
         }
+        System.out.println("executing reset");
         this.creatingLevel = true;
         long l = (new Random()).nextLong();
         String string = Atum.seed;
@@ -82,7 +75,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
         Atum.saveProperties();
         Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() ? "Resetting a random seed" : "Resetting the set seed" + "\"" + l + "\""));
-        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
-        this.client.startIntegratedServer(this.saveDirectoryName, levelNameField.getText().trim(), levelInfo);
+        String saveName = (Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts;
+        this.client.startIntegratedServer(CreateWorldScreen.checkDirectoryName(this.client.getCurrentSave(), saveName), saveName, levelInfo);
     }
 }

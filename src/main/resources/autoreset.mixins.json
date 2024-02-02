@@ -6,14 +6,14 @@
   "mixins": [
     "CreateWorldScreenMixin",
     "DebugHudMixin",
+    "IntegratedServerMixin",
     "LoadingScreenRendererMixin",
-    "ServerPlayerEntityMixin",
     "SettingsScreenMixin",
     "TitleScreenMixin",
+    "UtilMixin",
     "hotkey.ClientPlayerNetworkHandlerMixin",
     "hotkey.GameOptionsMixin",
     "hotkey.KeyBindingAccessor",
-    "hotkey.KeyboardMixin",
     "hotkey.MinecraftClientMixin",
     "hotkey.MinecraftServerMixin",
     "hotkey.ScreenAccessor"
