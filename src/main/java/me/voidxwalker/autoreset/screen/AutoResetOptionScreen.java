@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;
@@ -40,12 +39,12 @@ public class AutoResetOptionScreen extends Screen {
             this.isHardcore = !this.isHardcore;
             buttonWidget.setMessage("Is Hardcore: " + isHardcore);
         }));
-        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asString() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey(), (buttonWidget) -> {
+        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey()), (buttonWidget) -> {
             generatorType++;
             if (generatorType > 5) {
                 generatorType = 0;
             }
-            buttonWidget.setMessage(new TranslatableText("selectWorld.mapType").asString() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey());
+            buttonWidget.setMessage(new TranslatableText("selectWorld.mapType").asString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey()));
         }));
 
         this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asString() + " " + structures, (buttonWidget) -> {
