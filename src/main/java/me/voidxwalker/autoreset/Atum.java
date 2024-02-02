@@ -62,12 +62,10 @@ public class Atum implements ModInitializer {
         try (FileOutputStream f = new FileOutputStream(configFile)) {
             Properties properties = getProperties();
             properties.putAll(extraProperties);
-
             properties.store(f, "This is the config file for Atum.\nseed: leave empty for a random seed\ndifficulty: -1 = HARDCORE, 0 = PEACEFUL, 1 = EASY, 2= NORMAL, 3= HARD \ngeneratorType: 0 = DEFAULT, 1= FLAT, 2= LARGE_BIOMES, 3 = AMPLIFIED, 4 = SINGLE_BIOME_SURFACE, 5 = SINGLE_BIOME_CAVES, 6 =SINGLE_BIOME_FLOATING_ISLANDS");
         } catch (IOException e) {
             log(Level.WARN, "Could not save config file:\n" + e.getMessage());
         }
-        System.out.println(ssgAttempts);
     }
 
     @NotNull

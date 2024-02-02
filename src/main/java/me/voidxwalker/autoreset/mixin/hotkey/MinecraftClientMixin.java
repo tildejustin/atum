@@ -34,10 +34,9 @@ public abstract class MinecraftClientMixin {
                 if (world != null) {
                     MinecraftClient.getInstance().world.disconnect();
                 }
-                MinecraftClient.getInstance().connect((ClientWorld) null);
+                MinecraftClient.getInstance().connect(null);
                 MinecraftClient.getInstance().setScreen(new TitleScreen());
             } else if (Atum.hotkeyState == Atum.HotkeyState.OUTSIDE_WORLD) {
-                System.out.println(1);
                 KeyBinding.setKeyPressed(Atum.resetKey.getCode(), false);
                 Atum.hotkeyPressed = false;
                 Atum.isRunning = true;

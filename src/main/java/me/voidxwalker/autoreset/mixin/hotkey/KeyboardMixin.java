@@ -18,7 +18,7 @@ public class KeyboardMixin {
     @Unique
     long atum_lastHeld = 0;
 
-    @Inject(method = "handleKeyInput", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=keyboard"))
     public void atum_onKey(CallbackInfo ci) {
         if (System.currentTimeMillis() - atum_lastHeld > 1000) {
             Atum.hotkeyHeld = false;
