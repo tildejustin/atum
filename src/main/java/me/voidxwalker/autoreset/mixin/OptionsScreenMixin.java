@@ -26,7 +26,7 @@ public class OptionsScreenMixin extends Screen {
                     this.client.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
                     this.client.setScreen(new TitleScreen());
                 }
-            }).dimensions(0, this.height - 20, 100, 20).build());
+            }).dimensions(5, this.height - 25, 100, 20).build());
         }
     }
 }
