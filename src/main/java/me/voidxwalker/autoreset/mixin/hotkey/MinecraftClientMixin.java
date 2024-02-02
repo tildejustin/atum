@@ -55,20 +55,13 @@ public abstract class MinecraftClientMixin {
             Atum.hotkeyPressed = false;
             Atum.isRunning = true;
             if (Atum.hotkeyState == Atum.HotkeyState.INSIDE_WORLD) {
-                System.out.println("disconnecting");
                 if (this.world != null) {
                     this.world.disconnect();
                 }
-                System.out.println("connect nulling");
                 this.connect(null);
             }
             this.setScreen(new TitleScreen());
             ci.cancel();
         }
-    }
-
-    @Redirect(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;shouldPauseGame()Z"))
-    private boolean donotpaus(Screen instance) {
-         return false;
     }
 }

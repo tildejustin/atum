@@ -10,7 +10,7 @@ public final class KeyBindingHelper {
     private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
 
     private static Map<String, Integer> getCategoryMap() {
-        return KeyBindingAccessor.invokeGetCategoryMap();
+        return KeyBindingAccessor.getCategoryMap();
     }
 
     private static boolean hasCategory(String categoryTranslationKey) {
