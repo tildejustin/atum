@@ -10,16 +10,11 @@
   "license": "MIT",
   "icon": "assets/atum/icon.png",
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "me.voidxwalker.autoreset.Atum"
-    ]
-  },
   "mixins": [
     "autoreset.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "minecraft": "1.14.x"
-  }
+    "fabricloader": ">=0.7.4"
+  },
+  "accessWidener": "atum.accesswidener"
 }

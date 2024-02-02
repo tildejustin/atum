@@ -1,7 +1,8 @@
 package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.menu.SettingsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,20 +11,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SettingsScreen.class)
 public class SettingsScreenMixin extends Screen {
-    protected SettingsScreenMixin(Text title) {
-        super(title);
+    protected SettingsScreenMixin(TextComponent textComponent) {
+        super(textComponent);
     }
 
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
-        if (Atum.isRunning) {
-            this.addButton(new ButtonWidget(5, this.height - 25, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit").asString(), (buttonWidget) -> {
-                Atum.isRunning = false;
-                if (this.minecraft != null && this.minecraft.world != null) {
-                    this.minecraft.world.disconnect();
-                    this.minecraft.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
-                    this.minecraft.openScreen(new TitleScreen());
-                }
+        if (Atum.running) {
+            this.addButton(new ButtonWidget(5, this.height - 25, 100, 20, "Stop Resets & Quit", (buttonWidget) -> {
+                Atum.running = false;
+                this.minecraft.world.disconnect();
+                this.minecraft.method_18096(new CloseWorldScreen(new TranslatableTextComponent("menu.savingLevel")));
+                this.minecraft.openScreen(new TitleScreen());
             }));
         }
     }

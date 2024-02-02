@@ -4,15 +4,12 @@
   "package": "me.voidxwalker.autoreset.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CreateWorldScreenMixin",
     "DebugHudMixin",
-    "LevelLoadingScreenMixin",
     "SettingsScreenMixin",
-    "TitleScreenMixin",
-    "hotkey.GameOptionsMixin",
-    "hotkey.KeyBindingAccessor",
-    "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin"
+    "TitleScreenMixin"
+  ],
+  "client": [
+    "DifficultyScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
