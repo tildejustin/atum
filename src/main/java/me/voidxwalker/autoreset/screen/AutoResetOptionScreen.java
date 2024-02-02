@@ -25,9 +25,9 @@ public class AutoResetOptionScreen extends Screen {
     }
 
     protected void init() {
-        this.minecraft.keyboard.enableRepeatEvents(true);
+        this.client.keyboard.enableRepeatEvents(true);
         this.isHardcore = Atum.difficulty == -1;
-        this.seedField = new TextFieldWidget(this.minecraft.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Atum.getTranslation("menu.enterSeed", "Enter a Seed").asString()) {
+        this.seedField = new TextFieldWidget(this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Atum.getTranslation("menu.enterSeed", "Enter a Seed").asString()) {
         };
         this.seedField.setText(Atum.seed == null ? "" : Atum.seed);
         this.seed = Atum.seed;
@@ -49,7 +49,7 @@ public class AutoResetOptionScreen extends Screen {
             }
         }) {
             public String getMessage() {
-                return super.getMessage() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey();
+                return super.getMessage() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey());
             }
         });
 
@@ -80,25 +80,25 @@ public class AutoResetOptionScreen extends Screen {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            this.minecraft.openScreen(this.parent);
+            this.client.openScreen(this.parent);
         }));
-        this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel"), (buttonWidget) -> this.minecraft.openScreen(this.parent)));
+        this.addButton(new ButtonWidget(this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel"), (buttonWidget) -> this.client.openScreen(this.parent)));
         this.children.add(this.seedField);
         this.setInitialFocus(this.seedField);
     }
 
     public void removed() {
-        this.minecraft.keyboard.enableRepeatEvents(false);
+        this.client.keyboard.enableRepeatEvents(false);
     }
 
     public void onClose() {
-        this.minecraft.openScreen(this.parent);
+        this.client.openScreen(this.parent);
     }
 
     public void render(int mouseX, int mouseY, float delta) {
         this.renderBackground();
-        drawCenteredString(minecraft.textRenderer, this.title.asString(), this.width / 2, this.height - 210, -1);
-        drawString(minecraft.textRenderer, Atum.getTranslation("menu.enterSeed", "Seed (Leave empty for a random Seed)").asString(), this.width / 2 - 100, this.height - 180, -6250336);
+        drawCenteredString(this.client.textRenderer, this.title.asString(), this.width / 2, this.height - 210, -1);
+        drawString(this.client.textRenderer, Atum.getTranslation("menu.enterSeed", "Seed (Leave empty for a random Seed)").asString(), this.width / 2 - 100, this.height - 180, -6250336);
 
         this.seedField.render(mouseX, mouseY, delta);
         super.render(mouseX, mouseY, delta);

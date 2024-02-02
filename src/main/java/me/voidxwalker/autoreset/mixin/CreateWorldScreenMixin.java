@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -21,9 +22,6 @@ public abstract class CreateWorldScreenMixin {
     private boolean hardcore;
 
     @Shadow
-    public CompoundTag generatorOptionsTag;
-
-    @Shadow
     private TextFieldWidget levelNameField;
 
     @Shadow
@@ -37,6 +35,10 @@ public abstract class CreateWorldScreenMixin {
 
     @Shadow
     private boolean bonusChest;
+
+    @Shadow public LevelGeneratorOptions generatorOptions;
+
+    @Shadow protected abstract LevelGeneratorType getLevelGeneratorType();
 
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
@@ -87,8 +89,8 @@ public abstract class CreateWorldScreenMixin {
 
     @Unique
     private void setGeneratorType(int generatorType) {
-        this.generatorOptionsTag = new CompoundTag();
         this.generatorType = generatorType;
+        this.generatorOptions = this.getLevelGeneratorType().getDefaultOptions();
     }
 
     @Unique

@@ -16,14 +16,13 @@ public class SettingsScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
-
         if (Atum.isRunning) {
-            this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit").asString(), (buttonWidget) -> {
+            this.addButton(new ButtonWidget(5, this.height - 25, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit").asString(), (buttonWidget) -> {
                 Atum.isRunning = false;
-                if (this.minecraft != null && this.minecraft.world != null) {
-                    this.minecraft.world.disconnect();
-                    this.minecraft.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
-                    this.minecraft.openScreen(new TitleScreen());
+                if (this.client != null && this.client.world != null) {
+                    this.client.world.disconnect();
+                    this.client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+                    this.client.openScreen(new TitleScreen());
                 }
             }));
         }

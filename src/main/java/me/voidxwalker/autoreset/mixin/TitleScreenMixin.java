@@ -31,7 +31,7 @@ public class TitleScreenMixin extends Screen {
         }
         this.resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, "", (buttonWidget) -> {
             if (hasShiftDown()) {
-                minecraft.openScreen(new AutoResetOptionScreen(this));
+                this.client.openScreen(new AutoResetOptionScreen(this));
             } else {
                 Atum.scheduleReset();
             }
@@ -40,10 +40,10 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        this.minecraft.getTextureManager().bindTexture(BUTTON_IMAGE);
-        blit(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+        this.client.getTextureManager().bindTexture(BUTTON_IMAGE);
+        this.drawTexture(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (resetButton.isHovered() && hasShiftDown()) {
-            drawCenteredString(minecraft.textRenderer, getDifficultyText().asString(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+            drawCenteredString(this.client.textRenderer, getDifficultyText().asString(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 
