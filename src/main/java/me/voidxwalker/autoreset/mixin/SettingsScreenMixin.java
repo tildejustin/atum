@@ -18,7 +18,7 @@ public class SettingsScreenMixin extends Screen {
     public void addAutoResetButton(CallbackInfo ci) {
 
         if (Atum.isRunning) {
-            this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit").asString(), (buttonWidget) -> {
+            this.addButton(new ButtonWidget(5, this.height - 25, 100, 20, Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit").asString(), (buttonWidget) -> {
                 Atum.isRunning = false;
                 if (this.minecraft != null && this.minecraft.world != null) {
                     this.minecraft.world.disconnect();

@@ -49,7 +49,7 @@ public class AutoResetOptionScreen extends Screen {
             }
         }) {
             public String getMessage() {
-                return super.getMessage() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey();
+                return super.getMessage() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey());
             }
         });
 
