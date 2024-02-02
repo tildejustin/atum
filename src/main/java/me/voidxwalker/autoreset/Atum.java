@@ -2,17 +2,16 @@ package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.text.*;
-import org.apache.logging.log4j.*;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.*;
 
 public class Atum implements ModInitializer {
-    public static boolean isRunning = false;
-    public static Logger LOGGER = LogManager.getLogger();
-    public static boolean loopPrevent2 = true;
+    public static boolean running = false;
+    public static Logger LOGGER = Logger.getLogger("atum");
     public static String seed = "";
     public static int difficulty = 1;
     public static int generatorType = 0;
@@ -21,9 +20,8 @@ public class Atum implements ModInitializer {
     public static boolean structures = true;
     public static boolean bonusChest = false;
     public static KeyBinding resetKey;
-    public static HotkeyState hotkeyState;
-    public static boolean hotkeyPressed;
-    public static boolean hotkeyHeld = false;
+    public static boolean hotkeyPressed = false;
+    public static boolean loading = false;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
     static File configFile;
 
@@ -31,8 +29,9 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text) {
-        return new LiteralText(text);
+    public static String getTranslation(String path, String text) {
+        String translation = I18n.translate(path);
+        return translation.equals(path) ? text : translation;
     }
 
     public static String load(File file) {
@@ -43,7 +42,7 @@ public class Atum implements ModInitializer {
                 return null;
             }
         } catch (FileNotFoundException e) {
-            log(Level.ERROR, "Could not load:\n" + e.getMessage());
+            log(Level.SEVERE, "Could not load:\n" + e.getMessage());
             return null;
         }
     }
@@ -64,7 +63,7 @@ public class Atum implements ModInitializer {
             properties.putAll(extraProperties);
             properties.store(f, "This is the config file for Atum.\nseed: leave empty for a random seed\ndifficulty: -1 = HARDCORE, 0 = PEACEFUL, 1 = EASY, 2= NORMAL, 3= HARD \ngeneratorType: 0 = DEFAULT, 1= FLAT, 2= LARGE_BIOMES, 3 = AMPLIFIED, 4 = SINGLE_BIOME_SURFACE, 5 = SINGLE_BIOME_CAVES, 6 =SINGLE_BIOME_FLOATING_ISLANDS");
         } catch (IOException e) {
-            log(Level.WARN, "Could not save config file:\n" + e.getMessage());
+            log(Level.WARNING, "Could not save config file:\n" + e.getMessage());
         }
     }
 
@@ -135,7 +134,7 @@ public class Atum implements ModInitializer {
                 configFile.createNewFile();
                 saveProperties();
             } catch (IOException e) {
-                log(Level.ERROR, "Could not create config file:\n" + e.getMessage());
+                log(Level.SEVERE, "Could not create config file:\n" + e.getMessage());
             }
             File difficultyFile = new File("ardifficulty.txt");
             if (difficultyFile.exists()) {
@@ -167,9 +166,5 @@ public class Atum implements ModInitializer {
         } else {
             loadFromProperties(getProperties(configFile));
         }
-    }
-
-    public enum HotkeyState {
-        OUTSIDE_WORLD, INSIDE_WORLD, PRE_WORLDGEN, WORLD_GEN, POST_WORLDGEN, RESETTING
     }
 }

@@ -10,17 +10,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SettingsScreen.class)
 public class SettingsScreenMixin extends Screen {
-    @Inject(method = "method_21947", at = @At("TAIL"))
+    @SuppressWarnings("unchecked")
+    @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
-        if (Atum.isRunning) {
-            this.field_22537.add(new ButtonWidget(1238, 5, this.field_22536 - 25, 100, 20, "Stop Resets & Quit"));
+        if (Atum.running) {
+            this.buttons.add(new ButtonWidget(1238, 5, this.height - 25, 100, 20, "Stop Resets & Quit"));
         }
     }
 
-    @Inject(method = "method_21930", at = @At("HEAD"))
+    @Inject(method = "buttonClicked", at = @At("HEAD"))
     public void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 1238) {
-            Atum.isRunning = false;
+            Atum.running = false;
             MinecraftClient.getInstance().world.disconnect();
             MinecraftClient.getInstance().connect(null);
             MinecraftClient.getInstance().setScreen(new TitleScreen());

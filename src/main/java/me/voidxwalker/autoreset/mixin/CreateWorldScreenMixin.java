@@ -7,13 +7,12 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
-
+import java.util.logging.Level;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
@@ -35,19 +34,19 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow
     private String gamemodeName;
 
-    @Inject(method = "method_21947", at = @At("TAIL"))
+    @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
-        if (Atum.isRunning) {
+        if (Atum.running) {
+            Atum.loading = true;
             if (Atum.difficulty == -1) {
                 hardcore = true;
             }
-
             createLevel();
         }
     }
 
+    @Unique
     private void createLevel() {
-        this.field_22534.setScreen((Screen) null);
         if (this.creatingLevel) {
             return;
         }
@@ -61,7 +60,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     l = m;
                 }
             } catch (NumberFormatException var7) {
-                l = (long) string.hashCode();
+                l = string.hashCode();
             }
         }
         if (Atum.seed == null || Atum.seed.isEmpty()) {
@@ -80,6 +79,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
         Atum.saveProperties();
         Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() ? "Resetting a random seed" : "Resetting the set seed" + "\"" + l + "\""));
         levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
-        this.field_22534.startIntegratedServer(levelNameField.getText().trim(), levelNameField.getText().trim(), levelInfo);
+        this.client.method_2935(levelNameField.getText().trim(), levelNameField.getText().trim(), levelInfo);
     }
 }

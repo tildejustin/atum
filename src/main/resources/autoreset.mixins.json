@@ -7,15 +7,13 @@
     "CreateWorldScreenMixin",
     "DebugHudMixin",
     "LoadingScreenRendererMixin",
-    "TitleScreenMixin",
     "SettingsScreenMixin",
-    "hotkey.KeyBindingAccessor",
-    "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin",
-    "hotkey.ClientPlayerNetworkHandlerMixin",
+    "TitleScreenMixin",
     "hotkey.GameOptionsMixin",
-    "hotkey.MinecraftServerMixin",
-    "ServerPlayerEntityMixin"
+    "hotkey.MinecraftClientMixin"
+  ],
+  "client": [
+    "hotkey.ControlsOptionsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

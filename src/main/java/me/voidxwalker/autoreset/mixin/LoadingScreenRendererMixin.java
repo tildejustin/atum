@@ -6,24 +6,17 @@ import net.minecraft.client.render.LoadingScreenRenderer;
 import net.minecraft.client.util.Window;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.*;
 
-@Mixin(value = LoadingScreenRenderer.class, priority = 1100) // Hello WorldPreview, don't let us get in your way
-public class LoadingScreenRendererMixin {
-
+@Mixin(LoadingScreenRenderer.class)
+public abstract class LoadingScreenRendererMixin {
     @Shadow
     private MinecraftClient client;
 
-    @Shadow
-    private Window window;
-
-    @Inject(method = "setProgressPercentage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;method_956(Ljava/lang/String;III)I", ordinal = 1, shift = At.Shift.AFTER))
-    public void renderSeed(int percentage, CallbackInfo ci) {
-        if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty()) {
-            int j = this.window.getWidth();
-            int k = this.window.getHeight();
-            String string = Atum.seed;
-            this.client.textRenderer.method_956(string, (j - this.client.textRenderer.getStringWidth(string)) / 2, k / 2 - 4 - 40, 0xFFFFFF);
+    @Inject(method = "setProgressPercentage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;method_956(Ljava/lang/String;III)I", ordinal = 1, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void renderSeed(int percentage, CallbackInfo ci, long time, Window window, int width, int height) {
+        if (Atum.running && !Atum.seed.isEmpty()) {
+            this.client.textRenderer.method_956(Atum.seed, (width - this.client.textRenderer.getStringWidth(Atum.seed)) / 2, height / 2 - 4 - 16 - 24, 0xFFFFFF);
         }
     }
 }

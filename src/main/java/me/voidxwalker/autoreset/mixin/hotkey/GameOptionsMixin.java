@@ -1,27 +1,23 @@
 package me.voidxwalker.autoreset.mixin.hotkey;
 
-import me.voidxwalker.autoreset.*;
+import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.option.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.*;
+
 @Mixin(GameOptions.class)
-public class GameOptionsMixin {
-    @Mutable
+public abstract class GameOptionsMixin {
     @Shadow
     public KeyBinding[] allKeys;
 
-    @Inject(at = @At("HEAD"), method = "load()V")
-    public void loadHook(CallbackInfo info) {
-            /* move the register here, before this it was running after process(allKeys) and the hotkey wasn't being processed. This is because
-               Atum.onInitialize() runs after GameOptions.load() in 1.7 for whatever reason.
-             */
-        Atum.resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                Atum.getTranslation("key.atum.reset", "Create New World").asFormattedString(),
-                64,
-                Atum.getTranslation("key.categories.atum", "Atum").asFormattedString()
-        ));
-        allKeys = KeyBindingHelper.process(allKeys);
+    @Inject(method = "load", at = @At("TAIL"))
+    private void addResetKey(CallbackInfo ci) {
+        Atum.resetKey = new KeyBinding("Reset Key", 64);
+        List<KeyBinding> newKeys = new ArrayList<>(Arrays.asList(allKeys));
+        newKeys.add(Atum.resetKey);
+        allKeys = newKeys.toArray(new KeyBinding[0]);
     }
 }
