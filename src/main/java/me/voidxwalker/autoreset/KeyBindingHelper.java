@@ -2,12 +2,9 @@ package me.voidxwalker.autoreset;
 
 import com.google.common.collect.Lists;
 import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public final class KeyBindingHelper {
     private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
