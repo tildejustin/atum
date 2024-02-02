@@ -48,10 +48,7 @@ public class AutoResetOptionScreen extends Screen {
             }
         });
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType"), (buttonWidget) -> {
-            generatorType++;
-            if (generatorType > 6) {
-                generatorType = 0;
-            }
+            generatorType = (generatorType + 1) % 5;
         }) {
             public Text getMessage() {
                 return super.getMessage().shallowCopy().append(": ").append(GeneratorTypeAccessor.getVALUES().get(generatorType).getDisplayName());
@@ -62,7 +59,7 @@ public class AutoResetOptionScreen extends Screen {
             this.structures = !structures;
         }) {
             public Text getMessage() {
-                return super.getMessage().shallowCopy().append(" ").append(String.valueOf(structures));
+                return super.getMessage().shallowCopy().append(": ").append(String.valueOf(structures));
             }
         });
 
@@ -70,7 +67,7 @@ public class AutoResetOptionScreen extends Screen {
             this.bonusChest = !bonusChest;
         }) {
             public Text getMessage() {
-                return super.getMessage().shallowCopy().append(" ").append(String.valueOf(bonusChest));
+                return super.getMessage().shallowCopy().append(": ").append(String.valueOf(bonusChest));
             }
         });
 
