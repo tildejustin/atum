@@ -23,7 +23,6 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
-            System.out.println("received reset");
             client.setScreen(new CreateWorldScreen(this));
         } else {
             Atum.hotkeyState = Atum.HotkeyState.OUTSIDE_WORLD;

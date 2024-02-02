@@ -43,10 +43,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique
     private void createLevel() {
         if (this.creatingLevel) {
-            System.out.println("skipping reset");
             return;
         }
-        System.out.println("executing reset");
         this.creatingLevel = true;
         long l = (new Random()).nextLong();
         String string = Atum.seed;

@@ -4,12 +4,12 @@ import net.minecraft.client.option.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Map;
+import java.util.Set;
 
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
-    @Accessor("field_15867")
-    static Map<String, Integer> invokeGetCategoryMap() {
+    @Accessor
+    static Set<String> getCategories() {
         throw new AssertionError();
     }
 }
