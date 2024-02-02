@@ -17,7 +17,7 @@ public class DebugHudMixin {
             List<String> returnValue = info.getReturnValue();
             returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : ("the seed: \"" + Atum.seed + "\"")));
             if (Atum.generatorType != 0) {
-                returnValue.add(new LiteralText("").append("GenType:").append(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType).getDisplayName()).asString());
+                returnValue.add(new LiteralText("").append("GenType: ").append(GeneratorTypeAccessor.getVALUES().get(Atum.generatorType).getDisplayName()).asString());
             }
             if (!Atum.structures) {
                 returnValue.add("NoStructures");
