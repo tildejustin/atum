@@ -17,7 +17,7 @@ public class DebugHudMixin extends DrawableHelper {
     @Inject(method = "method_979", at = @At("TAIL"))
     private void getRightText(float bl, boolean i, int j, int par4, CallbackInfo ci) {
         if (Atum.running && client.options.debugEnabled) {
-            this.drawCenteredString(this.client.textRenderer, "Resetting" + (Atum.seed == null || Atum.seed.isEmpty() ? " a random seed" : (" the seed: \"" + Atum.seed + "\"")), 2, 114, 14737632);
+            this.drawWithShadow(this.client.textRenderer, "Resetting" + (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? " a random seed" : (" the seed: \"" + Atum.seed + "\"")), 2, 114, 14737632);
         }
     }
 }
