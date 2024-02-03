@@ -19,7 +19,7 @@ public class LoadingScreenRendererMixin {
 
     @Inject(method = "setProgressPercentage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;method_956(Ljava/lang/String;III)I", ordinal = 1, shift = At.Shift.AFTER))
     public void renderSeed(int percentage, CallbackInfo ci) {
-        if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty()) {
+        if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty() && MinecraftClient.getInstance().getServer() != null && MinecraftClient.getInstance().world == null) {
             int j = this.window.getWidth();
             int k = this.window.getHeight();
             String string = Atum.seed;
