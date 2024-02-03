@@ -18,11 +18,11 @@ public class LoadingScreenRendererMixin {
 
     @Inject(method = "progressStagePercentage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Ljava/lang/String;FFI)I", ordinal = 1, shift = At.Shift.AFTER))
     public void renderSeed(int percentage, CallbackInfo ci) {
-        if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty()) {
+        if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty() && MinecraftClient.getInstance().getServer() != null && MinecraftClient.getInstance().world == null) {
             int j = this.field_7695.getWidth();
             int k = this.field_7695.getHeight();
             String string = Atum.seed;
-            this.field_1029.textRenderer.drawWithShadow(string, (j - this.field_1029.textRenderer.getStringWidth(string)) / 2, k / 2 - 4 - 40, 0xFFFFFF);
+            this.field_1029.textRenderer.drawWithShadow(string, (float) (j - this.field_1029.textRenderer.getStringWidth(string)) / 2, (float) k / 2 - 4 - 40, 0xFFFFFF);
         }
     }
 }
