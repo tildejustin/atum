@@ -7,13 +7,13 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
 import java.util.Random;
-
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
@@ -72,7 +72,7 @@ public abstract class CreateWorldScreenMixin {
                 l = string.hashCode();
             }
         }
-        if (Atum.seed == null || Atum.seed.isEmpty()) {
+        if (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) {
             Atum.rsgAttempts++;
         } else {
             Atum.ssgAttempts++;
@@ -85,7 +85,8 @@ public abstract class CreateWorldScreenMixin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
+        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
+        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
         return "" + l;
     }
 
