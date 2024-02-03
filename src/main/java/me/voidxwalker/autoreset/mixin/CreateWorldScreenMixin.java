@@ -62,7 +62,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 l = string.hashCode();
             }
         }
-        if (Atum.seed == null || Atum.seed.isEmpty()) {
+        if (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0")) {
             Atum.rsgAttempts++;
         } else {
             Atum.ssgAttempts++;
@@ -76,8 +76,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
             levelInfo.enableCommands();
         }
         Atum.saveProperties();
-        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() ? "Resetting a random seed" : "Resetting the set seed" + "\"" + l + "\""));
-        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
+        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
+        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
         this.client.startGame(levelNameField.getText().trim(), levelNameField.getText().trim(), levelInfo);
     }
 }

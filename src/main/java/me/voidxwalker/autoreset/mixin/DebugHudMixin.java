@@ -15,7 +15,7 @@ public class DebugHudMixin {
     private void atum_getRightText(CallbackInfoReturnable<List<String>> info) {
         if (Atum.isRunning) {
             List<String> returnValue = info.getReturnValue();
-            returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : ("the seed: \"" + Atum.seed + "\"")));
+            returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? "a random seed" : ("the seed: \"" + Atum.seed + "\"")));
             if (Atum.generatorType != 0) {
                 returnValue.add("GenType:" + LevelGeneratorType.TYPES[Atum.generatorType].getTranslationKey());
             }
