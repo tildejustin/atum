@@ -2,7 +2,7 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import org.spongepowered.asm.mixin.*;
@@ -17,7 +17,7 @@ public abstract class SettingsScreenMixin extends Screen {
     @Inject(method = "method_2214", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.isRunning) {
-            this.method_2219(new ClickableWidget(1238, 5, this.field_2559 - 25, 100, 20, "Stop Resets & Quit"));
+            this.method_2219(new ClickableWidget(1238, 0, this.field_2559 - 20, 100, 20, "Stop Resets & Quit"));
         }
     }
 
@@ -32,7 +32,7 @@ public abstract class SettingsScreenMixin extends Screen {
                 this.field_2563.world.disconnect();
             }
             this.field_2563.method_1550(null);
-            this.field_2563.setScreen(null);
+            this.field_2563.setScreen(new TitleScreen());
         }
     }
 }
