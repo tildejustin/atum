@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;

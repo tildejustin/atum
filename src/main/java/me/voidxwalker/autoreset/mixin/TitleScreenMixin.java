@@ -24,7 +24,6 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
         if (Atum.isRunning) {
