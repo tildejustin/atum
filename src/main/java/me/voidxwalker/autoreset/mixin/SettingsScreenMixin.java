@@ -12,7 +12,7 @@ public class SettingsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.isRunning) {
-            this.addButton(new ButtonWidget(1238, 5, this.height - 25, 100, 20, "Stop Resets & Quit") {
+            this.addButton(new ButtonWidget(1238, 0, this.height - 20, 100, 20, "Stop Resets & Quit") {
                 @Override
                 public void method_18374(double d, double e) {
                     Atum.isRunning = false;
