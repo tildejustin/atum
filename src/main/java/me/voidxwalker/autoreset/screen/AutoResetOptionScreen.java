@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;

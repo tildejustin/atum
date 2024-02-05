@@ -3,9 +3,7 @@ package me.voidxwalker.autoreset.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
@@ -26,8 +24,6 @@ public class TitleScreenMixin extends Screen {
     protected TitleScreenMixin(Text title) {
         super(title);
     }
-
-
 
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
