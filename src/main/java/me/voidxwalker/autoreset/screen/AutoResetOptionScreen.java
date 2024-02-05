@@ -9,7 +9,6 @@ import net.minecraft.text.*;
 import net.minecraft.world.Difficulty;
 import org.jetbrains.annotations.Nullable;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;
