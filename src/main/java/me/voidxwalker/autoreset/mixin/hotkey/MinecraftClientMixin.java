@@ -81,7 +81,7 @@ public abstract class MinecraftClientMixin {
                     continue;
                 }
                 Text text = button.getMessage();
-                if (text.equals(Text.translatable(translationKey)) || ((TranslatableTextContent) text).getKey().equals(translationKey)) {
+                if (text.equals(Text.translatable(translationKey)) || (text instanceof TranslatableTextContent && ((TranslatableTextContent) text).getKey().equals(translationKey))) {
                     button.onPress();
                     return true;
                 }
