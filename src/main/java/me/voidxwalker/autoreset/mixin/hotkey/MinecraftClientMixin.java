@@ -39,7 +39,7 @@ public abstract class MinecraftClientMixin {
             if (this.world != null) {
                 Screen gameMenuScreen = new GameMenuScreen(true);
                 gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
-                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
+                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
                     if (this.world != null) {
                         this.world.disconnect();
                         this.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
@@ -58,7 +58,7 @@ public abstract class MinecraftClientMixin {
                     continue;
                 }
                 Text text = button.getMessage();
-                if (text.equals(Text.translatable(translationKey)) || (text instanceof TranslatableTextContent && ((TranslatableTextContent) text).getKey().equals(translationKey))) {
+                if (translationKey.equals(text.getLiteralString()) || text.equals(Text.literal(translationKey)) || (text instanceof TranslatableTextContent && ((TranslatableTextContent) text).getKey().equals(translationKey))) {
                     button.onPress();
                     return true;
                 }
