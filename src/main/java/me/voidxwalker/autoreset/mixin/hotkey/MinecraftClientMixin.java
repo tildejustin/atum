@@ -54,7 +54,7 @@ public abstract class MinecraftClientMixin {
             if (this.world != null) {
                 Screen gameMenuScreen = new GameMenuScreen(true);
                 gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
-                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
+                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
                     if (this.world != null) {
                         this.world.disconnect();
                         this.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
