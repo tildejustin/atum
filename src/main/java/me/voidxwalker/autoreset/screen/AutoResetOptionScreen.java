@@ -61,7 +61,8 @@ public class AutoResetOptionScreen extends Screen {
             this.structures = !structures;
         }) {
             public Text getMessage() {
-                return super.getMessage().shallowCopy().append(": ").append(String.valueOf(structures));
+                MutableText text = super.getMessage().shallowCopy();
+                return text.append(text.getString().endsWith(":") ? " " : ": ").append(String.valueOf(structures));
             }
         });
 
@@ -69,7 +70,8 @@ public class AutoResetOptionScreen extends Screen {
             this.bonusChest = !bonusChest;
         }) {
             public Text getMessage() {
-                return super.getMessage().shallowCopy().append(": ").append(String.valueOf(bonusChest));
+                MutableText text = super.getMessage().shallowCopy();
+                return text.append(text.getString().endsWith(":") ? " " : ": ").append(String.valueOf(bonusChest));
             }
         });
 
