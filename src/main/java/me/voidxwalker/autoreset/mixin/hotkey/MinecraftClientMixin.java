@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.*;
 import net.minecraft.util.profiler.ProfileResult;
@@ -80,8 +81,7 @@ public abstract class MinecraftClientMixin {
                 if (!(element instanceof ButtonWidget button)) {
                     continue;
                 }
-                Text text = button.getMessage();
-                if (translationKey.equals(text.getString()) || text.equals(Text.literal(translationKey)) || (text instanceof TranslatableTextContent && ((TranslatableTextContent) text).getKey().equals(translationKey))) {
+                if (I18n.translate(translationKey).equals(button.getMessage().getString())) {
                     button.onPress();
                     return true;
                 }
