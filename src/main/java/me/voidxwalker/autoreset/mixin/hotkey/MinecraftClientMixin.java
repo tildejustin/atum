@@ -48,7 +48,7 @@ public abstract class MinecraftClientMixin {
     @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
         if (Atum.isResetScheduled() && FabricLoader.getInstance().isModLoaded("worldpreview")) {
-            keyboard.onKey(this.window.getHandle(), GLFW.GLFW_KEY_ESCAPE, 1, 1, 0);
+            this.keyboard.onKey(this.window.getHandle(), GLFW.GLFW_KEY_ESCAPE, 1, GLFW.GLFW_PRESS, 0);
             this.clickButton(this.currentScreen, "menu.returnToMenu");
         }
     }
