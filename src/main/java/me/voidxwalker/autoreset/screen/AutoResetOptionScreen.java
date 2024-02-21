@@ -8,11 +8,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.jetbrains.annotations.Nullable;
 
-
 public class AutoResetOptionScreen extends Screen {
     private final Screen parent;
     private TextFieldWidget seedField;
-    private String seed;
     private boolean isHardcore;
     private int generatorType;
     private boolean structures;
@@ -25,12 +23,12 @@ public class AutoResetOptionScreen extends Screen {
         this.parent = parent;
     }
 
+    @Override
     public void init() {
         this.isHardcore = Atum.difficulty == -1;
         this.seedField = new TextFieldWidget(350, this.client.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20);
         this.seedField.setText(Atum.seed == null ? "" : Atum.seed);
         this.seedField.setFocused(true);
-        this.seed = Atum.seed;
         this.generatorType = Atum.generatorType;
         this.structures = Atum.structures;
         this.bonusChest = Atum.bonusChest;
@@ -66,7 +64,7 @@ public class AutoResetOptionScreen extends Screen {
         this.addButton(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").getString()) {
             @Override
             public void method_18374(double d, double e) {
-                Atum.seed = seed;
+                Atum.seed = seedField.getText().trim();
                 Atum.difficulty = isHardcore ? -1 : 0;
                 Atum.structures = structures;
                 Atum.bonusChest = bonusChest;
@@ -93,5 +91,30 @@ public class AutoResetOptionScreen extends Screen {
         this.drawWithShadow(client.textRenderer, "Seed (Leave empty for a random Seed)", this.width / 2 - 100, this.height - 180, -6250336);
         this.seedField.method_18385(mouseX, mouseY, delta);
         super.render(mouseX, mouseY, delta);
+    }
+
+    @Override
+    public boolean mouseClicked(double d, double e, int i) {
+        if (super.mouseClicked(d, e, i)) {
+            return true;
+        }
+        return seedField.mouseClicked(d, e, i);
+    }
+
+    @Override
+    public boolean charTyped(char c, int i) {
+        if (this.seedField.isFocused()) {
+            this.seedField.charTyped(c, i);
+            return true;
+        }
+        return super.charTyped(c, i);
+    }
+
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
+        if (this.seedField.isFocused()) {
+            this.seedField.keyPressed(i, j, k);
+        }
+        return true;
     }
 }
