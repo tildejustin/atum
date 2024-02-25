@@ -93,15 +93,17 @@ public abstract class CreateWorldScreenMixin extends Screen {
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$loadAtumConfigurations();
 
         if (Atum.isRunning()) {
-            if (Files.exists(Atum.config.dataPackDirectory) && Files.isDirectory(Atum.config.dataPackDirectory)) {
-                this.field_25477 = CreateWorldScreen.method_29685(Atum.config.dataPackDirectory, this.client);
-                if (this.field_25477 == null) {
+            if (!Atum.config.isDefaultDataPackSettings(this.field_25479)) {
+                if (Files.isDirectory(Atum.config.dataPackDirectory)) {
+                    this.field_25477 = CreateWorldScreen.method_29685(Atum.config.dataPackDirectory, this.client);
+                    if (this.field_25477 == null) {
+                        Atum.config.dataPackMismatch = true;
+                        Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
+                    }
+                } else {
                     Atum.config.dataPackMismatch = true;
-                    Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
+                    Atum.log(Level.WARN, "Data pack mismatch, the Atum data pack directory is missing!");
                 }
-            } else if (!Atum.config.isDefaultDataPackSettings(this.field_25479)) {
-                Atum.config.dataPackMismatch = true;
-                Atum.log(Level.WARN, "Data pack mismatch, the Atum data pack directory is missing!");
             }
         } else {
             this.field_25477 = Atum.config.dataPackDirectory;
