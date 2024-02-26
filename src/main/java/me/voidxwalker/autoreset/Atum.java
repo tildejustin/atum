@@ -69,7 +69,7 @@ public class Atum implements ModInitializer {
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 getTranslation("key.atum.reset", "Create New World").getString(),
-                64,
+                295,
                 getTranslation("key.categories.atum", "Atum").getString()
         ));
         new File("config").mkdir();
