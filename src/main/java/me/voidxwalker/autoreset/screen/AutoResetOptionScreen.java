@@ -86,7 +86,7 @@ public class AutoResetOptionScreen extends Screen {
                 break;
             case 345:
                 Atum.seed = seed;
-                Atum.difficulty = isHardcore ? -1 : 0;
+                Atum.difficulty = isHardcore ? -1 : 2;
                 Atum.structures = structures;
                 Atum.bonusChest = bonusChest;
                 Atum.generatorType = generatorType;
