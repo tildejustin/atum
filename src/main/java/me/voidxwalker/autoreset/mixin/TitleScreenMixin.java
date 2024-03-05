@@ -6,6 +6,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.*;
 import net.minecraft.client.texture.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -13,9 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
-    @Unique
-    private String difficulty;
-
     @SuppressWarnings("unchecked")
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo info) {
@@ -28,12 +27,11 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        getDifficulty();
         MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.field_6557);
         Sprite texture = ((SpriteAtlasTexture) MinecraftClient.getInstance().getTextureManager().getTexture(SpriteAtlasTexture.field_6557)).getSprite("gold_boots");
         method_4944(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, texture, 16, 16);
         if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && hasShiftDown()) {
-            drawCenteredString(client.textRenderer, difficulty, this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+            drawCenteredString(client.textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 
@@ -55,11 +53,7 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @Unique
-    private void getDifficulty() {
-        if (Atum.difficulty == -1) {
-            difficulty = "Hardcore: ON";
-        } else {
-            difficulty = "Hardcore: OFF";
-        }
+    String getDifficultyText() {
+        return I18n.translate("selectWorld.gameMode.hardcore") + ": " + I18n.translate("options." + (Atum.difficulty != -1 ? "off" : "on"));
     }
 }

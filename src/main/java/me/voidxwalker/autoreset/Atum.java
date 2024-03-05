@@ -13,7 +13,7 @@ public class Atum implements ModInitializer {
     public static boolean running = false;
     public static Logger LOGGER = Logger.getLogger("atum");
     public static String seed = "";
-    public static int difficulty = 1;
+    public static int difficulty = 2;
     public static int generatorType = 0;
     public static int rsgAttempts;
     public static int ssgAttempts;
@@ -93,12 +93,12 @@ public class Atum implements ModInitializer {
             }
             seed = seed.trim();
             try {
-                difficulty = !properties.containsKey("difficulty") ? 1 : Integer.parseInt(properties.getProperty("difficulty"));
+                difficulty = !properties.containsKey("difficulty") ? 2 : Integer.parseInt(properties.getProperty("difficulty"));
             } catch (NumberFormatException e) {
-                difficulty = 1;
+                difficulty = 2;
             }
-            if (difficulty > 4) {
-                difficulty = 1;
+            if (difficulty != 2 && difficulty != -1) {
+                difficulty = 2;
             }
             try {
                 generatorType = !properties.containsKey("generatorType") ? 0 : Integer.parseInt(properties.getProperty("generatorType"));
@@ -139,9 +139,9 @@ public class Atum implements ModInitializer {
             File difficultyFile = new File("ardifficulty.txt");
             if (difficultyFile.exists()) {
                 String difInput = load(difficultyFile);
-                difficulty = difInput == null ? 1 : Integer.parseInt(difInput.trim());
-                if (difficulty > 4) {
-                    difficulty = 1;
+                difficulty = difInput == null ? 2 : Integer.parseInt(difInput.trim());
+                if (difficulty != 2 && difficulty != -1) {
+                    difficulty = 2;
                 }
                 difficultyFile.delete();
             }
