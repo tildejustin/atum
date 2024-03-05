@@ -65,7 +65,7 @@ public class AutoResetOptionScreen extends Screen {
             @Override
             public void method_18374(double d, double e) {
                 Atum.seed = seedField.getText().trim();
-                Atum.difficulty = isHardcore ? -1 : 0;
+                Atum.difficulty = isHardcore ? -1 : 2;
                 Atum.structures = structures;
                 Atum.bonusChest = bonusChest;
                 Atum.generatorType = generatorType;
