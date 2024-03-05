@@ -71,7 +71,7 @@ public class AutoResetOptionScreen extends Screen {
 
         this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asString(), (buttonWidget) -> {
             Atum.seed = this.seed;
-            Atum.difficulty = this.isHardcore ? -1 : 0;
+            Atum.difficulty = this.isHardcore ? -1 : 2;
             Atum.structures = this.structures;
             Atum.bonusChest = this.bonusChest;
             Atum.generatorType = this.generatorType;
