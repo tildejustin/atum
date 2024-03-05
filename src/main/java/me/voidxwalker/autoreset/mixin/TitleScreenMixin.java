@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -15,9 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TitleScreenMixin extends Screen {
     @Unique
     private static final Identifier BUTTON_IMAGE = new Identifier("textures/items/gold_boots.png");
-
-    @Unique
-    private String difficulty;
 
     @Inject(method = "method_21947", at = @At("TAIL"))
     private void init(CallbackInfo info) {
@@ -32,11 +30,10 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "method_21925", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        getDifficulty();
         this.field_22534.getTextureManager().bindTexture(BUTTON_IMAGE);
         method_21875(field_22535 / 2 - 124 + 2, this.field_22536 / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (mouseX > field_22535 / 2 - 124 && mouseX < field_22535 / 2 - 124 + 20 && mouseY > this.field_22536 / 4 + 48 && mouseY < this.field_22536 / 4 + 48 + 20 && method_21945()) {
-            method_21881(field_22534.textRenderer, difficulty, field_22535 / 2 - 124 + 11, this.field_22536 / 4 + 48 - 15, 16777215);
+            method_21881(field_22534.textRenderer, getDifficultyText().asFormattedString(), field_22535 / 2 - 124 + 11, this.field_22536 / 4 + 48 - 15, 16777215);
         }
     }
 
@@ -54,11 +51,7 @@ public abstract class TitleScreenMixin extends Screen {
     }
 
     @Unique
-    private void getDifficulty() {
-        if (Atum.difficulty == -1) {
-            difficulty = "Hardcore: ON";
-        } else {
-            difficulty = "Hardcore: OFF";
-        }
+    Text getDifficultyText() {
+        return new TranslatableText("selectWorld.gameMode.hardcore").append(": ").append(new TranslatableText("options." + (Atum.difficulty != -1 ? "off" : "on")));
     }
 }
