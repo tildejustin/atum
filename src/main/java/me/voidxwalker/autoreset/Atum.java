@@ -24,7 +24,7 @@ public class Atum implements ModInitializer {
     public static int rsgAttempts;
     public static int ssgAttempts;
     public static boolean structures = true;
-    public static boolean bonusChest = false;
+    public static boolean bonusChest = true;
     public static KeyBinding resetKey;
     public static boolean shouldReset = false;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
