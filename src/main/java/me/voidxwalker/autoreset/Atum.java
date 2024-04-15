@@ -32,7 +32,6 @@ public class Atum implements ModInitializer {
     public static KeyBinding resetKey;
     public static HotkeyState hotkeyState;
     public static boolean hotkeyPressed;
-    public static boolean hotkeyHeld=false;
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
