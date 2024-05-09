@@ -37,8 +37,8 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "method_0_2243", at = @At("HEAD"))
     public void atum_onKey(CallbackInfo ci) {
-        if (!Keyboard.isRepeatEvent() && Atum.resetKey.method_1421() == Keyboard.getEventKey()) {
-            if (this.currentScreen instanceof ControlsOptionsScreen && ((ControlsOptionsScreen) this.currentScreen).focusedBinding == Atum.resetKey) {
+        if (!Keyboard.isRepeatEvent() && Atum.resetKey.method_1421() == Keyboard.getEventKey() && Keyboard.getEventKeyState()) {
+            if (this.currentScreen instanceof ControlsOptionsScreen) {
                 return;
             }
             Atum.hotkeyPressed = true;
