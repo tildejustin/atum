@@ -20,7 +20,6 @@ public class Atum implements ModInitializer {
     public static boolean structures = true;
     public static boolean bonusChest = false;
     public static KeyBinding resetKey;
-    public static boolean hotkeyPressed = false;
     public static boolean loading = false;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
     static File configFile;

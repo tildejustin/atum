@@ -2,7 +2,8 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
 import net.minecraft.client.world.ClientWorld;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.*;
@@ -14,6 +15,9 @@ public abstract class MinecraftClientMixin {
     @Shadow
     public ClientWorld world;
 
+    @Shadow
+    public Screen currentScreen;
+
     @Inject(method = "connect(Lnet/minecraft/client/world/ClientWorld;Ljava/lang/String;)V", at = @At(value = "TAIL"))
     private void allowResettingAfterWorldJoin(ClientWorld world, String loadingMessage, CallbackInfo ci) {
         if (world != null) {
@@ -21,11 +25,17 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 4))    public void atum_tick(CallbackInfo ci) {
-        if (!Keyboard.isKeyDown(Atum.resetKey.code) || Atum.loading) {
+    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 4))
+    public void atum_tick(CallbackInfo ci) {
+        if (Atum.resetKey == null ||
+                !Keyboard.isKeyDown(Atum.resetKey.code) ||
+                !Keyboard.getEventKeyState() ||
+                Keyboard.isRepeatEvent() ||
+                this.currentScreen instanceof ControlsOptionsScreen ||
+                Atum.loading
+        ) {
             return;
         }
-        Atum.hotkeyPressed = false;
         Atum.running = true;
         if (world != null) {
             MinecraftClient.getInstance().world.disconnect();
