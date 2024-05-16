@@ -24,10 +24,7 @@ public abstract class CreateWorldScreenMixin {
     private TextFieldWidget levelNameField;
 
     @Shadow
-    private Difficulty field_24289;
-
-    @Shadow
-    private Difficulty field_24290;
+    private Difficulty currentDifficulty;
 
     @Shadow
     protected abstract void createLevel();
@@ -58,8 +55,7 @@ public abstract class CreateWorldScreenMixin {
                     difficulty = Difficulty.EASY;
                     break;
             }
-            field_24289 = difficulty;
-            field_24290 = difficulty;
+            currentDifficulty = difficulty;
             if (Atum.seed == null || Atum.seed.isEmpty()) {
                 Atum.rsgAttempts++;
             } else {

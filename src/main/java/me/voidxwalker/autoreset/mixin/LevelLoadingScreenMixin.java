@@ -18,7 +18,7 @@ public class LevelLoadingScreenMixin extends Screen {
     public void modifyString(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci, String ignored, int i, int j) {
         if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty()) {
             String string = Atum.seed;
-            drawCenteredText(matrices, this.textRenderer, string, i, j - 9 / 2 - 50, 16777215);
+            drawCenteredString(matrices, this.textRenderer, string, i, j - 9 / 2 - 50, 16777215);
         }
     }
 }
