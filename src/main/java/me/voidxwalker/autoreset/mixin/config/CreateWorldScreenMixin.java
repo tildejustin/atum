@@ -128,10 +128,10 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (Atum.isRunning()) {
             if (Atum.config.isSetSeed()) {
                 this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.increment(AttemptTracker.Type.SSG));
-                Atum.log(Level.INFO, String.format("Resetting the set seed: \"%s\"", Atum.config.seed));
+                Atum.log(Level.INFO, String.format("Creating \"%s\" with seed \"%s\"...", this.levelNameField.getText(), Atum.config.seed));
             } else {
                 this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.increment(AttemptTracker.Type.RSG));
-                Atum.log(Level.INFO, "Resetting a random seed");
+                Atum.log(Level.INFO, String.format("Creating \"%s\"...", this.levelNameField.getText()));
             }
             this.createLevel();
         } else {
