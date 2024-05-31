@@ -44,7 +44,7 @@ public class AutoResetOptionScreen extends Screen {
         );
         this.addDrawableChild(
                 CyclingButtonWidget.<Integer>builder(
-                                value -> Text.translatable(new Identifier(Atum.getGeneratorTypeString(value)).toTranslationKey("generator"))
+                                value -> Text.translatable(Identifier.of(Atum.getGeneratorTypeString(value)).toTranslationKey("generator"))
                         )
                         .values(IntStream.range(0, 5).boxed().sorted().toList())
                         .initially(this.generatorType)
