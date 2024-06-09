@@ -4,6 +4,7 @@
   "package": "me.voidxwalker.autoreset.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "DeathScreenMixin",
     "DebugHudMixin",
     "SettingsScreenMixin",
     "TitleScreenMixin"
