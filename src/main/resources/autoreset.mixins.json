@@ -15,10 +15,14 @@
     "hotkey.MinecraftClientMixin",
     "hotkey.ScreenAccessor"
   ],
+  "client": [
+    "hotkey.KeyboardMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
-  "client": [
-    "hotkey.KeyboardMixin"
-  ]
+  "overwrites": {
+    "conformVisibility": true,
+    "requireAnnotations": true
+  }
 }
