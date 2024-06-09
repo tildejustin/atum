@@ -5,10 +5,40 @@
   "name": "Atum",
   "description": "Mod to automatically reset RSG and SSG",
   "authors": [
-    "Void_X_Walker"
+    {
+      "name": "Void_X_Walker",
+      "contact": {
+        "homepage": "https://github.com/VoidXWalker"
+      }
+    }
   ],
 
-  "license": "All-Rights-Reserved",
+  "contributors": [
+    {
+      "name": "pixfumy",
+      "contact": {
+        "homepage": "https://github.com/pixfumy"
+      }
+    },
+    {
+      "name": "contaria",
+      "contact": {
+        "homepage": "https://github.com/KingContaria"
+      }
+    },
+    {
+      "name": "tildejustin",
+      "contact": {
+        "homepage": "https://github.com/tildejustin"
+      }
+    }
+  ],
+  "contact": {
+    "homepage": "https://github.com/tildejustin/atum",
+    "sources": "https://github.com/tildejustin/atum",
+    "issues": "https://github.com/tildejustin/atum/issues"
+  },
+  "license": "MIT",
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
