@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CreateWorldScreenMixin",
+    "DeathScreenMixin",
     "DebugHudMixin",
     "LoadingScreenRendererMixin",
     "SettingsScreenMixin",
