@@ -1,9 +1,9 @@
 [versions]
 minecraft = "24w14potato"
-yarn_mappings = "24w14potato+build.3"
-fabric_loader = "0.15.9"
-loom = "1.6-SNAPSHOT"
-vineflower = "1.10.0-SNAPSHOT"
+yarn_mappings = "24w14potato+build.4"
+fabric_loader = "0.15.11"
+loom = "1.7-SNAPSHOT"
+vineflower = "1.10.1"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
