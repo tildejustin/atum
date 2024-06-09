@@ -10,14 +10,10 @@ base {
 	archivesName = archives_name
 }
 
-repositories {
-	maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
-}
-
 loom {
 	decompilers {
 		vineflower {
-			options.putAll(["mark-corresponding-synthetics": "1", "ind": "    "])
+			options.putAll(["mark-corresponding-synthetics": "1", "indent-string": "    "])
 		}
 	}
 	mixin {
@@ -45,6 +41,7 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+	withSourcesJar()
 }
 jar {
 	from "LICENSE"
