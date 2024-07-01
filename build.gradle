@@ -24,6 +24,7 @@ loom {
 		useLegacyMixinAp = false
 	}
 	accessWidenerPath = file("src/main/resources/atum.accesswidener")
+	setIntermediaryUrl("https://maven.fabricmc.net/net/fabricmc/intermediary/%s/intermediary-%1\$s-v2.jar")
 }
 
 dependencies {
