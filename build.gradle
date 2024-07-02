@@ -11,6 +11,10 @@ archivesBaseName = mod_id
 version = "$mod_version+$minecraft_version"
 group = project.maven_group
 
+loom {
+	runs.client.programArgs "--userProperties", "{}"
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.legacyfabric:yarn:${project.yarn_mappings}:v2"
