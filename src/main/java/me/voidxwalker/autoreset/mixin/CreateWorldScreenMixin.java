@@ -89,9 +89,6 @@ public abstract class CreateWorldScreenMixin extends Screen{
         Atum.saveProperties();
         Atum.log(Level.INFO,(Atum.seed==null|| Atum.seed.isEmpty()?"Resetting a random seed":"Resetting the set seed"+"\""+l+"\""));
         levelNameField.setText((Atum.seed==null|| Atum.seed.isEmpty())?"Random Speedrun #" + Atum.rsgAttempts:"Set Speedrun #" + Atum.ssgAttempts);
-        this.client.startIntegratedServer(levelNameField.getText().trim(), levelNameField.getText().trim(), levelInfo);
-
-
-
+        this.client.startIntegratedServer(CreateWorldScreen.checkDirectoryName(this.client.getCurrentSave(), levelNameField.getText().trim()), levelNameField.getText().trim(), levelInfo);
     }
 }
