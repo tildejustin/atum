@@ -34,6 +34,10 @@ public class AttemptTracker {
         counters.put(Type.SSG, ssgAttempts);
     }
 
+    public int get(Type type) {
+        return counters.get(type).get();
+    }
+
     public int increment(Type type) {
         int result = counters.get(type).incrementAndGet();
         executor.execute(this::save);

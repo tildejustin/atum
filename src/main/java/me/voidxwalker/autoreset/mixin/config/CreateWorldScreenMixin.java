@@ -1,6 +1,7 @@
 package me.voidxwalker.autoreset.mixin.config;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.voidxwalker.autoreset.AttemptTracker;
@@ -8,12 +9,14 @@ import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.AtumCreateWorldScreen;
 import me.voidxwalker.autoreset.interfaces.IMoreOptionsDialog;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -24,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -78,8 +82,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V", at = @At("TAIL"))
     private void loadAtumConfigurations(CallbackInfo ci) {
-        //noinspection ConstantValue
-        if (!((Object) this instanceof AtumCreateWorldScreen)) {
+        if (!this.isAtum()) {
             return;
         }
 
@@ -120,8 +123,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void modifyAtumCreateWorldScreen(CallbackInfo info, @Share("cancelButton") LocalRef<ButtonWidget> cancelButton) {
-        //noinspection ConstantValue
-        if (!((Object) this instanceof AtumCreateWorldScreen)) {
+        if (!this.isAtum()) {
             return;
         }
 
@@ -135,7 +137,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
             }
             this.createLevel();
         } else {
-            this.levelNameField.setText("Atum Seed");
+            if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
+                this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.SSG));
+            } else {
+                this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.RSG));
+            }
             this.levelNameField.setSelected(false);
             this.levelNameField.setEditable(false);
             this.levelNameField.setFocusUnlocked(false);
@@ -148,10 +154,20 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
     }
 
+    @Inject(method = "toggleMoreOptions", at = @At("TAIL"))
+    private void updateLevelNameField(CallbackInfo ci) {
+        if (this.isAtum()) {
+            if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
+                this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.SSG));
+            } else {
+                this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.RSG));
+            }
+        }
+    }
+
     @Inject(method = "createLevel", at = @At("HEAD"), cancellable = true)
     private void saveAtumConfigurations(CallbackInfo ci) {
-        //noinspection ConstantValue
-        if (!((Object) this instanceof AtumCreateWorldScreen) || Atum.isRunning()) {
+        if (!this.isAtum() || Atum.isRunning()) {
             return;
         }
 
@@ -170,6 +186,13 @@ public abstract class CreateWorldScreenMixin extends Screen {
         ci.cancel();
     }
 
+    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V", ordinal = 0), slice = @Slice(
+            from = @At(value = "CONSTANT", args = "stringValue=selectWorld.resultFolder")
+    ))
+    private boolean doNotShowResultFolderOnConfigScreen(CreateWorldScreen screen, MatrixStack matrices, TextRenderer textRenderer, String string, int x, int y, int color) {
+        return !this.isAtum();
+    }
+
     @ModifyExpressionValue(method = "method_29685", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
     private static Stream<Path> filterAtumDataPacks(Stream<Path> dataPacks, Path directory, MinecraftClient minecraftClient) {
         if (directory.equals(Atum.config.dataPackDirectory)) {
@@ -186,5 +209,10 @@ public abstract class CreateWorldScreenMixin extends Screen {
             }
         }
         return dataPacks;
+    }
+
+    @Unique
+    private boolean isAtum() {
+        return (Object) this instanceof AtumCreateWorldScreen;
     }
 }

@@ -5,4 +5,6 @@ public interface IMoreOptionsDialog {
     void atum$loadAtumConfigurations();
 
     void atum$saveAtumConfigurations();
+
+    boolean atum$isSetSeed();
 }

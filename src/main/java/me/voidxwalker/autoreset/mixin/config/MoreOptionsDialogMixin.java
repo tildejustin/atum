@@ -94,4 +94,9 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
         }
         Atum.config.generatorDetails = generatorDetails;
     }
+
+    @Override
+    public boolean atum$isSetSeed() {
+        return !this.seedText.isEmpty();
+    }
 }
