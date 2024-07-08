@@ -43,6 +43,7 @@ java {
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 	withSourcesJar()
 }
+
 jar {
 	from "LICENSE"
 }
