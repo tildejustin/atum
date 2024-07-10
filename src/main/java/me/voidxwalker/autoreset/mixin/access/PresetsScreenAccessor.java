@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(PresetsScreen.class)
 public interface PresetsScreenAccessor {
     @Invoker
-    static String callMethod_29062(FlatChunkGeneratorConfig flatChunkGeneratorConfig) {
+    static String callGetGeneratorConfigString(FlatChunkGeneratorConfig flatChunkGeneratorConfig) {
         throw new UnsupportedOperationException();
     }
 }

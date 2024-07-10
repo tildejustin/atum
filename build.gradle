@@ -20,7 +20,7 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings "com.github.RedLime:yarn:${minecraft_version}.build.$yarn_build:v2"
+    mappings "dev.tildejustin:yarn:${minecraft_version}-build.$yarn_build:v2"
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
 
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
