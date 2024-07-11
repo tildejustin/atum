@@ -50,7 +50,7 @@ public interface GeneratorTypeAccessor {
     }
 
     @Invoker
-    static GeneratorOptions callMethod_29079(GeneratorOptions generatorOptions, GeneratorType generatorType, Biome biome) {
+    static GeneratorOptions callCreateFixedBiomeOptions(GeneratorOptions generatorOptions, GeneratorType generatorType, Biome biome) {
         throw new UnsupportedOperationException();
     }
 }

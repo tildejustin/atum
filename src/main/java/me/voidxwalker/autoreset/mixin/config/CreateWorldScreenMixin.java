@@ -47,9 +47,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private Screen parent;
 
     @Shadow
-    private Difficulty field_24290;
+    private Difficulty safeDifficulty;
     @Shadow
-    private Difficulty field_24289;
+    private Difficulty difficulty;
     @Shadow
     private CreateWorldScreen.Mode currentMode;
     @Shadow
@@ -59,9 +59,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow
     private GameRules gameRules;
     @Shadow
-    protected DataPackSettings field_25479;
+    protected DataPackSettings dataPackSettings;
     @Shadow
-    private @Nullable Path field_25477;
+    private @Nullable Path dataPackTempDir;
 
     @Shadow
     @Final
@@ -71,7 +71,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow
     private ButtonWidget createLevelButton;
     @Shadow
-    private ButtonWidget field_25478;
+    private ButtonWidget dataPacksButton;
 
     @Shadow
     protected abstract void createLevel();
@@ -87,19 +87,19 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         this.currentMode = Atum.config.gameMode;
-        this.field_24290 = this.field_24289 = Atum.config.difficulty;
+        this.safeDifficulty = this.difficulty = Atum.config.difficulty;
         this.cheatsEnabled = Atum.config.cheatsEnabled;
         this.tweakedCheats = true;
         this.gameRules.setAllValues(Atum.config.gameRules, null);
-        this.field_25479 = new DataPackSettings(Atum.config.dataPackSettings.getEnabled(), Atum.config.dataPackSettings.getDisabled());
+        this.dataPackSettings = new DataPackSettings(Atum.config.dataPackSettings.getEnabled(), Atum.config.dataPackSettings.getDisabled());
 
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$loadAtumConfigurations();
 
         if (Atum.isRunning()) {
-            if (!Atum.config.isDefaultDataPackSettings(this.field_25479)) {
+            if (!Atum.config.isDefaultDataPackSettings(this.dataPackSettings)) {
                 if (Files.isDirectory(Atum.config.dataPackDirectory)) {
-                    this.field_25477 = CreateWorldScreen.method_29685(Atum.config.dataPackDirectory, this.client);
-                    if (this.field_25477 == null) {
+                    this.dataPackTempDir = CreateWorldScreen.copyDataPack(Atum.config.dataPackDirectory, this.client);
+                    if (this.dataPackTempDir == null) {
                         Atum.config.dataPackMismatch = true;
                         Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
                     }
@@ -109,7 +109,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
             }
         } else {
-            this.field_25477 = Atum.config.dataPackDirectory;
+            this.dataPackTempDir = Atum.config.dataPackDirectory;
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.levelNameField.setFocusUnlocked(false);
             this.levelNameField.active = false;
 
-            this.field_25478.active = this.field_25477 != null;
+            this.dataPacksButton.active = this.dataPackTempDir != null;
 
             this.createLevelButton.setMessage(new TranslatableText("gui.done"));
             cancelButton.get().visible = false;
@@ -172,10 +172,10 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         Atum.config.gameMode = this.currentMode;
-        Atum.config.difficulty = this.field_24289;
+        Atum.config.difficulty = this.difficulty;
         Atum.config.cheatsEnabled = this.cheatsEnabled;
         Atum.config.setGameRules(this.gameRules.copy());
-        Atum.config.setDataPackSettings(this.field_25479);
+        Atum.config.setDataPackSettings(this.dataPackSettings);
 
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$saveAtumConfigurations();
 
@@ -193,7 +193,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         return !this.isAtum();
     }
 
-    @ModifyExpressionValue(method = "method_29685", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
+    @ModifyExpressionValue(method = "copyDataPack(Ljava/nio/file/Path;Lnet/minecraft/client/MinecraftClient;)Ljava/nio/file/Path;", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;"))
     private static Stream<Path> filterAtumDataPacks(Stream<Path> dataPacks, Path directory, MinecraftClient minecraftClient) {
         if (directory.equals(Atum.config.dataPackDirectory)) {
             Set<String> expectedDataPacks = Atum.config.getExpectedDataPacks();
