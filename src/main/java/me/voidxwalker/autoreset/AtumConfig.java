@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.resource.DataPackSettings;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -79,9 +78,9 @@ public class AtumConfig implements SpeedrunConfig {
 
         debugText.add("");
         if (this.isSetSeed()) {
-            debugText.add(new TranslatableText("atum.seed.set", this.seed).getString());
+            debugText.add("Resetting the seed \"" + this.seed + "\"");
         } else {
-            debugText.add(translations.get("atum.seed.random"));
+            debugText.add("Resetting a random seed");
         }
         if (this.generatorType != AtumGeneratorType.DEFAULT) {
             debugText.add(translations.get("selectWorld.mapType") + " " + this.generatorType.get().getTranslationKey().getString());

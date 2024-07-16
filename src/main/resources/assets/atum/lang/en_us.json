@@ -1,9 +1,5 @@
 {
   "Create New World": "Create New World",
-
   "atum.menu.stop_resets": "Stop Resets & Quit",
-  "atum.seed.random": "Resetting a random seed",
-  "atum.seed.set": "Resetting the seed \"%s\"",
-
   "key.categories.atum": "Atum"
 }
