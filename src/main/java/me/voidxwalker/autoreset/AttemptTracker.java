@@ -1,11 +1,11 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -13,45 +13,62 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AttemptTracker {
-    private final AtomicInteger rsgAttempts = new AtomicInteger();
-    private final AtomicInteger ssgAttempts = new AtomicInteger();
-    private final Map<Type, AtomicInteger> counters = new HashMap<>();
+    private final Map<Type, Counter> counters = new HashMap<>();
     private final Executor executor = Executors.newSingleThreadExecutor();
-    private final RandomAccessFile file;
 
     AttemptTracker() throws IOException {
-        File attemptsFile = FabricLoader.getInstance().getGameDir().resolve("attempts.txt").toFile();
-        boolean newFile = attemptsFile.createNewFile();
-        file = new RandomAccessFile(attemptsFile, "rw");
-        if (newFile) {
-            file.writeInt(0);
-            file.writeInt(0);
-            file.seek(0);
-        }
-        rsgAttempts.set(file.readInt());
-        ssgAttempts.set(file.readInt());
-        counters.put(Type.RSG, rsgAttempts);
-        counters.put(Type.SSG, ssgAttempts);
+        this.counters.put(Type.RSG, new Counter("rsg-attempts.txt"));
+        this.counters.put(Type.SSG, new Counter("ssg-attempts.txt"));
     }
 
     public int get(Type type) {
-        return counters.get(type).get();
+        return this.counters.get(type).get();
     }
 
     public int increment(Type type) {
-        int result = counters.get(type).incrementAndGet();
-        executor.execute(this::save);
+        Counter counter = this.counters.get(type);
+        int result = counter.incrementAndGet();
+        this.executor.execute(counter::save);
         return result;
     }
 
-    private void save() {
-        try {
-            file.setLength(0);
-            file.seek(0);
-            file.writeInt(rsgAttempts.get());
-            file.writeInt(ssgAttempts.get());
-        } catch (IOException e) {
-            Atum.log(Level.WARN, "Failed to save Atum attempt tracker.");
+    public static class Counter {
+        private final AtomicInteger counter = new AtomicInteger();
+        private final File attemptsFile;
+
+        private Counter(String fileName) throws IOException {
+            this.attemptsFile = FabricLoader.getInstance().getGameDir().resolve("atum").resolve(fileName).toFile();
+            Files.createDirectories(this.attemptsFile.getParentFile().toPath());
+            if (!this.attemptsFile.createNewFile()) {
+                this.read();
+            }
+            this.save();
+        }
+
+        private int get() {
+            return this.counter.get();
+        }
+
+        private int incrementAndGet() {
+            return this.counter.incrementAndGet();
+        }
+
+        private void read() {
+            try {
+                this.counter.set(Integer.parseInt(new String(Files.readAllBytes(this.attemptsFile.toPath()))));
+            } catch (IOException e) {
+                Atum.LOGGER.error("Failed to read attempts file: {}", this.attemptsFile.getName(), e);
+            } catch (NumberFormatException e) {
+                Atum.LOGGER.error("Failed to parse attempts file: {}", this.attemptsFile.getName(), e);
+            }
+        }
+
+        private void save() {
+            try {
+                Files.write(this.attemptsFile.toPath(), String.valueOf(this.get()).getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                Atum.LOGGER.error("Failed to save attempts file: {}", this.attemptsFile.getName(), e);
+            }
         }
     }
 
