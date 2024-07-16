@@ -1,6 +1,6 @@
 package me.voidxwalker.autoreset;
 
-import net.fabricmc.loader.api.FabricLoader;
+import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class AttemptTracker {
         private final File attemptsFile;
 
         private Counter(String fileName) throws IOException {
-            this.attemptsFile = FabricLoader.getInstance().getGameDir().resolve("atum").resolve(fileName).toFile();
+            this.attemptsFile = SpeedrunConfigAPI.getConfigDir().resolve("atum").resolve(fileName).toFile();
             Files.createDirectories(this.attemptsFile.getParentFile().toPath());
             if (!this.attemptsFile.createNewFile()) {
                 this.read();
