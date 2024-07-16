@@ -27,11 +27,11 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Shadow
-    private Optional<GeneratorType> field_25049;
+    private Optional<GeneratorType> generatorType;
     @Shadow
     private GeneratorOptions generatorOptions;
     @Shadow
-    private RegistryTracker.Modifiable field_25483;
+    private RegistryTracker.Modifiable registryManager;
     @Shadow
     private String seedText;
 
@@ -39,14 +39,14 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     public void atum$loadAtumConfigurations() {
         this.seedText = Atum.config.seed;
         GeneratorType generatorType = Atum.config.generatorType.get();
-        this.field_25049 = Optional.of(generatorType);
-        this.generatorOptions = generatorType.method_29077(this.field_25483, this.generatorOptions.getSeed(), Atum.config.structures, Atum.config.bonusChest);
+        this.generatorType = Optional.of(generatorType);
+        this.generatorOptions = generatorType.createDefaultOptions(this.registryManager, this.generatorOptions.getSeed(), Atum.config.structures, Atum.config.bonusChest);
 
         if (!Atum.config.generatorDetails.isEmpty()) {
             ChunkGenerator chunkGenerator = this.generatorOptions.getChunkGenerator();
             switch (Atum.config.generatorType) {
                 case FLAT:
-                    this.generatorOptions = this.generatorOptions.method_29573(GeneratorOptions.method_28608(this.generatorOptions.getDimensionMap(), new FlatChunkGenerator(PresetsScreen.method_29060(Atum.config.generatorDetails, (chunkGenerator instanceof FlatChunkGenerator ? ((FlatChunkGenerator) chunkGenerator).getGeneratorConfig() : FlatChunkGeneratorConfig.getDefaultConfig())))));
+                    this.generatorOptions = this.generatorOptions.withDimensions(GeneratorOptions.getRegistryWithReplacedOverworldGenerator(this.generatorOptions.getDimensionMap(), new FlatChunkGenerator(PresetsScreen.parsePresetString(Atum.config.generatorDetails, (chunkGenerator instanceof FlatChunkGenerator ? ((FlatChunkGenerator) chunkGenerator).getGeneratorConfig() : FlatChunkGeneratorConfig.getDefaultConfig())))));
                     break;
                 case SINGLE_BIOME_SURFACE:
                 case SINGLE_BIOME_CAVES:
@@ -54,7 +54,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
                     Identifier biomeID = new Identifier(Atum.config.generatorDetails);
                     Optional<Biome> biome = Registry.BIOME.getOrEmpty(new Identifier(Atum.config.generatorDetails));
                     if (biome.isPresent()) {
-                        this.generatorOptions = GeneratorTypeAccessor.callMethod_29079(this.generatorOptions, Atum.config.generatorType.get(), biome.get());
+                        this.generatorOptions = GeneratorTypeAccessor.callCreateFixedBiomeOptions(this.generatorOptions, Atum.config.generatorType.get(), biome.get());
                     } else {
                         Atum.log(Level.ERROR, "Error while parsing biome => Unknown biome, " + biomeID);
                     }
@@ -65,7 +65,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @Override
     public void atum$saveAtumConfigurations() {
         Atum.config.seed = this.seedText;
-        Atum.config.generatorType = this.field_25049.map(generatorType -> {
+        Atum.config.generatorType = this.generatorType.map(generatorType -> {
             for (AtumConfig.AtumGeneratorType atumGeneratorType : AtumConfig.AtumGeneratorType.values()) {
                 if (atumGeneratorType.get() == generatorType) {
                     return atumGeneratorType;
@@ -81,7 +81,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
             case FLAT:
                 ChunkGenerator chunkGenerator = this.generatorOptions.getChunkGenerator();
                 if (chunkGenerator instanceof FlatChunkGenerator) {
-                    generatorDetails = PresetsScreenAccessor.callMethod_29062(((FlatChunkGenerator) chunkGenerator).getGeneratorConfig());
+                    generatorDetails = PresetsScreenAccessor.callGetGeneratorConfigString(((FlatChunkGenerator) chunkGenerator).getGeneratorConfig());
                 }
                 break;
             case SINGLE_BIOME_SURFACE:
