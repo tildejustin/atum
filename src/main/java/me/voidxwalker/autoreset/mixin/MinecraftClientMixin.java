@@ -71,8 +71,8 @@ public abstract class MinecraftClientMixin {
         while (Atum.shouldReset()) {
             if (Atum.isInWorld()) {
                 Screen gameMenuScreen = new GameMenuScreen(true);
-                gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
-                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || Atum.isInWorld()) {
+                gameMenuScreen.init(MinecraftClient.getInstance(), 0, 0);
+                if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || Atum.isInWorld()) {
                     if (this.world != null) {
                         this.world.disconnect();
                         this.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
