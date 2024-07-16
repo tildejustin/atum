@@ -5,7 +5,15 @@
   "name": "Atum",
   "description": "Mod to automatically reset Random and Set Seeds",
   "authors": [
-    "Void_X_Walker"
+    {
+      "name": "Void_X_Walker",
+      "contact": {
+        "homepage": "https://github.com/VoidXWalker/"
+      }
+    }
+  ],
+  "contributors": [
+    "contaria"
   ],
   "license": "MIT",
   "icon": "assets/atum/icon.png",
@@ -15,21 +23,22 @@
       "me.voidxwalker.autoreset.Atum"
     ]
   },
+  "custom": {
+    "speedrunapi": {
+      "config": "me.voidxwalker.autoreset.AtumConfig"
+    }
+  },
   "mixins": [
     "autoreset.mixins.json"
   ],
   "accessWidener": "atum.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.0",
+    "minecraft": "1.16.1",
     "speedrunapi": "*"
   },
   "breaks": {
-    "fast_reset": "<2.0-alpha.1",
-    "worldpreview": "<6.0.0-alpha.1"
-  },
-  "custom": {
-    "speedrunapi": {
-      "config": "me.voidxwalker.autoreset.AtumConfig"
-    }
+    "fast_reset": "<2.0",
+    "worldpreview": "<6.0.0"
   }
 }
