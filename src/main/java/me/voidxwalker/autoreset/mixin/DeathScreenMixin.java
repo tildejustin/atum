@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DeathScreen.class)
 public abstract class DeathScreenMixin {
-    @Inject(method = "quitLevel", at = @At("HEAD"))
+    @Inject(method = "method_20373", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;disconnect()V"))
     private void stopResettingOnDeathQuit(CallbackInfo ci) {
         Atum.isRunning = false;
     }
