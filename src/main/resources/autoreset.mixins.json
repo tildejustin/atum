@@ -8,11 +8,12 @@
   },
   "client": [
     "MinecraftClientMixin",
-    "access.RuleAccessor",
     "access.GeneratorTypeAccessor",
     "access.PresetsScreenAccessor",
+    "access.RuleAccessor",
     "config.CreateWorldScreenMixin",
     "config.MoreOptionsDialogMixin",
+    "gui.DeathScreenMixin",
     "gui.DebugHudMixin",
     "gui.LevelLoadingScreenMixin",
     "gui.OptionsScreenMixin",
