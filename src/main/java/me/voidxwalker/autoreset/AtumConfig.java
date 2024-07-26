@@ -13,6 +13,7 @@ import net.minecraft.resource.DataPackSettings;
 import net.minecraft.util.Language;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class AtumConfig implements SpeedrunConfig {
 
     @Config.Ignored
@@ -49,6 +51,9 @@ public class AtumConfig implements SpeedrunConfig {
     public GameRules gameRules = new GameRules();
     @Config.Access(setter = "setDataPackSettings")
     public DataPackSettings dataPackSettings = DataPackSettings.SAFE_MODE;
+
+    // saved to config for PaceMan
+    private boolean hasLegalSettings;
 
     @Config.Ignored
     private boolean modifiedGameRules;
@@ -114,14 +119,16 @@ public class AtumConfig implements SpeedrunConfig {
 
     private boolean areGameRulesModified(GameRules gameRules) {
         GameRules defaultGameRules = new GameRules();
-        final boolean[] modified = {false};
+        MutableBoolean modified = new MutableBoolean();
         GameRules.forEachType(new GameRules.TypeConsumer() {
             @Override
             public <T extends GameRules.Rule<T>> void accept(GameRules.Key<T> key, GameRules.Type<T> type) {
-                modified[0] |= gameRules.get(key).getCommandResult() != defaultGameRules.get(key).getCommandResult();
+                if (gameRules.get(key).getCommandResult() != defaultGameRules.get(key).getCommandResult()) {
+                    modified.setTrue();
+                }
             }
         });
-        return modified[0];
+        return modified.booleanValue();
     }
 
     private JsonElement serializeGameRules(GameRules gameRules) {
@@ -255,9 +262,37 @@ public class AtumConfig implements SpeedrunConfig {
         return SpeedrunConfig.super.parseField(field, config, idPrefix);
     }
 
+    public boolean updateHasLegalSettings() {
+        return this.hasLegalSettings = (this.gameMode == CreateWorldScreen.Mode.SURVIVAL || this.gameMode == CreateWorldScreen.Mode.HARDCORE) &&
+                this.structures &&
+                !this.bonusChest &&
+                !this.cheatsEnabled &&
+                this.generatorType == AtumGeneratorType.DEFAULT &&
+                !this.areGameRulesModified(this.gameRules) &&
+                this.isDefaultDataPackSettings(this.dataPackSettings);
+    }
+
+    public void resetToLegalSettings() {
+        if (this.gameMode != CreateWorldScreen.Mode.HARDCORE) {
+            this.gameMode = CreateWorldScreen.Mode.SURVIVAL;
+        }
+        this.structures = true;
+        this.bonusChest = false;
+        this.cheatsEnabled = false;
+        this.generatorType = AtumGeneratorType.DEFAULT;
+        this.generatorDetails = "";
+        this.setGameRules(new GameRules());
+        this.setDataPackSettings(DataPackSettings.SAFE_MODE);
+    }
+
     @Override
     public void finishInitialization(SpeedrunConfigContainer<?> container) {
         this.container = container;
+    }
+
+    @Override
+    public void finishLoading() {
+        this.updateHasLegalSettings();
     }
 
     @Override

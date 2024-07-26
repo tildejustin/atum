@@ -1,7 +1,7 @@
 package me.voidxwalker.autoreset.mixin.config;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.voidxwalker.autoreset.AttemptTracker;
@@ -10,6 +10,7 @@ import me.voidxwalker.autoreset.AtumCreateWorldScreen;
 import me.voidxwalker.autoreset.interfaces.IMoreOptionsDialog;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.DataPackSettings;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
@@ -167,6 +169,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "createLevel", at = @At("HEAD"), cancellable = true)
     private void saveAtumConfigurations(CallbackInfo ci) {
+        assert this.client != null;
         if (!this.isAtum() || Atum.isRunning()) {
             return;
         }
@@ -179,9 +182,18 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$saveAtumConfigurations();
 
-        Atum.config.save();
-
-        this.client.openScreen(this.parent);
+        if (Atum.config.updateHasLegalSettings()) {
+            Atum.config.save();
+            this.client.openScreen(this.parent);
+        } else {
+            this.client.openScreen(new ConfirmScreen(confirm -> {
+                if (!confirm) {
+                    Atum.config.resetToLegalSettings();
+                }
+                Atum.config.save();
+                this.client.openScreen(this.parent);
+            }, LiteralText.EMPTY, new TranslatableText("atum.menu.legal_settings.warning"), new TranslatableText("atum.menu.legal_settings.confirm"), new TranslatableText("atum.menu.legal_settings.reset")));
+        }
 
         ci.cancel();
     }

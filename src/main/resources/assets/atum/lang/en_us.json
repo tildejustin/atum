@@ -1,5 +1,8 @@
 {
   "Create New World": "Create New World",
   "atum.menu.stop_resets": "Stop Resets & Quit",
+  "atum.menu.legal_settings.warning": "You are using settings that are not allowed for Any% speedruns!",
+  "atum.menu.legal_settings.confirm": "Confirm",
+  "atum.menu.legal_settings.reset": "Reset",
   "key.categories.atum": "Atum"
 }
