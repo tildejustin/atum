@@ -131,18 +131,18 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
         if (Atum.isRunning()) {
             if (Atum.config.isSetSeed()) {
-                this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.increment(AttemptTracker.Type.SSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
                 Atum.log(Level.INFO, String.format("Creating \"%s\" with seed \"%s\"...", this.levelNameField.getText(), Atum.config.seed));
             } else {
-                this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.increment(AttemptTracker.Type.RSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG));
                 Atum.log(Level.INFO, String.format("Creating \"%s\"...", this.levelNameField.getText()));
             }
             this.createLevel();
         } else {
             if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
-                this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.SSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.SSG));
             } else {
-                this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.RSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.RSG));
             }
             this.levelNameField.setSelected(false);
             this.levelNameField.setEditable(false);
@@ -160,9 +160,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private void updateLevelNameField(CallbackInfo ci) {
         if (this.isAtum()) {
             if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
-                this.levelNameField.setText("Set Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.SSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.SSG));
             } else {
-                this.levelNameField.setText("Random Speedrun #" + Atum.config.attemptTracker.get(AttemptTracker.Type.RSG));
+                this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.RSG));
             }
         }
     }

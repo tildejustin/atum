@@ -17,27 +17,31 @@ public class AttemptTracker {
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     AttemptTracker() throws IOException {
-        this.counters.put(Type.RSG, new Counter("rsg-attempts.txt"));
-        this.counters.put(Type.SSG, new Counter("ssg-attempts.txt"));
+        this.register(Type.RSG);
+        this.register(Type.SSG);
     }
 
-    public int get(Type type) {
-        return this.counters.get(type).get();
+    public void register(Type type) throws IOException {
+        this.counters.put(type, new Counter(type));
     }
 
-    public int increment(Type type) {
+    public String getWorldName(Type type) {
+        return type.worldName + this.counters.get(type).get();
+    }
+
+    public String incrementAndGetWorldName(Type type) {
         Counter counter = this.counters.get(type);
-        int result = counter.incrementAndGet();
+        int count = counter.incrementAndGet();
         this.executor.execute(counter::save);
-        return result;
+        return type.worldName + count;
     }
 
     public static class Counter {
         private final AtomicInteger counter = new AtomicInteger();
         private final File attemptsFile;
 
-        private Counter(String fileName) throws IOException {
-            this.attemptsFile = SpeedrunConfigAPI.getConfigDir().resolve("atum").resolve(fileName).toFile();
+        private Counter(Type type) throws IOException {
+            this.attemptsFile = SpeedrunConfigAPI.getConfigDir().resolve("atum").resolve(type.fileName).toFile();
             Files.createDirectories(this.attemptsFile.getParentFile().toPath());
             if (!this.attemptsFile.createNewFile()) {
                 this.read();
@@ -72,8 +76,16 @@ public class AttemptTracker {
         }
     }
 
-    public enum Type {
-        RSG,
-        SSG
+    public static class Type {
+        public static final Type RSG = new Type("Random Speedrun #", "rsg-attempts.txt");
+        public static final Type SSG = new Type("Set Speedrun #", "ssg-attempts.txt");
+
+        private final String worldName;
+        private final String fileName;
+
+        public Type(String worldName, String fileName) {
+            this.worldName = worldName;
+            this.fileName = fileName;
+        }
     }
 }
