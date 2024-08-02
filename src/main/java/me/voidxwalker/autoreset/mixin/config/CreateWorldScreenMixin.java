@@ -21,7 +21,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -106,11 +105,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.dataPackTempDir = CreateWorldScreen.copyDataPack(Atum.config.dataPackDirectory, this.client);
                 if (this.dataPackTempDir == null) {
                     Atum.config.dataPackMismatch = true;
-                    Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
+                    Atum.LOGGER.warn("Data pack mismatch, failed to copy data packs!");
                 }
             } else {
                 Atum.config.dataPackMismatch = true;
-                Atum.log(Level.WARN, "Data pack mismatch, the Atum data pack directory is missing!");
+                Atum.LOGGER.warn("Data pack mismatch, the Atum data pack directory is missing!");
             }
         }
     }
@@ -131,10 +130,10 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (Atum.isRunning()) {
             if (Atum.config.isSetSeed()) {
                 this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
-                Atum.log(Level.INFO, String.format("Creating \"%s\" with seed \"%s\"...", this.levelNameField.getText(), Atum.config.seed));
+                Atum.LOGGER.info(String.format("Creating \"%s\" with seed \"%s\"...", this.levelNameField.getText(), Atum.config.seed));
             } else {
                 this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG));
-                Atum.log(Level.INFO, String.format("Creating \"%s\"...", this.levelNameField.getText()));
+                Atum.LOGGER.info(String.format("Creating \"%s\"...", this.levelNameField.getText()));
             }
             this.createLevel();
         } else {
@@ -215,7 +214,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
             if (!expectedDataPacks.isEmpty()) {
                 Atum.config.dataPackMismatch = true;
-                Atum.log(Level.WARN, "Data pack mismatch, some of the configured files are missing!");
+                Atum.LOGGER.warn("Data pack mismatch, some of the configured files are missing!");
             }
         }
         return dataPacks;

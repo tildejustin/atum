@@ -18,7 +18,6 @@ import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -65,11 +64,12 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
                         JsonOps.INSTANCE,
                         new JsonParser().parse(Atum.config.generatorDetails)
                 ).resultOrPartial(
-                        error -> Atum.log(Level.WARN, "Failed to deserialize flat world generator details!")
+                        error -> Atum.LOGGER.warn("Failed to deserialize flat world generator details!")
                 ).ifPresent(generatorConfig -> this.generatorOptions = this.generatorOptions.withDimensions(
                         GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
                                 this.generatorOptions.getDimensionMap(),
-                                new FlatChunkGenerator(generatorConfig))
+                                new FlatChunkGenerator(generatorConfig)
+                        )
                 ));
                 break;
             case SINGLE_BIOME_SURFACE:
@@ -80,7 +80,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
                 if (biome.isPresent()) {
                     this.generatorOptions = GeneratorTypeAccessor.callCreateFixedBiomeOptions(this.generatorOptions, Atum.config.generatorType.get(), biome.get());
                 } else {
-                    Atum.log(Level.ERROR, "Error while parsing biome => Unknown biome, " + biomeID);
+                    Atum.LOGGER.warn("Failed to parse biome: {}", biomeID);
                 }
         }
     }
@@ -102,7 +102,7 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
                             JsonOps.INSTANCE,
                             new JsonObject()
                     ).resultOrPartial(
-                            error -> Atum.log(Level.WARN, "Failed to serialize flat world generator details!")
+                            error -> Atum.LOGGER.warn("Failed to serialize flat world generator details!")
                     ).map(JsonElement::toString).orElse("");
                 }
                 break;

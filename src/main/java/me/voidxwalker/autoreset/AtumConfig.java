@@ -19,7 +19,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
@@ -213,7 +212,7 @@ public class AtumConfig implements SpeedrunConfig {
         try {
             this.container.save();
         } catch (IOException e) {
-            Atum.log(Level.WARN, "Failed to save Atum config.");
+            Atum.LOGGER.warn("Failed to save Atum config.");
         }
     }
 
