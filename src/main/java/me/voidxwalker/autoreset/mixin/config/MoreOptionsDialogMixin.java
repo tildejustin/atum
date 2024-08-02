@@ -1,11 +1,13 @@
 package me.voidxwalker.autoreset.mixin.config;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.AtumConfig;
 import me.voidxwalker.autoreset.interfaces.IMoreOptionsDialog;
 import me.voidxwalker.autoreset.mixin.access.GeneratorTypeAccessor;
-import me.voidxwalker.autoreset.mixin.access.PresetsScreenAccessor;
-import net.minecraft.client.gui.screen.PresetsScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.util.Identifier;
@@ -56,10 +58,19 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
         if (Atum.config.generatorDetails.isEmpty()) {
             return;
         }
-        ChunkGenerator chunkGenerator = this.generatorOptions.getChunkGenerator();
+
         switch (Atum.config.generatorType) {
             case FLAT:
-                this.generatorOptions = this.generatorOptions.withDimensions(GeneratorOptions.getRegistryWithReplacedOverworldGenerator(this.generatorOptions.getDimensionMap(), new FlatChunkGenerator(PresetsScreen.parsePresetString(Atum.config.generatorDetails, (chunkGenerator instanceof FlatChunkGenerator ? ((FlatChunkGenerator) chunkGenerator).getGeneratorConfig() : FlatChunkGeneratorConfig.getDefaultConfig())))));
+                FlatChunkGeneratorConfig.CODEC.parse(
+                        JsonOps.INSTANCE,
+                        new JsonParser().parse(Atum.config.generatorDetails)
+                ).resultOrPartial(
+                        error -> Atum.log(Level.WARN, "Failed to deserialize flat world generator details!")
+                ).ifPresent(generatorConfig -> this.generatorOptions = this.generatorOptions.withDimensions(
+                        GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
+                                this.generatorOptions.getDimensionMap(),
+                                new FlatChunkGenerator(generatorConfig))
+                ));
                 break;
             case SINGLE_BIOME_SURFACE:
             case SINGLE_BIOME_CAVES:
@@ -86,7 +97,13 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
             case FLAT:
                 ChunkGenerator chunkGenerator = this.generatorOptions.getChunkGenerator();
                 if (chunkGenerator instanceof FlatChunkGenerator) {
-                    generatorDetails = PresetsScreenAccessor.callGetGeneratorConfigString(((FlatChunkGenerator) chunkGenerator).getGeneratorConfig());
+                    generatorDetails = FlatChunkGeneratorConfig.CODEC.encode(
+                            ((FlatChunkGenerator) chunkGenerator).getGeneratorConfig(),
+                            JsonOps.INSTANCE,
+                            new JsonObject()
+                    ).resultOrPartial(
+                            error -> Atum.log(Level.WARN, "Failed to serialize flat world generator details!")
+                    ).map(JsonElement::toString).orElse("");
                 }
                 break;
             case SINGLE_BIOME_SURFACE:

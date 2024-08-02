@@ -10,7 +10,6 @@
     "MinecraftClientMixin",
     "access.CreateWorldScreen$ModeAccessor",
     "access.GeneratorTypeAccessor",
-    "access.PresetsScreenAccessor",
     "access.RuleAccessor",
     "config.CreateWorldScreenMixin",
     "config.MoreOptionsDialogMixin",
