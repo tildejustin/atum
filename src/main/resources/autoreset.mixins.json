@@ -8,6 +8,7 @@
   },
   "client": [
     "MinecraftClientMixin",
+    "access.CreateWorldScreen$ModeAccessor",
     "access.GeneratorTypeAccessor",
     "access.PresetsScreenAccessor",
     "access.RuleAccessor",

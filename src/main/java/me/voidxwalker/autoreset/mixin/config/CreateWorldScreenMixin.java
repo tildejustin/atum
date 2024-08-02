@@ -2,8 +2,6 @@ package me.voidxwalker.autoreset.mixin.config;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.voidxwalker.autoreset.AttemptTracker;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.AtumCreateWorldScreen;
@@ -19,7 +17,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.DataPackSettings;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
@@ -97,34 +94,34 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$loadAtumConfigurations();
 
-        if (Atum.isRunning()) {
-            if (!Atum.config.isDefaultDataPackSettings(this.dataPackSettings)) {
-                if (Files.isDirectory(Atum.config.dataPackDirectory)) {
-                    this.dataPackTempDir = CreateWorldScreen.copyDataPack(Atum.config.dataPackDirectory, this.client);
-                    if (this.dataPackTempDir == null) {
-                        Atum.config.dataPackMismatch = true;
-                        Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
-                    }
-                } else {
-                    Atum.config.dataPackMismatch = true;
-                    Atum.log(Level.WARN, "Data pack mismatch, the Atum data pack directory is missing!");
-                }
-            }
-        } else {
+        if (!Atum.isRunning()) {
             this.dataPackTempDir = Atum.config.dataPackDirectory;
+            return;
+        }
+
+        if (!Atum.config.isDefaultDataPackSettings(this.dataPackSettings)) {
+            if (Files.isDirectory(Atum.config.dataPackDirectory)) {
+                this.dataPackTempDir = CreateWorldScreen.copyDataPack(Atum.config.dataPackDirectory, this.client);
+                if (this.dataPackTempDir == null) {
+                    Atum.config.dataPackMismatch = true;
+                    Atum.log(Level.WARN, "Data pack mismatch, failed to copy data packs!");
+                }
+            } else {
+                Atum.config.dataPackMismatch = true;
+                Atum.log(Level.WARN, "Data pack mismatch, the Atum data pack directory is missing!");
+            }
         }
     }
 
-    @ModifyExpressionValue(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;", ordinal = 0), slice = @Slice(
+    @WrapWithCondition(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;", ordinal = 0), slice = @Slice(
             from = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/ScreenTexts;CANCEL:Lnet/minecraft/text/Text;")
     ))
-    private AbstractButtonWidget captureCancelButton(AbstractButtonWidget button, @Share("cancelButton") LocalRef<ButtonWidget> cancelButton) {
-        cancelButton.set((ButtonWidget) button);
-        return button;
+    private boolean captureCancelButton(CreateWorldScreen screen, AbstractButtonWidget button) {
+        return !this.isAtum();
     }
 
     @Inject(method = "init", at = @At("TAIL"))
-    private void modifyAtumCreateWorldScreen(CallbackInfo info, @Share("cancelButton") LocalRef<ButtonWidget> cancelButton) {
+    private void modifyAtumCreateWorldScreen(CallbackInfo info) {
         if (!this.isAtum()) {
             return;
         }
@@ -152,7 +149,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.dataPacksButton.active = this.dataPackTempDir != null;
 
             this.createLevelButton.setMessage(new TranslatableText("gui.done"));
-            cancelButton.get().visible = false;
         }
     }
 
@@ -192,7 +188,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
                 Atum.config.save();
                 this.client.openScreen(this.parent);
-            }, LiteralText.EMPTY, new TranslatableText("atum.menu.legal_settings.warning"), new TranslatableText("atum.menu.legal_settings.confirm"), new TranslatableText("atum.menu.legal_settings.reset")));
+            }, new TranslatableText("atum.menu.legal_settings.warning"), Atum.config.getIllegalSettingsWarning(), new TranslatableText("atum.menu.legal_settings.confirm"), new TranslatableText("atum.menu.legal_settings.reset")));
         }
 
         ci.cancel();

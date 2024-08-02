@@ -4,15 +4,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import me.voidxwalker.autoreset.mixin.access.CreateWorldScreen$ModeAccessor;
 import me.voidxwalker.autoreset.mixin.access.GeneratorTypeAccessor;
 import me.voidxwalker.autoreset.mixin.access.RuleAccessor;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.resource.DataPackSettings;
-import net.minecraft.util.Language;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +30,7 @@ import org.mcsr.speedrunapi.config.api.annotations.Config;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,9 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class AtumConfig implements SpeedrunConfig {
-
     @Config.Ignored
     private SpeedrunConfigContainer<?> container;
 
@@ -52,7 +56,7 @@ public class AtumConfig implements SpeedrunConfig {
     @Config.Access(setter = "setDataPackSettings")
     public DataPackSettings dataPackSettings = DataPackSettings.SAFE_MODE;
 
-    // saved to config for PaceMan
+    @SuppressWarnings({"unused", "FieldCanBeLocal"}) // saved to config for PaceMan
     private boolean hasLegalSettings;
 
     @Config.Ignored
@@ -75,41 +79,6 @@ public class AtumConfig implements SpeedrunConfig {
 
     public boolean isSetSeed() {
         return !this.seed.isEmpty();
-    }
-
-    public List<String> getDebugText() {
-        List<String> debugText = new ArrayList<>();
-        Language translations = Language.getInstance();
-
-        debugText.add("");
-        if (this.isSetSeed()) {
-            debugText.add("Resetting the seed \"" + this.seed + "\"");
-        } else {
-            debugText.add("Resetting a random seed");
-        }
-        if (this.generatorType != AtumGeneratorType.DEFAULT) {
-            debugText.add(translations.get("selectWorld.mapType") + " " + this.generatorType.get().getTranslationKey().getString());
-        }
-        if (!this.structures) {
-            debugText.add(translations.get("selectWorld.mapFeatures") + " " + translations.get("gui.no"));
-        }
-        if (this.bonusChest) {
-            debugText.add(translations.get("selectWorld.bonusItems") + " " + translations.get("gui.yes"));
-        }
-        if (this.modifiedGameRules) {
-            debugText.add(translations.get("selectWorld.gameRules") + ": Modified");
-        }
-        if (!this.isDefaultDataPackSettings(this.dataPackSettings)) {
-            String dataPackInformation;
-            if (this.dataPackMismatch) {
-                dataPackInformation = "? | ?";
-            } else {
-                dataPackInformation = this.filterOnlyFileDataPacks(this.dataPackSettings.getEnabled()).size() + " | " + this.filterOnlyFileDataPacks(this.dataPackSettings.getDisabled()).size();
-            }
-            debugText.add(translations.get("selectWorld.dataPacks") + ": " + dataPackInformation);
-        }
-
-        return debugText;
     }
 
     public void setGameRules(GameRules gameRules) {
@@ -272,6 +241,51 @@ public class AtumConfig implements SpeedrunConfig {
                 this.isDefaultDataPackSettings(this.dataPackSettings);
     }
 
+    public Text getIllegalSettingsWarning() {
+        List<Text> warnings = this.getIllegalSettingsTexts();
+        if (warnings.isEmpty()) {
+            warnings.add(new TranslatableText("gui.none"));
+        }
+
+        MutableText warning = warnings.remove(0).shallowCopy();
+        for (Text w : warnings) {
+            warning.append(", ").append(w);
+        }
+        return warning;
+    }
+
+    private List<Text> getIllegalSettingsTexts() {
+        List<Text> texts = new ArrayList<>();
+        if (this.gameMode != CreateWorldScreen.Mode.SURVIVAL && this.gameMode != CreateWorldScreen.Mode.HARDCORE) {
+            texts.add(new TranslatableText("selectWorld.gameMode").append(": ").append(new TranslatableText("selectWorld.gameMode." + ((CreateWorldScreen$ModeAccessor) (Object) this.gameMode).getTranslationSuffix())));
+        }
+        if (this.cheatsEnabled) {
+            texts.add(new TranslatableText("selectWorld.allowCommands").append(" ").append(ScreenTexts.ON));
+        }
+        if (!this.structures) {
+            texts.add(new TranslatableText("selectWorld.mapFeatures").append(" ").append(ScreenTexts.OFF));
+        }
+        if (this.bonusChest) {
+            texts.add(new TranslatableText("selectWorld.bonusItems").append(" ").append(ScreenTexts.ON));
+        }
+        if (this.generatorType != AtumGeneratorType.DEFAULT) {
+            texts.add(new TranslatableText("selectWorld.mapType").append(" ").append(this.generatorType.get().getTranslationKey()));
+        }
+        if (this.modifiedGameRules) {
+            texts.add(new TranslatableText("selectWorld.gameRules").append(": Modified"));
+        }
+        if (!this.isDefaultDataPackSettings(this.dataPackSettings)) {
+            String dataPackInformation;
+            if (this.dataPackMismatch) {
+                dataPackInformation = "? | ?";
+            } else {
+                dataPackInformation = this.filterOnlyFileDataPacks(this.dataPackSettings.getEnabled()).size() + " | " + this.filterOnlyFileDataPacks(this.dataPackSettings.getDisabled()).size();
+            }
+            texts.add(new TranslatableText("selectWorld.dataPacks").append(": " + dataPackInformation));
+        }
+        return texts;
+    }
+
     public void resetToLegalSettings() {
         if (this.gameMode != CreateWorldScreen.Mode.HARDCORE) {
             this.gameMode = CreateWorldScreen.Mode.SURVIVAL;
@@ -282,7 +296,31 @@ public class AtumConfig implements SpeedrunConfig {
         this.generatorType = AtumGeneratorType.DEFAULT;
         this.generatorDetails = "";
         this.setGameRules(new GameRules());
+        if (Files.exists(this.dataPackDirectory)) {
+            try {
+                FileUtils.cleanDirectory(this.dataPackDirectory.toFile());
+            } catch (IOException e) {
+                Atum.LOGGER.error("Failed to clear datapack directory!", e);
+            }
+        }
         this.setDataPackSettings(DataPackSettings.SAFE_MODE);
+    }
+
+    public List<String> getDebugText() {
+        List<String> debugText = new ArrayList<>();
+
+        debugText.add("");
+        if (this.isSetSeed()) {
+            debugText.add("Resetting the seed \"" + this.seed + "\"");
+        } else {
+            debugText.add("Resetting a random seed");
+        }
+
+        for (Text text : this.getIllegalSettingsTexts()) {
+            debugText.add(text.getString());
+        }
+
+        return debugText;
     }
 
     @Override
