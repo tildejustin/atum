@@ -86,6 +86,10 @@ public class AtumConfig implements SpeedrunConfig {
         this.modifiedGameRules = this.areGameRulesModified(gameRules);
     }
 
+    public boolean hasModifiedGameRules() {
+        return this.modifiedGameRules;
+    }
+
     private boolean areGameRulesModified(GameRules gameRules) {
         GameRules defaultGameRules = new GameRules();
         MutableBoolean modified = new MutableBoolean();
@@ -371,6 +375,15 @@ public class AtumConfig implements SpeedrunConfig {
 
         public GeneratorType get() {
             return this.generatorType;
+        }
+
+        public static @Nullable AtumGeneratorType from(GeneratorType generatorType) {
+            for (AtumGeneratorType atumGeneratorType : values()) {
+                if (atumGeneratorType.get() == generatorType) {
+                    return atumGeneratorType;
+                }
+            }
+            return null;
         }
     }
 }

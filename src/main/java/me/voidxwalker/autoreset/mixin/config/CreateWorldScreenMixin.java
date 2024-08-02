@@ -89,7 +89,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.safeDifficulty = this.difficulty = Atum.config.difficulty;
         this.cheatsEnabled = Atum.config.cheatsEnabled;
         this.tweakedCheats = true;
-        this.gameRules.setAllValues(Atum.config.gameRules, null);
+        if (Atum.config.hasModifiedGameRules()) {
+            this.gameRules.setAllValues(Atum.config.gameRules, null);
+        }
         this.dataPackSettings = new DataPackSettings(Atum.config.dataPackSettings.getEnabled(), Atum.config.dataPackSettings.getDisabled());
 
         ((IMoreOptionsDialog) this.moreOptionsDialog).atum$loadAtumConfigurations();
