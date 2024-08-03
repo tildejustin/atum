@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -43,6 +44,9 @@ public abstract class TitleScreenMixin extends Screen {
                 super.renderButton(matrices, mouseX, mouseY, delta);
                 MinecraftClient.getInstance().getTextureManager().bindTexture(BUTTON_IMAGE);
                 drawTexture(matrices, this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+                if (this.isHovered() && hasShiftDown()) {
+                    this.drawCenteredText(matrices, TitleScreenMixin.this.textRenderer, new TranslatableText("atum.menu.open_config"), this.x + this.width / 2, this.y - 15, 16777215);
+                }
             }
         });
     }

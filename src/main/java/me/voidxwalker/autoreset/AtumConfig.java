@@ -247,9 +247,8 @@ public class AtumConfig implements SpeedrunConfig {
     public Text getIllegalSettingsWarning() {
         List<Text> warnings = this.getIllegalSettingsTexts();
         if (warnings.isEmpty()) {
-            warnings.add(new TranslatableText("gui.none"));
+            return new TranslatableText("gui.none");
         }
-
         MutableText warning = warnings.remove(0).shallowCopy();
         for (Text w : warnings) {
             warning.append(", ").append(w);
