@@ -18,6 +18,7 @@
     "gui.LevelLoadingScreenMixin",
     "gui.OptionsScreenMixin",
     "gui.TitleScreenMixin",
-    "hotkey.KeyboardMixin"
+    "hotkey.KeyboardMixin",
+    "hotkey.MouseMixin"
   ]
 }
