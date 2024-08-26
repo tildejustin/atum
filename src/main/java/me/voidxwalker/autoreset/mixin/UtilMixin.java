@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(Util.class)
 public abstract class UtilMixin {
-    @Redirect(method = "method_0_5531", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 0))
+    @Redirect(method = "method_0_5531", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;fatal(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 0, remap = false))
     private static void stopLog(Logger instance, String s, Throwable throwable) {
         if (MinecraftClient.getInstance().getServer() != null && MinecraftClient.getInstance().world == null) {
             return;
