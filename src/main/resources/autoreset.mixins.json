@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CreateWorldScreenMixin",
+    "hotkey.CreativeInventoryScreenAccessor",
     "DeathScreenMixin",
     "DebugHudMixin",
     "GeneratorTypeAccessor",
@@ -15,7 +16,8 @@
     "hotkey.GameOptionsMixin",
     "hotkey.KeyBindingAccessor",
     "hotkey.KeyboardMixin",
-    "hotkey.MinecraftClientMixin"
+    "hotkey.MinecraftClientMixin",
+    "hotkey.RecipeBookWidgetAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -29,7 +29,7 @@ public class TitleScreenMixin extends Screen {
         if (Atum.isRunning) {
             Atum.scheduleReset();
         }
-        this.resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, new LiteralText(""), (buttonWidget) -> {
+        this.resetButton = this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, Text.of(""), (buttonWidget) -> {
             if (hasShiftDown()) {
                 client.openScreen(new AutoResetOptionScreen(this));
             } else {

@@ -21,10 +21,11 @@ public class Atum implements ModInitializer {
     public static String seed = "";
     public static int difficulty = 1;
     public static int generatorType = 0;
-    public static int rsgAttempts;
-    public static int ssgAttempts;
+    public static int rsgAttempts = 0;
+    public static int ssgAttempts = 0;
     public static boolean structures = true;
     public static boolean bonusChest = false;
+    public static boolean disableHotkeyInTextboxes = false;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
 
     static File configFile;
@@ -63,22 +64,14 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text) {
-        if (Language.getInstance().get(path).equals(path)) {
-            return new LiteralText(text);
-        } else {
-            return new TranslatableText(path);
-        }
-    }
-
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").getString(),
+                "Create New World",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F6,
-                getTranslation("key.categories.atum", "Atum").getString()
+                "Atum"
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();
@@ -166,6 +159,7 @@ public class Atum implements ModInitializer {
         properties.put("generatorType", String.valueOf(generatorType));
         properties.put("structures", String.valueOf(structures));
         properties.put("bonusChest", String.valueOf(bonusChest));
+        properties.put("disableHotkeyInTextBoxes", String.valueOf(disableHotkeyInTextboxes));
         return properties;
     }
 
@@ -209,6 +203,7 @@ public class Atum implements ModInitializer {
             }
             structures = !properties.containsKey("structures") || Boolean.parseBoolean(properties.getProperty("structures"));
             bonusChest = Boolean.parseBoolean(properties.getProperty("bonusChest"));
+            disableHotkeyInTextboxes = Boolean.parseBoolean(properties.getProperty("disableHotkeyInTextBoxes"));
         }
     }
 }
