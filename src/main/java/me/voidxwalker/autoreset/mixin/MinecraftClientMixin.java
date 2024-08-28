@@ -64,7 +64,7 @@ public abstract class MinecraftClientMixin {
 
     @ModifyReturnValue(method = "isDemo", at = @At("RETURN"))
     private boolean demoMode(boolean isDemo) {
-        return isDemo || (Atum.isRunning() && Atum.config.demoMode);
+        return isDemo || Atum.inDemoMode();
     }
 
     @Inject(method = "cleanUpAfterCrash", at = @At("HEAD"))

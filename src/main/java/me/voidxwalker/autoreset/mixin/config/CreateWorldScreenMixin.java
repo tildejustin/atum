@@ -135,7 +135,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         if (Atum.isRunning()) {
-            if (Atum.config.demoMode) {
+            if (Atum.inDemoMode()) {
                 String demoWorldName = Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.DEMO);
                 Atum.LOGGER.info("Creating \"{}\" with demo seed...", demoWorldName);
                 MinecraftClient.getInstance().createWorld(demoWorldName, MinecraftServer.DEMO_LEVEL_INFO, RegistryTracker.create(), GeneratorOptions.DEMO_CONFIG);

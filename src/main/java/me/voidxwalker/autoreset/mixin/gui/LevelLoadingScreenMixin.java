@@ -16,7 +16,7 @@ public abstract class LevelLoadingScreenMixin {
     private void drawSeedString(LevelLoadingScreen screen, MatrixStack matrixStack, TextRenderer textRenderer, String s, int x, int y, int color, Operation<Void> original) {
         original.call(screen, matrixStack, textRenderer, s, x, y, color);
         if (Atum.isRunning() && Atum.isSetSeed()) {
-            screen.drawCenteredString(matrixStack, textRenderer, Atum.config.demoMode ? "North Carolina" : Atum.config.seed, x, y - 20, color);
+            screen.drawCenteredString(matrixStack, textRenderer, Atum.inDemoMode() ? "North Carolina" : Atum.config.seed, x, y - 20, color);
         }
     }
 }

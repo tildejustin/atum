@@ -328,7 +328,7 @@ public class AtumConfig implements SpeedrunConfig {
 
         debugText.add("");
 
-        if (this.demoMode) {
+        if (Atum.inDemoMode()) {
             debugText.add("Resetting the demo seed");
             return debugText;
         }

@@ -56,8 +56,12 @@ public class Atum implements ClientModInitializer {
         return MinecraftClient.getInstance().getServer() != null && MinecraftClient.getInstance().world == null;
     }
 
+    public static boolean inDemoMode() {
+        return isRunning() && config.demoMode;
+    }
+
     public static boolean isSetSeed() {
-        return Atum.config.isSetSeed() || Atum.config.demoMode;
+        return config.isSetSeed() || config.demoMode;
     }
 
     @Override
