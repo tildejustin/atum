@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -17,10 +18,13 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.DataPackSettings;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.gen.GeneratorOptions;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -70,6 +74,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private ButtonWidget createLevelButton;
     @Shadow
     private ButtonWidget dataPacksButton;
+
+    @Unique
+    private AbstractButtonWidget demoModeButton;
 
     @Shadow
     protected abstract void createLevel();
@@ -128,12 +135,18 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         if (Atum.isRunning()) {
+            if (Atum.config.demoMode) {
+                String demoWorldName = Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.DEMO);
+                Atum.LOGGER.info("Creating \"{}\" with demo seed...", demoWorldName);
+                MinecraftClient.getInstance().createWorld(demoWorldName, MinecraftServer.DEMO_LEVEL_INFO, RegistryTracker.create(), GeneratorOptions.DEMO_CONFIG);
+                return;
+            }
             if (Atum.config.isSetSeed()) {
                 this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
-                Atum.LOGGER.info(String.format("Creating \"%s\" with seed \"%s\"...", this.levelNameField.getText(), Atum.config.seed));
+                Atum.LOGGER.info("Creating \"{}\" with seed \"{}\"...", this.levelNameField.getText(), Atum.config.seed);
             } else {
                 this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG));
-                Atum.LOGGER.info(String.format("Creating \"%s\"...", this.levelNameField.getText()));
+                Atum.LOGGER.info("Creating \"{}\"...", this.levelNameField.getText());
             }
             this.createLevel();
         } else {
@@ -148,18 +161,26 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.levelNameField.active = false;
 
             this.dataPacksButton.active = this.dataPackTempDir != null;
-
             this.createLevelButton.setMessage(new TranslatableText("gui.done"));
+            this.demoModeButton = this.addButton(new ButtonWidget(
+                    this.width / 2 + 5, 151, 150, 20,
+                    new TranslatableText("atum.config.demoMode", ScreenTexts.getToggleText(Atum.config.demoMode)),
+                    button -> button.setMessage(new TranslatableText("atum.config.demoMode", ScreenTexts.getToggleText(Atum.config.demoMode = !Atum.config.demoMode)))
+            ));
+            this.demoModeButton.visible = false;
         }
     }
 
-    @Inject(method = "toggleMoreOptions", at = @At("TAIL"))
-    private void updateLevelNameField(CallbackInfo ci) {
+    @Inject(method = "setMoreOptionsOpen(Z)V", at = @At("TAIL"))
+    private void updateLevelNameField(boolean moreOptionsOpen, CallbackInfo ci) {
         if (this.isAtum()) {
             if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
                 this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.SSG));
             } else {
                 this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.RSG));
+            }
+            if (this.demoModeButton != null) {
+                this.demoModeButton.visible = moreOptionsOpen;
             }
         }
     }

@@ -40,6 +40,8 @@
   },
   "breaks": {
     "fast_reset": "<2.0",
-    "worldpreview": "<6.0.0"
+    "worldpreview": "<6.0.0",
+    "chunkcacher": "<1.4.2",
+    "fsg-mod": "<2.4.2"
   }
 }

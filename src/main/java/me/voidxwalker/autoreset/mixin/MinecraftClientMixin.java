@@ -1,5 +1,6 @@
 package me.voidxwalker.autoreset.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.voidxwalker.autoreset.Atum;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -59,6 +60,11 @@ public abstract class MinecraftClientMixin {
     @ModifyArg(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;endMonitor(ZLnet/minecraft/util/TickDurationMonitor;)V"))
     private boolean fixGhostPieBlink(boolean active) {
         return active && this.shouldMonitorTickDuration();
+    }
+
+    @ModifyReturnValue(method = "isDemo", at = @At("RETURN"))
+    private boolean demoMode(boolean isDemo) {
+        return isDemo || (Atum.isRunning() && Atum.config.demoMode);
     }
 
     @Inject(method = "cleanUpAfterCrash", at = @At("HEAD"))

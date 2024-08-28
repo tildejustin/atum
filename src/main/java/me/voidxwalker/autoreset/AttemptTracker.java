@@ -19,6 +19,7 @@ public class AttemptTracker {
     AttemptTracker() throws IOException {
         this.register(Type.RSG);
         this.register(Type.SSG);
+        this.register(Type.DEMO);
     }
 
     public void register(Type type) throws IOException {
@@ -79,6 +80,7 @@ public class AttemptTracker {
     public static class Type {
         public static final Type RSG = new Type("Random Speedrun #", "rsg-attempts.txt");
         public static final Type SSG = new Type("Set Speedrun #", "ssg-attempts.txt");
+        public static final Type DEMO = new Type("Demo Speedrun #", "demo-attempts.txt");
 
         private final String worldName;
         private final String fileName;

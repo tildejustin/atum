@@ -15,8 +15,8 @@ public abstract class LevelLoadingScreenMixin {
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawCenteredString(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
     private void drawSeedString(LevelLoadingScreen screen, MatrixStack matrixStack, TextRenderer textRenderer, String s, int x, int y, int color, Operation<Void> original) {
         original.call(screen, matrixStack, textRenderer, s, x, y, color);
-        if (Atum.isRunning() && Atum.config.isSetSeed()) {
-            screen.drawCenteredString(matrixStack, textRenderer, Atum.config.seed, x, y - 20, color);
+        if (Atum.isRunning() && Atum.isSetSeed()) {
+            screen.drawCenteredString(matrixStack, textRenderer, Atum.config.demoMode ? "North Carolina" : Atum.config.seed, x, y - 20, color);
         }
     }
 }

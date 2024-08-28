@@ -57,6 +57,8 @@ public class AtumConfig implements SpeedrunConfig {
     @Config.Access(setter = "setDataPackSettings")
     public DataPackSettings dataPackSettings = DataPackSettings.SAFE_MODE;
 
+    public boolean demoMode;
+
     @SuppressWarnings({"unused", "FieldCanBeLocal"}) // saved to config for PaceMan
     private boolean hasLegalSettings;
 
@@ -249,7 +251,8 @@ public class AtumConfig implements SpeedrunConfig {
                 !this.cheatsEnabled &&
                 this.generatorType == AtumGeneratorType.DEFAULT &&
                 !this.areGameRulesModified(this.gameRules) &&
-                this.isDefaultDataPackSettings(this.dataPackSettings);
+                this.isDefaultDataPackSettings(this.dataPackSettings) &&
+                !this.demoMode;
     }
 
     public Text getIllegalSettingsWarning() {
@@ -293,6 +296,9 @@ public class AtumConfig implements SpeedrunConfig {
             }
             texts.add(new TranslatableText("selectWorld.dataPacks").append(": " + dataPackInformation));
         }
+        if (this.demoMode) {
+            texts.add(new TranslatableText("atum.config.demoMode", ScreenTexts.ON));
+        }
         return texts;
     }
 
@@ -314,12 +320,19 @@ public class AtumConfig implements SpeedrunConfig {
             }
         }
         this.setDataPackSettings(DataPackSettings.SAFE_MODE);
+        this.demoMode = false;
     }
 
     public List<String> getDebugText() {
         List<String> debugText = new ArrayList<>();
 
         debugText.add("");
+
+        if (this.demoMode) {
+            debugText.add("Resetting the demo seed");
+            return debugText;
+        }
+
         if (this.isSetSeed()) {
             debugText.add("Resetting the seed \"" + this.seed + "\"");
         } else {
