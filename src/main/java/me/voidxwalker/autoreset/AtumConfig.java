@@ -125,7 +125,9 @@ public class AtumConfig implements SpeedrunConfig {
         GameRules.forEachType(new GameRules.TypeConsumer() {
             @Override
             public <T extends GameRules.Rule<T>> void accept(GameRules.Key<T> key, GameRules.Type<T> type) {
-                ((RuleAccessor) gameRules.get(key)).callDeserialize(jsonElement.getAsJsonObject().get(key.getName()).getAsString());
+                if (jsonElement.getAsJsonObject().has(key.getName())) {
+                    ((RuleAccessor) gameRules.get(key)).callDeserialize(jsonElement.getAsJsonObject().get(key.getName()).getAsString());
+                }
             }
         });
         return gameRules;
