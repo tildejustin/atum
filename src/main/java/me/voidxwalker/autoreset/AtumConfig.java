@@ -97,7 +97,7 @@ public class AtumConfig implements SpeedrunConfig {
         GameRules.forEachType(new GameRules.TypeConsumer() {
             @Override
             public <T extends GameRules.Rule<T>> void accept(GameRules.Key<T> key, GameRules.Type<T> type) {
-                if (gameRules.get(key).getCommandResult() != defaultGameRules.get(key).getCommandResult()) {
+                if (modified.isFalse() && gameRules.get(key).getCommandResult() != defaultGameRules.get(key).getCommandResult()) {
                     modified.setTrue();
                 }
             }
@@ -106,11 +106,15 @@ public class AtumConfig implements SpeedrunConfig {
     }
 
     private JsonElement serializeGameRules(GameRules gameRules) {
+        GameRules defaultGameRules = new GameRules();
         JsonObject jsonObject = new JsonObject();
         GameRules.forEachType(new GameRules.TypeConsumer() {
             @Override
             public <T extends GameRules.Rule<T>> void accept(GameRules.Key<T> key, GameRules.Type<T> type) {
-                jsonObject.add(key.getName(), new JsonPrimitive(gameRules.get(key).serialize()));
+                GameRules.Rule<T> rule = gameRules.get(key);
+                if (rule.getCommandResult() != defaultGameRules.get(key).getCommandResult()) {
+                    jsonObject.add(key.getName(), new JsonPrimitive(rule.serialize()));
+                }
             }
         });
         return jsonObject;
