@@ -69,6 +69,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Final
     public MoreOptionsDialog moreOptionsDialog;
     @Shadow
+    private boolean moreOptionsOpen;
+    @Shadow
     private TextFieldWidget levelNameField;
     @Shadow
     private ButtonWidget createLevelButton;
@@ -167,7 +169,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     new TranslatableText("atum.config.demoMode", ScreenTexts.getToggleText(Atum.config.demoMode)),
                     button -> button.setMessage(new TranslatableText("atum.config.demoMode", ScreenTexts.getToggleText(Atum.config.demoMode = !Atum.config.demoMode)))
             ));
-            this.demoModeButton.visible = false;
+            this.demoModeButton.visible = this.moreOptionsOpen;
         }
     }
 
