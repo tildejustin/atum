@@ -37,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -229,10 +230,26 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private static Stream<Path> filterAtumDataPacks(Stream<Path> dataPacks, Path directory, MinecraftClient minecraftClient) {
         if (directory.equals(Atum.config.dataPackDirectory)) {
             Set<String> expectedDataPacks = Atum.config.getExpectedDataPacks();
+            Set<Path> dataPackPaths = new HashSet<>();
 
+            // instantly collect to bypass lazy evaluation
             dataPacks = dataPacks.filter(path -> {
-                String dataPackName = path.toString().replace("\\", "/").replaceFirst(Atum.config.dataPackDirectory.toString().replace("\\", "/"), "file");
-                return expectedDataPacks.remove(dataPackName);
+                // check if datapacks are expected in main directory
+                if (path.getParent().equals(directory)) {
+                    String dataPackName = path.toString().replace("\\", "/").replaceFirst(Atum.config.dataPackDirectory.toString().replace("\\", "/"), "file");
+                    if (expectedDataPacks.remove(dataPackName)) {
+                        dataPackPaths.add(path);
+                        return true;
+                    }
+                    return false;
+                }
+                // check if path belongs to any expected datapack
+                for (Path dataPack : dataPackPaths) {
+                    if (path.startsWith(dataPack)) {
+                        return true;
+                    }
+                }
+                return false;
             }).collect(Collectors.toList()).stream();
 
             if (!expectedDataPacks.isEmpty()) {
