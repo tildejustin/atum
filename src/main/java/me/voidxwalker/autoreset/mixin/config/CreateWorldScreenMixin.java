@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.voidxwalker.autoreset.AttemptTracker;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.AtumCreateWorldScreen;
+import me.voidxwalker.autoreset.api.seedprovider.SeedProvider;
 import me.voidxwalker.autoreset.interfaces.IMoreOptionsDialog;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -38,6 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -137,6 +139,34 @@ public abstract class CreateWorldScreenMixin extends Screen {
             return;
         }
 
+        String seed;
+
+        if (Atum.isRunning()) {
+            SeedProvider seedProvider = Atum.getSeedProvider();
+            Optional<String> seedOpt = seedProvider.getSeed();
+            if (seedOpt.isPresent()) {
+                seed = seedOpt.get();
+            } else {
+                if (MinecraftClient.getInstance().isOnThread()) {
+                    assert client != null;
+                    client.openScreen(Atum.getSeedProvider().getWaitingScreen());
+                    return;
+                } else {
+                    // Note: If a mod ever makes AtumCreateWorldScreens in parallel, the next two lines would cause a race condition.
+                    seedProvider.waitForSeed();
+                    seedOpt = seedProvider.getSeed();
+                    if (!seedOpt.isPresent()) {
+                        throw new IllegalStateException("No seed found after waiting!");
+                    }
+                    seed = seedOpt.get();
+                }
+            }
+        } else {
+            seed = Atum.config.seed; // Set seed for config screen
+        }
+
+        ((IMoreOptionsDialog) moreOptionsDialog).atum$setSeed(seed);
+
         if (Atum.isRunning()) {
             if (Atum.inDemoMode()) {
                 String demoWorldName = Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.DEMO);
@@ -144,11 +174,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 MinecraftClient.getInstance().createWorld(demoWorldName, MinecraftServer.DEMO_LEVEL_INFO, RegistryTracker.create(), GeneratorOptions.DEMO_CONFIG);
                 return;
             }
-            if (Atum.config.isSetSeed()) {
-                this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
-                Atum.LOGGER.info("Creating \"{}\" with seed \"{}\"...", this.levelNameField.getText(), Atum.config.seed);
+
+            this.levelNameField.setText(seed.isEmpty() ? Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG) : Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
+            if (!seed.isEmpty() && Atum.getSeedProvider().shouldShowSeed()) {
+                Atum.LOGGER.info("Creating \"{}\" with seed \"{}\"...", this.levelNameField.getText(), seed);
             } else {
-                this.levelNameField.setText(Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG));
                 Atum.LOGGER.info("Creating \"{}\"...", this.levelNameField.getText());
             }
             this.createLevel();
