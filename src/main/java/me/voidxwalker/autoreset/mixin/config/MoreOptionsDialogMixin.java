@@ -42,7 +42,6 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
 
     @Override
     public void atum$loadAtumConfigurations() {
-
         if (Atum.config.generatorType == AtumConfig.AtumGeneratorType.DEFAULT) {
             if (Atum.config.structures != this.generatorOptions.shouldGenerateStructures()) {
                 this.generatorOptions = this.generatorOptions.toggleGenerateStructures();
@@ -91,8 +90,10 @@ public abstract class MoreOptionsDialogMixin implements IMoreOptionsDialog {
     @Override
     public void atum$setSeed(String seedString) {
         this.seedText = seedString;
-        if (this.seedTextField != null) this.seedTextField.setText(this.seedText);
-        ((ISeedStringHolder) this.generatorOptions).atum$setSeedString(seedString);
+        this.seedTextField.setText(this.seedText);
+        if (Atum.isRunning()) {
+            ((ISeedStringHolder) this.generatorOptions).atum$setSeedString(seedString);
+        }
     }
 
     @Override
