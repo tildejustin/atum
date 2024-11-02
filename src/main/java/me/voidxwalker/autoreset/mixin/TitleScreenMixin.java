@@ -5,6 +5,7 @@ import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
@@ -41,7 +42,7 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        context.drawTexture(BUTTON_IMAGE, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0f, 0f, 16, 16, 16, 16);
+        context.drawTexture(RenderLayer::getGuiTextured, BUTTON_IMAGE, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0f, 0f, 16, 16, 16, 16);
         if (resetButton.isHovered() && hasShiftDown()) {
             context.drawCenteredTextWithShadow(textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }

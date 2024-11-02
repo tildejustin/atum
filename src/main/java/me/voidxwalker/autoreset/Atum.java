@@ -38,7 +38,7 @@ public class Atum implements ModInitializer {
         isRunning = true;
         shouldReset = false;
 
-        CreateWorldScreen.create(MinecraftClient.getInstance(), null);
+        CreateWorldScreen.show(MinecraftClient.getInstance(), null);
     }
 
     public static boolean isResetScheduled() {
