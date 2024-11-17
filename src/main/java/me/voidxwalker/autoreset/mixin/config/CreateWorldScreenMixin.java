@@ -84,6 +84,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private AbstractButtonWidget demoModeButton;
 
     @Shadow
+    protected abstract void updateSaveFolderName();
+
+    @Shadow
     protected abstract void createLevel();
 
     protected CreateWorldScreenMixin(Text title) {
@@ -175,7 +178,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 return;
             }
 
+            // micro optimization, vanilla calls the changed listener twice, once on setText and once on setCursorToEnd
+            this.levelNameField.setChangedListener(string -> {});
             this.levelNameField.setText(seed.isEmpty() ? Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.RSG) : Atum.config.attemptTracker.incrementAndGetWorldName(AttemptTracker.Type.SSG));
+            this.updateSaveFolderName();
+
             if (!seed.isEmpty() && Atum.getSeedProvider().shouldShowSeed()) {
                 Atum.LOGGER.info("Creating \"{}\" with seed \"{}\"...", this.levelNameField.getText(), seed);
             } else {
@@ -206,7 +213,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "setMoreOptionsOpen(Z)V", at = @At("TAIL"))
     private void updateLevelNameField(boolean moreOptionsOpen, CallbackInfo ci) {
-        if (this.isAtum()) {
+        if (this.isAtum() && !Atum.isRunning()) {
             if (((IMoreOptionsDialog) this.moreOptionsDialog).atum$isSetSeed()) {
                 this.levelNameField.setText(Atum.config.attemptTracker.getWorldName(AttemptTracker.Type.SSG));
             } else {
@@ -247,6 +254,18 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         ci.cancel();
+    }
+
+    @WrapWithCondition(
+            method = "init",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;updateSaveFolderName()V"
+            )
+    )
+    private boolean doNotUpdateEmptySaveFolderName(CreateWorldScreen screen) {
+        // micro-optimization, we call updateSaveFolderName ourselves when creating the level
+        return !Atum.isRunning();
     }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V", ordinal = 0), slice = @Slice(
