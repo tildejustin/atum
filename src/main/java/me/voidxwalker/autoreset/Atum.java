@@ -45,11 +45,6 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text){
-        return  new LiteralText(text);
-
-    }
-
     @Override
     public void onInitialize() {
         if(!((Pingable)(new DebugHud(MinecraftClient.getInstance()))).ping()){
@@ -57,9 +52,9 @@ public class Atum implements ModInitializer {
         }
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset","Create New World").asFormattedString(),
+                "Create New World",
                 64,
-                getTranslation("key.categories.atum","Atum").asFormattedString()
+                "Atum"
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();
@@ -143,7 +138,6 @@ public class Atum implements ModInitializer {
         } catch (IOException e) {
             log(Level.WARN, "Could not save config file:\n" + e.getMessage());
         }
-        System.out.println(ssgAttempts);
     }
     static void loadFromProperties(Properties properties){
         if(properties!=null){
