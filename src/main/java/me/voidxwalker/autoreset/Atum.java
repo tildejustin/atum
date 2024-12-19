@@ -1,11 +1,10 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.class_4158;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.SplashOverlay;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.text.*;
 import org.apache.logging.log4j.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +48,7 @@ public class Atum implements ModInitializer {
     }
 
     public static boolean isBlocking() {
-        return MinecraftClient.getInstance().currentScreen instanceof class_4158 || isLoadingWorld();
+        return MinecraftClient.getInstance().currentScreen instanceof SplashOverlay || isLoadingWorld();
     }
 
     public static boolean isLoadingWorld() {
@@ -60,17 +59,13 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text) {
-        return new LiteralText(text);
-    }
-
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").getString(),
+                "Create New World",
                 295,
-                getTranslation("key.categories.atum", "Atum").getString()
+                "Atum"
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();

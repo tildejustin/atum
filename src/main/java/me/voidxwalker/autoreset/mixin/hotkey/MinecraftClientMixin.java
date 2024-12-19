@@ -3,9 +3,9 @@ package me.voidxwalker.autoreset.mixin.hotkey;
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -17,13 +17,9 @@ public abstract class MinecraftClientMixin {
     public ClientWorld world;
 
     @Shadow
-    public abstract void connect(@Nullable ClientWorld world);
+    public abstract void joinWorld(@Nullable ClientWorld world);
 
-    @Shadow
-    public abstract void setScreen(@Nullable Screen screen);
-
-
-    @Inject(method = "method_18228", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_4218;method_19061(FJZ)V", ordinal = 0))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJZ)V", ordinal = 0))
     private void executeReset(boolean bl, CallbackInfo ci) {
         while (Atum.shouldReset() && bl) {
             if (this.world != null) {
@@ -32,7 +28,7 @@ public abstract class MinecraftClientMixin {
                 if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
                     if (this.world != null) {
                         this.world.disconnect();
-                        this.connect(null);
+                        this.joinWorld(null);
                     }
                 }
             }
@@ -43,9 +39,9 @@ public abstract class MinecraftClientMixin {
     @Unique
     private boolean clickButton(Screen screen, String... translationKeys) {
         for (String translationKey : translationKeys) {
-            for (ButtonWidget button : ((ScreenAccessor) screen).getButtons()) {
-                if (button.message.equals(new TranslatableText(translationKey).getString())) {
-                    button.method_18374(0, 0);
+            for (ClickableWidget button : ((ScreenAccessor) screen).getButtons()) {
+                if (button.message.equals(new TranslatableTextContent(translationKey).getString())) {
+                    button.method_1826(0, 0);
                     return true;
                 }
             }

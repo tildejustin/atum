@@ -3,7 +3,7 @@ package me.voidxwalker.autoreset.mixin;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.screen.AutoResetOptionScreen;
 import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.*;
@@ -21,10 +21,10 @@ public abstract class TitleScreenMixin extends Screen {
         if (Atum.isRunning) {
             Atum.scheduleReset();
         }
-        this.addButton(new ButtonWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, "") {
+        this.method_2219(new ClickableWidget(69, this.width / 2 - 124, this.height / 4 + 48, 20, 20, "") {
             @Override
-            public void method_18374(double d, double e) {
-                if (hasShiftDown()) {
+            public void method_1826(double d, double e) {
+                if (method_2223()) {
                     client.setScreen(new AutoResetOptionScreen(TitleScreenMixin.this));
                 } else {
                     Atum.scheduleReset();
@@ -35,15 +35,15 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        this.client.getTextureManager().bindTexture(BUTTON_IMAGE);
-        drawTexture(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
-        if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && hasShiftDown()) {
-            this.drawCenteredString(client.textRenderer, getDifficultyText().getString(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
+        this.client.getTextureManager().bindTextureInner(BUTTON_IMAGE);
+        method_1781(this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+        if (mouseX > this.width / 2 - 124 && mouseX < this.width / 2 - 124 + 20 && mouseY > this.height / 4 + 48 && mouseY < this.height / 4 + 48 + 20 && method_2223()) {
+            this.method_1789(client.textRenderer, getDifficultyText().getString(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, 16777215);
         }
     }
 
     @Unique
     Text getDifficultyText() {
-        return new TranslatableText("selectWorld.gameMode.hardcore").append(": ").append(new TranslatableText("options." + (Atum.difficulty != -1 ? "off" : "on")));
+        return new TranslatableTextContent("selectWorld.gameMode.hardcore").append(": ").append(new TranslatableTextContent("options." + (Atum.difficulty != -1 ? "off" : "on")));
     }
 }

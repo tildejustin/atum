@@ -3,11 +3,10 @@ package me.voidxwalker.autoreset.mixin;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
 import me.voidxwalker.autoreset.Atum;
-import net.minecraft.class_4372;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.*;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.level.*;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +19,12 @@ import java.util.Random;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
+    @Unique
+    private final MinecraftClient client = MinecraftClient.getInstance();
+
+    @Shadow
+    public NbtCompound field_3200;
+
     @Shadow
     private boolean creatingLevel;
 
@@ -30,12 +35,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private boolean tweakedCheats;
 
     @Shadow
-    private String gamemodeName;
-
-    @Shadow
-    public NbtCompound field_20472;
-    @Unique
-    private final MinecraftClient client = MinecraftClient.getInstance();
+    private String gameMode;
 
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
@@ -66,14 +66,14 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 l = string.hashCode();
             }
         }
-        if (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0")) {
+        if (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) {
             Atum.rsgAttempts++;
         } else {
             Atum.ssgAttempts++;
         }
-        this.field_20472 = new NbtCompound();
-        LevelInfo levelInfo = new LevelInfo(l, GameMode.setGameModeWithString(this.gamemodeName), Atum.structures, this.hardcore, LevelGeneratorType.TYPES[Atum.generatorType]);
-        levelInfo.method_16395(Dynamic.convert(class_4372.field_21487, JsonOps.INSTANCE, this.field_20472));
+        this.field_3200 = new NbtCompound();
+        LevelInfo levelInfo = new LevelInfo(l, GameMode.byName(this.gameMode), Atum.structures, this.hardcore, LevelGeneratorType.TYPES[Atum.generatorType]);
+        levelInfo.setGeneratorOptions(Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, this.field_3200));
         if (Atum.bonusChest && !this.hardcore) {
             levelInfo.setBonusChest();
         }
@@ -81,8 +81,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
             levelInfo.enableCommands();
         }
         Atum.saveProperties();
-        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
-        String saveName = (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts;
-        this.client.startIntegratedServer(CreateWorldScreen.checkDirectoryName(this.client.getCurrentSave(), saveName), saveName, levelInfo);
+        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
+        String saveName = (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts;
+        this.client.startIntegratedServer(CreateWorldScreen.method_2724(this.client.getLevelStorage(), saveName), saveName, levelInfo);
     }
 }
