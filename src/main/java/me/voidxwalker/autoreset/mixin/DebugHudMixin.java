@@ -2,6 +2,7 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -14,7 +15,8 @@ public class DebugHudMixin {
     private void atum_getRightText(CallbackInfoReturnable<List<String>> info) {
         if (Atum.isRunning) {
             List<String> returnValue = info.getReturnValue();
-            returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : ("the seed: \"" + Atum.seed + "\"")));
+            returnValue.add("");
+            returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : "the seed: \"" + Atum.seed + "\"") + ", " + (Atum.difficulty != -1 ? "" + Difficulty.byOrdinal(Atum.difficulty).getName().charAt(0) : "hc"));
             if (Atum.generatorType != 0) {
                 returnValue.add("GenType: " + GeneratorTypeAccessor.getVALUES().get(Atum.generatorType).getTranslationKey().getString());
             }
