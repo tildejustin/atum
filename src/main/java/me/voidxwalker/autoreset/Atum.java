@@ -3,7 +3,6 @@ package me.voidxwalker.autoreset;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.text.*;
 import org.apache.logging.log4j.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,10 +29,6 @@ public class Atum implements ModInitializer {
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
-    }
-
-    public static Text getTranslation(String path, String text) {
-        return new LiteralText(text);
     }
 
     public static String load(File file) {
@@ -129,7 +124,7 @@ public class Atum implements ModInitializer {
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
-        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(getTranslation("key.atum.reset", "Create New World").asFormattedString(), 64, getTranslation("key.categories.atum", "Atum").asFormattedString()));
+        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("Create New World", 64, "Atum"));
         new File("config").mkdir();
         new File("config/atum").mkdir();
         configFile = new File("config/atum/atum.properties");
