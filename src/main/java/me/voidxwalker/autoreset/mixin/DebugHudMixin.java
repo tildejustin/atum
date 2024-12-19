@@ -14,6 +14,7 @@ public class DebugHudMixin {
     private void atum_getRightText(CallbackInfoReturnable<List<String>> info) {
         if (Atum.running) {
             List<String> returnValue = info.getReturnValue();
+            returnValue.add("");
             returnValue.add("Resetting a random seed");
         }
     }
