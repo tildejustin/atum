@@ -24,9 +24,9 @@ public class GameOptionsMixin {
                Atum.onInitialize() runs after GameOptions.load() in 1.7 for whatever reason.
              */
             Atum.resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                    Atum.getTranslation("key.atum.reset","Create New World").asFormattedString(),
+                    "Create New World",
                     64,
-                    Atum.getTranslation("key.categories.atum","Atum").asFormattedString()
+                    "Atum"
             ));
             allKeys = KeyBindingHelper.process(allKeys);
         }

@@ -59,7 +59,6 @@ public abstract class MinecraftClientMixin {
                 MinecraftClient.getInstance().setScreen(new TitleScreen());
             }
             else if(Atum.hotkeyState==Atum.HotkeyState.OUTSIDE_WORLD){
-                System.out.println(1);
                 KeyBinding.setKeyPressed ( Atum.resetKey.getCode(),false);
                 Atum.hotkeyPressed=false;
                 Atum.isRunning=true;

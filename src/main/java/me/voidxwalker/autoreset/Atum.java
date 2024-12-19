@@ -37,11 +37,6 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text){
-        return  new LiteralText(text);
-
-    }
-
     @Override
     public void onInitialize() {
         if(!((Pingable)(new InGameHud(MinecraftClient.getInstance()))).ping()){
@@ -129,7 +124,6 @@ public class Atum implements ModInitializer {
         } catch (IOException e) {
             log(Level.WARN, "Could not save config file:\n" + e.getMessage());
         }
-        System.out.println(ssgAttempts);
     }
     static void loadFromProperties(Properties properties){
         if(properties!=null){
