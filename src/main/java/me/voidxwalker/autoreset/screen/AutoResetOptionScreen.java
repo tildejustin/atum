@@ -19,7 +19,7 @@ public class AutoResetOptionScreen extends Screen {
 
     public AutoResetOptionScreen(@Nullable Screen parent) {
         super();
-        title = Atum.getTranslation("menu.autoresetTitle", "Autoreset Options");
+        title = "Autoreset Options";
         this.parent = parent;
     }
 
@@ -38,7 +38,7 @@ public class AutoResetOptionScreen extends Screen {
         this.buttons.add(new ButtonWidget(341, this.width / 2 - 155, this.height - 100, 150, 20, I18n.translate("selectWorld.mapType") + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
         this.buttons.add(new ButtonWidget(342, this.width / 2 - 155, this.height - 64, 150, 20, I18n.translate("selectWorld.mapFeatures") + " " + structures));
         this.buttons.add(new ButtonWidget(344, this.width / 2 + 5, this.height - 64, 150, 20, I18n.translate("selectWorld.bonusItems") + " " + bonusChest));
-        this.buttons.add(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, Atum.getTranslation("menu.done", "Done")));
+        this.buttons.add(new ButtonWidget(345, this.width / 2 - 155, this.height - 28, 150, 20, I18n.translate("gui.done")));
         this.buttons.add(new ButtonWidget(343, this.width / 2 + 5, this.height - 28, 150, 20, I18n.translate("gui.cancel")));
     }
 

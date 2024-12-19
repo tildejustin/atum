@@ -28,11 +28,6 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static String getTranslation(String path, String text) {
-        String translation = I18n.translate(path);
-        return translation.equals(path) ? text : translation;
-    }
-
     public static String load(File file) {
         try (Scanner scanner = new Scanner(file)) {
             if (scanner.hasNext()) {
