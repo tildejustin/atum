@@ -30,10 +30,6 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text) {
-        return new LiteralText(text);
-    }
-
     public static String load(File file) {
         try (Scanner scanner = new Scanner(file)) {
             if (scanner.hasNext()) {

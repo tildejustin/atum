@@ -20,7 +20,7 @@ public class AutoResetOptionScreen extends Screen {
 
     public AutoResetOptionScreen(@Nullable Screen parent) {
         super();
-        title = Atum.getTranslation("menu.autoresetTitle", "Autoreset Options").asFormattedString();
+        title = "Autoreset Options";
         this.parent = parent;
     }
 
@@ -35,11 +35,11 @@ public class AutoResetOptionScreen extends Screen {
         this.generatorType = Atum.generatorType;
         this.structures = Atum.structures;
         this.bonusChest = Atum.bonusChest;
-        this.field_22537.add(new ButtonWidget(340, field_22535 / 2 + 5, this.field_22536 - 100, 150, 20, new LiteralText("Is Hardcore: " + isHardcore).asFormattedString()));
+        this.field_22537.add(new ButtonWidget(340, field_22535 / 2 + 5, this.field_22536 - 100, 150, 20, "Is Hardcore: " + isHardcore));
         this.field_22537.add(new ButtonWidget(341, field_22535 / 2 - 155, this.field_22536 - 100, 150, 20, (new TranslatableText("selectWorld.mapType").asFormattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey()))));
         this.field_22537.add(new ButtonWidget(342, field_22535 / 2 - 155, this.field_22536 - 64, 150, 20, new TranslatableText("selectWorld.mapFeatures").asFormattedString() + " " + structures));
         this.field_22537.add(new ButtonWidget(344, field_22535 / 2 + 5, this.field_22536 - 64, 150, 20, new TranslatableText("selectWorld.bonusItems").asFormattedString() + " " + bonusChest));
-        this.field_22537.add(new ButtonWidget(345, field_22535 / 2 - 155, this.field_22536 - 28, 150, 20, Atum.getTranslation("menu.done", "Done").asFormattedString()));
+        this.field_22537.add(new ButtonWidget(345, field_22535 / 2 - 155, this.field_22536 - 28, 150, 20, "Done"));
         this.field_22537.add(new ButtonWidget(343, field_22535 / 2 + 5, this.field_22536 - 28, 150, 20, I18n.translate("gui.cancel")));
     }
 
