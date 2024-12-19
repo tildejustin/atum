@@ -2,8 +2,7 @@ package me.voidxwalker.autoreset.mixin;
 
 import me.voidxwalker.autoreset.Atum;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;

@@ -80,6 +80,7 @@ public class AutoResetOptionScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, this.height - 210, -1);
         context.drawCenteredTextWithShadow(this.textRenderer, Atum.getTranslation("menu.enterSeed", "Seed (Leave empty for a random Seed)").getString(), this.width / 2, this.height - 180, -6250336);
