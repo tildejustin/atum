@@ -9,6 +9,7 @@ import me.voidxwalker.autoreset.AtumConfig;
 import me.voidxwalker.autoreset.AtumCreateWorldScreen;
 import me.voidxwalker.autoreset.api.seedprovider.SeedProvider;
 import me.voidxwalker.autoreset.interfaces.ISeedStringHolder;
+import me.voidxwalker.autoreset.mixin.access.LevelGeneratorOptionsAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -103,7 +104,12 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
         LevelGeneratorType generatorType = Atum.config.generatorType.get();
         this.generatorType = generatorType.getId();
-        this.generatorOptions = generatorType.getDefaultOptions();
+        LevelGeneratorOptions defaultGeneratorOptions = generatorType.getDefaultOptions();
+        this.generatorOptions = new LevelGeneratorOptions(
+                defaultGeneratorOptions.getType(),
+                defaultGeneratorOptions.getDynamic(),
+                ((LevelGeneratorOptionsAccessor) defaultGeneratorOptions).getChunkGeneratorFactory()
+        );
 
         if (Atum.config.generatorType == AtumConfig.AtumGeneratorType.DEFAULT) {
             return;

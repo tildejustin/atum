@@ -11,6 +11,7 @@
     "MinecraftClientMixin",
     "access.CreateWorldScreen$ModeAccessor",
     "access.IntegratedServerAccessor",
+    "access.LevelGeneratorOptionsAccessor",
     "config.CreateWorldScreenMixin",
     "gui.DeathScreenMixin",
     "gui.DebugHudMixin",
