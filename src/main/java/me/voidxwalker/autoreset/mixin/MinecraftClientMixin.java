@@ -11,9 +11,9 @@ import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.profiler.ProfileResult;
+import net.minecraft.world.level.LevelProperties;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -92,7 +92,7 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
+    @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
         if (Atum.isResetScheduled() && FabricLoader.getInstance().isModLoaded("worldpreview")) {
             this.clickButton(this.currentScreen, "menu.returnToMenu");
@@ -107,8 +107,8 @@ public abstract class MinecraftClientMixin {
                     continue;
                 }
                 ButtonWidget button = ((ButtonWidget) element);
-                Text text = button.getMessage();
-                if (text instanceof TranslatableText && ((TranslatableText) text).getKey().equals(translationKey)) {
+                String text = button.getMessage();
+                if (text.equals(translationKey)) {
                     button.onPress();
                     return true;
                 }
@@ -117,9 +117,9 @@ public abstract class MinecraftClientMixin {
         return false;
     }
 
-    @ModifyVariable(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At("STORE"))
-    private LevelLoadingScreen addSeedToLLS(LevelLoadingScreen levelLoadingScreen, @Local MinecraftClient.IntegratedResourceManager integratedResourceManager) {
-        Optional.ofNullable(((ISeedStringHolder) integratedResourceManager.getSaveProperties().getGeneratorOptions()).atum$getSeedString())
+    @ModifyVariable(method = "startIntegratedServer", at = @At("STORE"))
+    private LevelLoadingScreen addSeedToLLS(LevelLoadingScreen levelLoadingScreen, @Local LevelProperties levelProperties) {
+        Optional.ofNullable(((ISeedStringHolder) levelProperties.getGeneratorOptions()).atum$getSeedString())
                 .ifPresent(seedString -> ((ISeedStringHolder) levelLoadingScreen).atum$setSeedString(seedString));
         return levelLoadingScreen;
     }

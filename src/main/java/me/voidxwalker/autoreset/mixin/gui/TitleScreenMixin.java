@@ -6,10 +6,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,7 +30,7 @@ public abstract class TitleScreenMixin extends Screen {
             Atum.scheduleReset();
         }
 
-        this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, LiteralText.EMPTY, button -> {
+        this.addButton(new ButtonWidget(this.width / 2 - 124, this.height / 4 + 48, 20, 20, "", button -> {
             if (!Screen.hasShiftDown()) {
                 Atum.scheduleReset();
             } else {
@@ -40,12 +38,12 @@ public abstract class TitleScreenMixin extends Screen {
             }
         }) {
             @Override
-            public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-                super.renderButton(matrices, mouseX, mouseY, delta);
+            public void renderButton(int mouseX, int mouseY, float delta) {
+                super.renderButton(mouseX, mouseY, delta);
                 MinecraftClient.getInstance().getTextureManager().bindTexture(BUTTON_IMAGE);
-                drawTexture(matrices, this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+                drawTexture(this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
                 if (this.isHovered() && hasShiftDown()) {
-                    this.drawCenteredText(matrices, TitleScreenMixin.this.textRenderer, new TranslatableText("atum.menu.open_config"), this.x + this.width / 2, this.y - 15, 16777215);
+                    this.drawCenteredString(TitleScreenMixin.this.textRenderer, I18n.translate("atum.menu.open_config"), this.x + this.width / 2, this.y - 15, 16777215);
                 }
             }
         });

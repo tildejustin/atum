@@ -20,12 +20,12 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings "dev.tildejustin:yarn:${minecraft_version}-build.$yarn_build:v2"
+    mappings "net.fabricmc:yarn:${minecraft_version}+build.$yarn_build:v2"
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
 
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
-    modImplementation "com.github.KingContaria:SpeedrunAPI:a3e3998294"
-    modImplementation "com.github.tildejustin:key-binding-api:a41fc49671"
+    modImplementation "dev.tildejustin:speedrunapi:01eba124"
+    modImplementation fabricApi.module("fabric-keybindings-v0", "0.5.7+build.2-20w14infinite")
 }
 
 processResources {
