@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.profiler.ProfileResult;
@@ -108,7 +109,7 @@ public abstract class MinecraftClientMixin {
                 }
                 ButtonWidget button = ((ButtonWidget) element);
                 String text = button.getMessage();
-                if (text.equals(translationKey)) {
+                if (text.equals(I18n.translate(translationKey))) {
                     button.onPress();
                     return true;
                 }
