@@ -265,6 +265,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
         ci.cancel();
     }
 
+    @WrapWithCondition(method = "createLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+    private boolean doNotOpenTitleScreenWhileCreatingWorld(MinecraftClient instance, Screen screen) {
+        return !Atum.isRunning();
+    }
+
     @WrapWithCondition(
             method = "init",
             at = @At(
