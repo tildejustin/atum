@@ -26,8 +26,8 @@ public class Atum implements ClientModInitializer {
 
     public static void createNewWorld() {
         running = true;
-        shouldReset = false;
         MinecraftClient.getInstance().openScreen(new AtumCreateWorldScreen(null));
+        shouldReset = false;
     }
 
     public static boolean isRunning() {
