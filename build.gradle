@@ -24,8 +24,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
 
     // check for the latest versions at https://jitpack.io/#kingcontaria/speedrunapi
-    modImplementation "dev.tildejustin:speedrunapi:01eba124"
-    modImplementation fabricApi.module("fabric-keybindings-v0", "0.5.7+build.2-20w14infinite")
+    modImplementation "dev.tildejustin:speedrunapi:3a0e6319"
+    modImplementation "com.github.tildejustin:key-binding-api:a41fc49671"
 }
 
 processResources {

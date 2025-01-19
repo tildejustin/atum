@@ -3,11 +3,9 @@ package me.voidxwalker.autoreset;
 import me.voidxwalker.autoreset.api.seedprovider.AtumWaitingScreen;
 import me.voidxwalker.autoreset.api.seedprovider.SeedProvider;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.options.KeyBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -20,7 +18,7 @@ public class Atum implements ClientModInitializer {
     public static AtumConfig config;
     private static final SeedProvider DEFAULT_SEED_PROVIDER = () -> Optional.of(Atum.config.seed);
     private static SeedProvider seedProvider = DEFAULT_SEED_PROVIDER;
-    public static FabricKeyBinding resetKey;
+    public static KeyBinding resetKey;
     private static boolean running = false;
     private static boolean shouldReset;
 
@@ -94,13 +92,10 @@ public class Atum implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        KeyBindingRegistry.INSTANCE.addCategory("key.categories.atum");
-        resetKey = FabricKeyBinding.Builder.create(
-                new Identifier("atum", "create_new_world"),
-                InputUtil.Type.KEYSYM,
+        resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "Create New World",
                 GLFW.GLFW_KEY_F6,
                 "key.categories.atum"
-        ).build();
-        KeyBindingRegistry.INSTANCE.register(resetKey);
+        ));
     }
 }
