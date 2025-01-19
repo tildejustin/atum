@@ -133,11 +133,14 @@ public abstract class CreateWorldScreenMixin extends Screen {
         return !this.isAtum();
     }
 
+    @Unique
+    private boolean initialized;
     @Inject(method = "init", at = @At("TAIL"))
     private void modifyAtumCreateWorldScreen(CallbackInfo info) {
-        if (!this.isAtum()) {
+        if (!this.isAtum() || initialized /* stdsettings reinits the screen when calling onResolutionChange */) {
             return;
         }
+        initialized = true;
 
         String seed;
 
