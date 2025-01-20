@@ -15,7 +15,7 @@ public abstract class GameOptionsMixin {
 
     @Inject(method = "load", at = @At("TAIL"))
     private void addResetKey(CallbackInfo ci) {
-        Atum.resetKey = new KeyBinding("Reset Key", 64);
+        Atum.resetKey = new KeyBinding("Create New World", 64);
         List<KeyBinding> newKeys = new ArrayList<>(Arrays.asList(allKeys));
         newKeys.add(Atum.resetKey);
         allKeys = newKeys.toArray(new KeyBinding[0]);

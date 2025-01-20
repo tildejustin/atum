@@ -2,7 +2,6 @@ package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -21,6 +20,7 @@ public class Atum implements ModInitializer {
     public static boolean bonusChest = false;
     public static KeyBinding resetKey;
     public static boolean loading = false;
+    public static boolean shouldReset = false;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
     static File configFile;
 

@@ -27,20 +27,23 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 4))
     public void atum_tick(CallbackInfo ci) {
-        if (Atum.resetKey == null ||
-                !Keyboard.isKeyDown(Atum.resetKey.code) ||
-                !Keyboard.getEventKeyState() ||
-                Keyboard.isRepeatEvent() ||
-                this.currentScreen instanceof ControlsOptionsScreen ||
-                Atum.loading
-        ) {
+        if (!Atum.shouldReset) {
             return;
         }
+        Atum.shouldReset = false;
         Atum.running = true;
         if (world != null) {
             MinecraftClient.getInstance().world.disconnect();
             MinecraftClient.getInstance().connect(null);
         }
         MinecraftClient.getInstance().setScreen(null);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventKey()I", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;method_1040()V")))
+    public void atum_hotkey(CallbackInfo ci) {
+        if (Atum.resetKey == null || Keyboard.getEventKey() != Atum.resetKey.code || this.currentScreen instanceof ControlsOptionsScreen || Atum.loading) {
+            return;
+        }
+        Atum.shouldReset = true;
     }
 }
