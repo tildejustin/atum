@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -25,7 +24,7 @@ public abstract class MinecraftClientMixin {
     public Screen currentScreen;
 
     @Shadow
-    public abstract void disconnect(Screen screen);
+    public abstract void disconnectWithSavingScreen();
 
     @Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.AFTER))
     private void resetPreview(CallbackInfo ci) {
@@ -42,8 +41,8 @@ public abstract class MinecraftClientMixin {
                 gameMenuScreen.init((MinecraftClient) (Object) this, 0, 0);
                 if (!this.clickButton(gameMenuScreen, "fast_reset.menu.quitWorld", "menu.quitWorld", "menu.returnToMenu", "menu.disconnect") || this.world != null) {
                     if (this.world != null) {
-                        this.world.disconnect();
-                        this.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
+                        this.world.disconnect(ClientWorld.QUITTING_MULTIPLAYER_TEXT);
+                        this.disconnectWithSavingScreen();
                     }
                 }
             }
