@@ -12,4 +12,19 @@ public class MinecraftServerMixin {
     public void trackWorldGenStart(CallbackInfo ci) {
         Atum.hotkeyState = Atum.HotkeyState.WORLD_GEN;
     }
+
+    @Inject(method = "run", at = @At("HEAD"))
+    private void addServer(CallbackInfo ci) {
+        synchronized (Atum.blocker) {
+            Atum.serversAlive++;
+        }
+    }
+
+    @Inject(method = "run", at = @At("TAIL"))
+    private void removeServer(CallbackInfo ci) {
+        synchronized (Atum.blocker) {
+            Atum.serversAlive--;
+            Atum.blocker.notify();
+        }
+    }
 }

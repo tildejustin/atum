@@ -62,7 +62,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 l = string.hashCode();
             }
         }
-        if (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0")) {
+        if (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) {
             Atum.rsgAttempts++;
         } else {
             Atum.ssgAttempts++;
@@ -77,6 +77,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
         Atum.saveProperties();
         Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty()|| Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
+        try {
+            synchronized (Atum.blocker) {
+                while (Atum.serversAlive != 0) {
+                    Atum.blocker.wait();
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         this.client.getCurrentSave().method_254();
         this.client.getCurrentSave().deleteLevel("existence.af15");
         this.client.startGame("existence.af15", levelNameField.getText().trim(), levelInfo);

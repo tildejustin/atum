@@ -26,6 +26,8 @@ public class Atum implements ModInitializer {
     public static boolean hotkeyPressed;
     static Map<String, String> extraProperties = new LinkedHashMap<>();
     static File configFile;
+    public static final Object blocker = new Object();
+    public static volatile int serversAlive = 0;
 
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
