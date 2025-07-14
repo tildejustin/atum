@@ -39,7 +39,7 @@ public class AutoResetOptionScreen extends Screen{
         this.bonusChest=Atum.bonusChest;
 
         this.buttons.add(new ButtonWidget(340,this.width / 2 + 5, this.height - 100, 150, 20, new LiteralText("Is Hardcore: "+isHardcore).asFormattedString()));
-        this.buttons.add(new ButtonWidget(341,this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asFormattedString()+" "+ LevelGeneratorType.TYPES[generatorType].getTranslationKey()) );
+        this.buttons.add(new ButtonWidget(341,this.width / 2 - 155, this.height - 100, 150, 20, new TranslatableText("selectWorld.mapType").asFormattedString()+" "+ I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey())));
 
         this.buttons.add(new ButtonWidget(342,this.width / 2 - 155, this.height - 64, 150, 20,  new TranslatableText("selectWorld.mapFeatures").asFormattedString()+" "+structures));
 
@@ -86,7 +86,7 @@ public class AutoResetOptionScreen extends Screen{
                 if (generatorType > 5) {
                     generatorType = 0;
                 }
-                button.message = (new TranslatableText("selectWorld.mapType").asFormattedString() + " " + LevelGeneratorType.TYPES[generatorType].getTranslationKey());
+                button.message = (new TranslatableText("selectWorld.mapType").asFormattedString() + " " + I18n.translate(LevelGeneratorType.TYPES[generatorType].getTranslationKey()));
                 break;
             case 342:
                 structures = !structures;
