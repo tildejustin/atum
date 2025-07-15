@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(OptionsScreen.class)
 public class OptionsScreenMixin extends Screen {
     @Unique
-    ButtonWidget stopResetting;
+    private ButtonWidget stopResetting;
 
     protected OptionsScreenMixin(Text title) {
         super(title);
@@ -36,6 +36,8 @@ public class OptionsScreenMixin extends Screen {
 
     @Inject(method = "refreshWidgetPositions", at = @At("TAIL"))
     private void moveAutoResetButton(CallbackInfo ci) {
-        stopResetting.setPosition(0, this.height - 20);
+        if (stopResetting != null) {
+            stopResetting.setPosition(0, this.height - 20);
+        }
     }
 }
