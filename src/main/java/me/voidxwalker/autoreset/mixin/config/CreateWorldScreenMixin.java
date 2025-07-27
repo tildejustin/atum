@@ -1,7 +1,9 @@
 package me.voidxwalker.autoreset.mixin.config;
 
+import com.google.gson.JsonParser;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.JsonOps;
 import me.voidxwalker.autoreset.AttemptTracker;
 import me.voidxwalker.autoreset.Atum;
 import me.voidxwalker.autoreset.AtumConfig;
@@ -19,10 +21,9 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
+import net.minecraft.world.level.LevelGeneratorOptions;
 import net.minecraft.world.level.LevelGeneratorType;
 import net.minecraft.world.level.LevelInfo;
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +82,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private TextFieldWidget seedField;
 
     @Shadow
-    public CompoundTag generatorOptionsTag;
+    public LevelGeneratorOptions generatorOptions;
 
     protected CreateWorldScreenMixin(Text title) {
         super(title);
@@ -236,19 +237,21 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.tweakedCheats = true;
 
         this.generatorType = Atum.config.generatorType.get().getId();
-        this.generatorOptionsTag = this.loadGeneratorDetails(Atum.config.generatorDetails);
-    }
-
-    @Unique
-    private CompoundTag loadGeneratorDetails(String generatorDetails) {
-        if (!generatorDetails.isEmpty()) {
-            try {
-                return StringNbtReader.parse(generatorDetails);
-            } catch (CommandSyntaxException e) {
-                Atum.LOGGER.error("Failed to parse generator details!", e);
-            }
+        if (Atum.config.generatorType == AtumConfig.AtumGeneratorType.DEFAULT) {
+            return;
         }
-        return new CompoundTag();
+
+        LevelGeneratorType generatorType = Atum.config.generatorType.get();
+        if (Atum.config.generatorDetails.isEmpty()) {
+            return;
+        }
+
+        switch (Atum.config.generatorType) {
+            case FLAT:
+            case SINGLE_BIOME_SURFACE:
+                generatorOptions = generatorType.loadOptions(new Dynamic<>(JsonOps.INSTANCE, new JsonParser().parse(Atum.config.generatorDetails)));
+                break;
+        }
     }
 
     @Unique
@@ -370,7 +373,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
         Atum.config.bonusChest = this.bonusChest;
 
         Atum.config.generatorType = AtumConfig.AtumGeneratorType.from(LevelGeneratorType.TYPES[this.generatorType]);
-        Atum.config.generatorDetails = this.generatorOptionsTag != null && !this.generatorOptionsTag.isEmpty() ? this.generatorOptionsTag.toString() : "";
+
+        String generatorDetails = "";
+        switch (Atum.config.generatorType) {
+            case FLAT:
+            case SINGLE_BIOME_SURFACE:
+                generatorDetails = generatorOptions.getDynamic().convert(JsonOps.INSTANCE).getValue().toString();
+                break;
+        }
+        Atum.config.generatorDetails = generatorDetails;
     }
 
     @Unique

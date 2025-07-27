@@ -30,10 +30,10 @@ public abstract class OptionsScreenMixin extends Screen {
             this.addButton(new ButtonWidget(0, this.height - 20, 100, 20, I18n.translate("atum.menu.stop_resets"), button -> {
                 button.active = false;
                 Atum.stopRunning();
-                if (this.minecraft != null && this.minecraft.world != null) {
-                    this.minecraft.world.disconnect();
-                    this.minecraft.disconnect(new SaveLevelScreen(TextUtil.translatable("menu.savingLevel")));
-                    this.minecraft.openScreen(new TitleScreen());
+                if (this.client != null && this.client.world != null) {
+                    this.client.world.disconnect();
+                    this.client.disconnect(new SaveLevelScreen(TextUtil.translatable("menu.savingLevel")));
+                    this.client.openScreen(new TitleScreen());
                 }
             }));
         }

@@ -55,7 +55,7 @@ public abstract class TitleScreenMixin extends Screen {
                 super.renderButton(mouseX, mouseY, delta);
 
                 MinecraftClient.getInstance().getTextureManager().bindTexture(BUTTON_IMAGE);
-                DrawableHelper.blit(this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
+                DrawableHelper.drawTexture(this.x + 2, this.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
                 if (Screen.hasShiftDown() && this.isHovered()) {
                     this.drawCenteredString(MinecraftClient.getInstance().textRenderer, I18n.translate("atum.menu.open_config"), this.x + this.width / 2, this.y - 15, 16777215);
                 }
