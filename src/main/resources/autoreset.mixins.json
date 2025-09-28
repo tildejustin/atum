@@ -9,8 +9,8 @@
     "DebugHudMixin",
     "OptionsScreenMixin",
     "TitleScreenMixin",
+    "TranslationStorageMixin",
     "hotkey.GameOptionsMixin",
-    "hotkey.KeyBindingAccessor",
     "hotkey.KeyboardMixin",
     "hotkey.MinecraftClientMixin"
   ],

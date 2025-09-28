@@ -1,40 +1,32 @@
 package me.voidxwalker.autoreset;
 
 import com.google.common.collect.Lists;
-import me.voidxwalker.autoreset.mixin.hotkey.KeyBindingAccessor;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
-import java.util.*;
+import java.util.List;
 
+/**
+ * Copied from Fabric API
+ */
 public final class KeyBindingHelper {
-    private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
-
-    private static Map<String, Integer> getCategoryMap() {
-        return KeyBindingAccessor.invokeGetCategoryMap();
-    }
-
-    private static boolean hasCategory(String categoryTranslationKey) {
-        return getCategoryMap().containsKey(categoryTranslationKey);
-    }
-
-    public static void addCategory(String categoryTranslationKey) {
-        Map<String, Integer> map = getCategoryMap();
-
-        if (map.containsKey(categoryTranslationKey)) {
-            return;
-        }
-
-        Optional<Integer> largest = map.values().stream().max(Integer::compareTo);
-        int largestInt = largest.orElse(0);
-        map.put(categoryTranslationKey, largestInt + 1);
-    }
+    private static final List<KeyBinding> MODDED_KEY_BINDINGS = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
 
     public static KeyBinding registerKeyBinding(KeyBinding binding) {
-        if (!hasCategory(binding.getCategory())) {
-            addCategory(binding.getCategory());
+        if (MinecraftClient.getInstance().options != null) {
+            throw new IllegalStateException("GameOptions has already been initialised");
         }
 
-        moddedKeyBindings.add(binding);
+        for (KeyBinding existingKeyBindings : MODDED_KEY_BINDINGS) {
+            if (existingKeyBindings == binding) {
+                throw new IllegalArgumentException("Attempted to register a key binding twice: " + binding.getId());
+            } else if (existingKeyBindings.getId().equals(binding.getId())) {
+                throw new IllegalArgumentException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
+            }
+        }
+
+        MODDED_KEY_BINDINGS.add(binding);
         return binding;
     }
 
@@ -44,8 +36,8 @@ public final class KeyBindingHelper {
      */
     public static KeyBinding[] process(KeyBinding[] keysAll) {
         List<KeyBinding> newKeysAll = Lists.newArrayList(keysAll);
-        newKeysAll.removeAll(moddedKeyBindings);
-        newKeysAll.addAll(moddedKeyBindings);
+        newKeysAll.removeAll(MODDED_KEY_BINDINGS);
+        newKeysAll.addAll(MODDED_KEY_BINDINGS);
         return newKeysAll.toArray(new KeyBinding[0]);
     }
 }

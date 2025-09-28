@@ -1,34 +1,36 @@
 package me.voidxwalker.autoreset.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.voidxwalker.autoreset.Atum;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.client.gui.hud.debug.DebugHudLines;
 import net.minecraft.text.Text;
 import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.List;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DebugHud.class)
-public class DebugHudMixin {
-    @Inject(method = "getRightText", at = @At("RETURN"))
-    private void getRightText(CallbackInfoReturnable<List<String>> info) {
-        if (Atum.isRunning) {
-            List<String> returnValue = info.getReturnValue();
-            returnValue.add("");
-            returnValue.add("Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : "the seed: \"" + Atum.seed + "\"") + ", " + (Atum.difficulty != -1 ? "" + Difficulty.byId(Atum.difficulty).getName().charAt(0) : "hc"));
+public abstract class DebugHudMixin {
+    // We could add an actual debug category, but that makes the section disableable, and involves a bunch more work to prevent that.
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;getWorld()Lnet/minecraft/world/World;", shift = At.Shift.AFTER))
+    private void addDebugInfo(DrawContext context, CallbackInfo ci, @Local DebugHudLines lines) {
+        if (Atum.isRunning && MinecraftClient.getInstance().debugHudEntryList.isF3Enabled()) {
+            lines.addLineToSection(Atum.DEBUG_SECTION_IDENTIFIER, "Resetting " + (Atum.seed == null || Atum.seed.isEmpty() ? "a random seed" : "the seed: \"" + Atum.seed + "\"") + ", " + (Atum.difficulty != -1 ? "" + Difficulty.byId(Atum.difficulty).getName().charAt(0) : "hc"));
             if (Atum.generatorType != 0) {
                 String s = Atum.getGeneratorTypeString(Atum.generatorType);
                 if (s != null) {
-                    returnValue.add(Text.literal("GenType: ").append(s).getString());
+                    lines.addLineToSection(Atum.DEBUG_SECTION_IDENTIFIER, Text.literal("GenType: ").append(s).getString());
                 }
             }
             if (!Atum.structures) {
-                returnValue.add("NoStructures");
+                lines.addLineToSection(Atum.DEBUG_SECTION_IDENTIFIER, "NoStructures");
             }
             if (Atum.bonusChest) {
-                returnValue.add("BonusChest");
+                lines.addLineToSection(Atum.DEBUG_SECTION_IDENTIFIER, "BonusChest");
             }
         }
     }

@@ -58,7 +58,7 @@ public abstract class MinecraftClientMixin {
                     continue;
                 }
                 if (I18n.translate(translationKey).equals(button.getMessage().getString())) {
-                    button.onPress();
+                    button.onPress(null);
                     return true;
                 }
             }
