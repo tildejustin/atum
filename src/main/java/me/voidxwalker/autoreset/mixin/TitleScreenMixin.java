@@ -8,7 +8,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -37,7 +36,8 @@ public class TitleScreenMixin extends Screen {
             Atum.scheduleReset();
         }
         this.resetButton = this.addDrawableChild(ButtonWidget.builder(Text.literal(""), buttonWidget -> {
-                    if (hasShiftDown()) {
+            assert client != null;
+            if (client.isShiftPressed()) {
                         client.setScreen(new AutoResetOptionScreen(this));
                     } else {
                         Atum.scheduleReset();
@@ -49,7 +49,8 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlay(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         context.drawTexture(RenderPipelines.GUI_TEXTURED, BUTTON_IMAGE, this.width / 2 - 124 + 2, this.height / 4 + 48 + 2, 0f, 0f, 16, 16, 16, 16);
-        if (resetButton.isHovered() && hasShiftDown()) {
+        assert client != null;
+        if (resetButton.isHovered() && client.isShiftPressed()) {
             context.drawCenteredTextWithShadow(textRenderer, getDifficultyText(), this.width / 2 - 124 + 11, this.height / 4 + 48 - 15, Colors.WHITE);
         }
     }
@@ -60,10 +61,5 @@ public class TitleScreenMixin extends Screen {
             return Text.translatable("selectWorld.gameMode.hardcore");
         }
         return Difficulty.byId(Atum.difficulty).getTranslatableName();
-    }
-
-    @Unique
-    private static boolean hasShiftDown() {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 344);
     }
 }
