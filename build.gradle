@@ -42,7 +42,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 	withSourcesJar()
 }
 jar {
