@@ -23,7 +23,7 @@ public class OptionsScreenMixin extends Screen {
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/OptionsScreen;refreshWidgetPositions()V"))
     public void addAutoResetButton(CallbackInfo ci) {
         if (Atum.isRunning) {
-            stopResetting = this.addDrawableChild(ButtonWidget.builder(Atum.getTranslation("menu.stop_resets", "Stop Resets & Quit"), (buttonWidget) -> {
+            stopResetting = this.addDrawableChild(ButtonWidget.builder(Text.translatable("menu.stop_resets"), (buttonWidget) -> {
                 Atum.isRunning = false;
                 if (this.client != null && this.client.world != null) {
                     this.client.world.disconnect(ClientWorld.QUITTING_MULTIPLAYER_TEXT);

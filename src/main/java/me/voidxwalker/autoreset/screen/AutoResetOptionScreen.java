@@ -23,12 +23,12 @@ public class AutoResetOptionScreen extends Screen {
     private boolean bonusChest;
 
     public AutoResetOptionScreen(@Nullable Screen parent) {
-        super(Atum.getTranslation("menu.autoresetTitle", "Autoreset Options"));
+        super(Text.translatable("menu.autoresetTitle"));
         this.parent = parent;
     }
 
     protected void init() {
-        this.seedField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Atum.getTranslation("menu.enterSeed", "Enter a Seed"));
+        this.seedField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, this.height - 160, 200, 20, Text.translatable("menu.enterSeed"));
         this.seedField.setText(Atum.seed == null ? "" : Atum.seed);
         this.seed = Atum.seed;
         this.generatorType = Atum.generatorType;
@@ -82,7 +82,7 @@ public class AutoResetOptionScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, this.height - 210, -1);
-        context.drawCenteredTextWithShadow(this.textRenderer, Atum.getTranslation("menu.enterSeed", "Seed (Leave empty for a random Seed)").getString(), this.width / 2, this.height - 180, -6250336);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.translatable("menu.enterSeed"), this.width / 2, this.height - 180, -6250336);
         this.seedField.render(context, mouseX, mouseY, delta);
     }
 }

@@ -1,14 +1,16 @@
 package me.voidxwalker.autoreset.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.voidxwalker.autoreset.Atum;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(LevelLoadingScreen.class)
 public class LevelLoadingScreenMixin extends Screen {
@@ -16,11 +18,11 @@ public class LevelLoadingScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "render", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void modifyString(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, int i, int j) {
+    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
+    private Text modifyArg(Text text) {
         if (Atum.isRunning && Atum.seed != null && !Atum.seed.isEmpty()) {
-            String string = Atum.seed;
-            context.drawCenteredTextWithShadow(this.textRenderer, string, i, j - 9 / 2 - 50, Colors.WHITE);
+            text = text.copy().append(" (").append(Atum.seed).append(")");
         }
+        return text;
     }
 }

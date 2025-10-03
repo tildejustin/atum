@@ -26,6 +26,8 @@ dependencies {
 	mappings variantOf(libs.yarn.mappings) { classifier "v2" }
 	modImplementation libs.fabric.loader
 	vineflowerDecompilerClasspath libs.vineflower
+
+	include(modImplementation fabricApi.module("fabric-key-binding-api-v1", libs.versions.fabric.api.get()))
 }
 
 processResources {
@@ -36,11 +38,11 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
-	it.options.release.set(17)
+	it.options.release.set(21)
 }
 
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 	withSourcesJar()
 }
 jar {

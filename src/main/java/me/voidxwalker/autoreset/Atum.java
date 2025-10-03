@@ -1,22 +1,31 @@
 package me.voidxwalker.autoreset;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import org.apache.logging.log4j.*;
-import org.jetbrains.annotations.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.*;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 
 public class Atum implements ModInitializer {
     public static boolean isRunning = false;
     public static Logger LOGGER = LogManager.getLogger();
+    public static Identifier DEBUG_SECTION_IDENTIFIER = Identifier.of("atum", "info");
 
     public static String seed = "";
     public static int difficulty = 1;
@@ -61,22 +70,15 @@ public class Atum implements ModInitializer {
         LOGGER.log(level, message);
     }
 
-    public static Text getTranslation(String path, String text) {
-        if (Language.getInstance().get(path).equals(path)) {
-            return Text.literal(text);
-        } else {
-            return Text.translatable(path);
-        }
-    }
-
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing");
+        KeyBinding.Category keyCategory = KeyBinding.Category.create(Identifier.of("atum", "keys"));
         resetKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                getTranslation("key.atum.reset", "Create New World").getString(),
+                "Create New World",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F6,
-                getTranslation("key.categories.atum", "Atum").getString()
+                keyCategory
         ));
         new File("config").mkdir();
         new File("config/atum").mkdir();
