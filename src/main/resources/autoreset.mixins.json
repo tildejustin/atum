@@ -10,7 +10,6 @@
     "OptionsScreenMixin",
     "TitleScreenMixin",
     "TranslationStorageMixin",
-    "hotkey.GameOptionsMixin",
     "hotkey.KeyboardMixin",
     "hotkey.MinecraftClientMixin"
   ],
