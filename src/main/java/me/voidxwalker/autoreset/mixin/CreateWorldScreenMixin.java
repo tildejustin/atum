@@ -6,14 +6,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
-import java.util.Random;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
@@ -38,12 +36,28 @@ public abstract class CreateWorldScreenMixin {
     @Shadow
     private boolean field_3178;
 
+    @Shadow
+    private TextFieldWidget seedField;
+
     @Inject(method = "init", at = @At("TAIL"))
     private void createDesiredWorld(CallbackInfo info) {
         if (Atum.isRunning) {
             if (Atum.difficulty == -1) {
                 this.field_3178 = true;
             }
+            this.seedField.setText(Atum.seed);
+
+            setGeneratorType(Atum.generatorType);
+            setGenerateStructure(Atum.structures);
+            setGenerateBonusChest(Atum.bonusChest);
+            try {
+                Atum.saveProperties();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + Atum.seed + "\""));
+            levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
             createLevel();
         }
     }
@@ -53,41 +67,6 @@ public abstract class CreateWorldScreenMixin {
         if (!Atum.isRunning) {
             instance.openScreen(screen);
         }
-    }
-
-    @Redirect(method = "createLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;getText()Ljava/lang/String;", ordinal = 0))
-    private String injected(TextFieldWidget instance) {
-        if (!Atum.isRunning) {
-            return instance.getText();
-        }
-        long l = (new Random()).nextLong();
-        String string = Atum.seed == null ? "" : Atum.seed;
-        if (!StringUtils.isEmpty(string)) {
-            try {
-                long m = Long.parseLong(string);
-                if (m != 0L) {
-                    l = m;
-                }
-            } catch (NumberFormatException var6) {
-                l = string.hashCode();
-            }
-        }
-        if (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) {
-            Atum.rsgAttempts++;
-        } else {
-            Atum.ssgAttempts++;
-        }
-        setGeneratorType(Atum.generatorType);
-        setGenerateStructure(Atum.structures);
-        setGenerateBonusChest(Atum.bonusChest);
-        try {
-            Atum.saveProperties();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Atum.log(Level.INFO, (Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0") ? "Resetting a random seed" : "Resetting the set seed" + " \"" + l + "\""));
-        levelNameField.setText((Atum.seed == null || Atum.seed.isEmpty() || Atum.seed.trim().equals("0")) ? "Random Speedrun #" + Atum.rsgAttempts : "Set Speedrun #" + Atum.ssgAttempts);
-        return "" + l;
     }
 
     @Unique
